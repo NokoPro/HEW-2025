@@ -119,6 +119,7 @@ TestScene::TestScene()
 //----------------------------------------------------------
 TestScene::~TestScene()
 {
+
     // World側にUninitがあればここで呼ぶ
     m_world.Destroy(1); // 今回は適当、必要なら全破棄ループを書く
     // m_world.Uninit(); を作ってるならそれでもOK
