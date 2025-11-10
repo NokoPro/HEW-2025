@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{05b041e5-461b-4c45-b320-505e0d1d7fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\System">
+      <UniqueIdentifier>{4d6892b7-53f7-4202-ba31-21a277d71946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\System">
+      <UniqueIdentifier>{c8f017e0-0bdc-46ed-98bd-a7d4d4990a11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\System\DirectX">
+      <UniqueIdentifier>{eb85ee10-835a-4dea-89f3-2754fa6835da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\System\DirectX">
+      <UniqueIdentifier>{9f883585-cd3f-4ac5-8142-c0cf6b2fc830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\System\Work">
+      <UniqueIdentifier>{9acef074-eab9-4283-a89e-9bc5d27fdcc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\System\Work">
+      <UniqueIdentifier>{c3ff813b-b9aa-454c-ae89-fbdae6b9d52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\Scene">
+      <UniqueIdentifier>{454fac73-c8a3-4b08-96d4-3807c29897b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{5c013c64-721b-4669-8ca8-5c5d4d1690e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS">
+      <UniqueIdentifier>{c7fada58-475e-4376-ae22-739f2f7e5154}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems">
+      <UniqueIdentifier>{f4d06a03-487a-4912-8de8-36e866f285d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS">
+      <UniqueIdentifier>{3564a9ef-8e50-4f86-8bc9-154f8363939b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems">
+      <UniqueIdentifier>{2d9b028c-a56f-43c0-9fdb-00972d60e3bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components">
+      <UniqueIdentifier>{8c9de725-45a8-4a48-b269-8365d6f93746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Render">
+      <UniqueIdentifier>{cef16003-61f7-4e8f-bb1b-1c48db5a22a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Physics">
+      <UniqueIdentifier>{7e0be316-96a8-40fe-bb13-f73c518da75b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Gimick">
+      <UniqueIdentifier>{bca44844-22e8-4ebe-94bd-997beefadbb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Render">
+      <UniqueIdentifier>{c18fce57-a6aa-431f-a858-0d2d04d1b92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Core">
+      <UniqueIdentifier>{7192b658-a09c-4de6-ae45-39ea3890dcd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Render">
+      <UniqueIdentifier>{9dc995db-a66d-4616-b7ba-042c680aec15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update">
+      <UniqueIdentifier>{8c7f9a71-7148-4306-9c76-9c0eac2b241c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Core">
+      <UniqueIdentifier>{cbdd3f87-3748-481a-8d7e-f08b45235026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update">
+      <UniqueIdentifier>{a0b213a1-0ed5-4adf-8118-865dd167623d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Core">
+      <UniqueIdentifier>{54be7958-134e-46ca-ab85-e7ad9e0ac20e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\AssetCatalog.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\AssetManager.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Geometory.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Input.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Sprite.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Model.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\DirectX\DirectX.cpp">
+      <Filter>Source\ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\DirectX\MeshBuffer.cpp">
+      <Filter>Source\ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\DirectX\Shader.cpp">
+      <Filter>Source\ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\DirectX\ShaderList.cpp">
+      <Filter>Source\ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\DirectX\Texture.cpp">
+      <Filter>Source\ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Work\_geometory.cpp">
+      <Filter>Source\ソース ファイル\System\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Work\_model.cpp">
+      <Filter>Source\ソース ファイル\System\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Scene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\CameraMath.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\TestScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Main.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\AssetCatalog.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\AssetManager.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\Defines.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\Geometory.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\Input.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\Model.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\Sprite.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\DirectX\DirectX.h">
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\DirectX\MeshBuffer.h">
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\DirectX\Shader.h">
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\DirectX\ShaderList.h">
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\DirectX\Texture.h">
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Scene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneManager.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\World.h">
+      <Filter>Source\ヘッダー ファイル\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\ECS.h">
+      <Filter>Source\ヘッダー ファイル\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\IUpdateSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\IRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\SystemRegistry.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\TestScene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\CameraMath.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\CameraHelper.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,6 @@
+model,Assets/Model/slime.fbx,mdl_slime,4,0,1
+model,Assets/Model/KayKit_Platformer_Pack_1.0_FREE/Assets/fbx/blue/platform_1x1x1_blue.fbx,mdl_ground,2,0,1
+model,Assets/Model/makibaka.fbx,mdl_player,6,0,1
+texture,Assets/Texture/mato.png,ui_gauge_cursor,2,0,1
+texture,Assets/Texture/ugoku.png,ui_gauge_frame,2,0,1
+texture,Assets/Texture/circle.png,ui_gauge_target,2,0,1
