@@ -18,4 +18,8 @@ struct ModelRendererComponent
 {
     AssetHandle<Model> model;  ///< •`‰æ‚·‚éƒ‚ƒfƒ‹
     bool visible = true;
+
+    DirectX::XMFLOAT3 localOffset{ 0.f,0.f,0.f };
+	DirectX::XMFLOAT3 localRotationDeg{ 0.f,0.f,0.f };
+	DirectX::XMFLOAT3 localScale{ 1.f,1.f,1.f };
 };

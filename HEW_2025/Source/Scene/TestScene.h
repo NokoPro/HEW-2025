@@ -14,14 +14,29 @@
 #include "ECS/World.h"
 #include "ECS/Systems/SystemRegistry.h"
 
- // コンポーネント
+ // コア
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Core/Camera3DComponent.h"
-#include "ECS/Components/Render/ModelComponent.h"
+#include "ECS/Components/Core/ActiveCameraTag.h"
 
-// Renderシステム
+// 表示
+#include "ECS/Components/Render/ModelComponent.h"
 #include "ECS/Systems/Render/ModelRenderSystem.h"
+
+// カメラ
 #include "ECS/Systems/Update/Core/FollowCameraSystem.h"
+
+// 入力～物理系（今回追加するやつ）
+#include "ECS/Components/Input/PlayerInputComponent.h"
+#include "ECS/Components/Input/MovementIntentComponent.h"
+#include "ECS/Components/Physics/Rigidbody2DComponent.h"
+#include "ECS/Components/Physics/Collider2DComponent.h"
+
+#include "ECS/Systems/Update/Input/PlayerInputSystem.h"
+#include "ECS/Systems/Update/Physics/MovementApplySystem.h"
+#include "ECS/Systems/Update/Physics/Collision2DSystem.h"
+#include "ECS/Systems/Render/CollisionDebugRenderSystem.h"
+
 
  /**
   * @class TestScene
@@ -31,7 +46,7 @@ class TestScene : public Scene
 {
 public:
     TestScene();
-    ~TestScene();
+    ~TestScene() override;
 
     void Update() override;
     void Draw() override;
@@ -45,9 +60,16 @@ private:
     // カメラシステム（行列をもらう用）
     FollowCameraSystem* m_followCamera = nullptr;
 
+    CollisionDebugRenderSystem* m_debugCollision = nullptr;
+
+    // 入力・物理
+    CollisionEventBuffer m_colBuf;  // 今フレームの当たりが入る
+
     // モデル資産
     AssetHandle<Model>   m_playerModel;
+    AssetHandle<Model>   m_groundModel;
 
     // プレイヤーを覚えておくとカメラのターゲットに使える
     EntityId             m_playerEntity = kInvalidEntity;
+    EntityId             m_playerEntity2 = kInvalidEntity;
 };

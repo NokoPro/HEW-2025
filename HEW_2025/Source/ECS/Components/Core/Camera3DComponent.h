@@ -63,4 +63,23 @@ struct Camera3DComponent
     float sideFixedX = 0.0f;    // サイドビューなのでX固定
     float sideFixedZ = -10.0f;  // 奥行き固定
     float sideLookAtX = 0.0f;    // 常にこのX方向を見る
+
+    // Orthographic view height (world units). Smaller => more zoomed in.
+    // Used in SideScroll mode to control zoom.
+    float orthoHeight = 10.0f;
+
+    // How fast camera depth (Z) interpolates towards sideFixedZ (units per second factor)
+    // Larger -> snappier. 0 means instant set.
+    float depthLerpSpeed = 10.0f;
+
+    // Reference Y position considered as the "default" camera Y (e.g. initial Y).
+    // If all players are below this Y, the camera will resume automatic vertical scrolling.
+    float baseScrollY = 0.0f;
+
+    // Runtime flag: whether camera is currently locked to follow target Y.
+    bool followingTarget = false;
+
+    // When deciding to resume auto-scroll, require the highest target to be this much below baseScrollY
+    // (useful to keep camera above hazards like rising magma).
+    float returnToAutoMargin = 0.5f;
 };

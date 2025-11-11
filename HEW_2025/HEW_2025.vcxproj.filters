@@ -85,6 +85,27 @@
     <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Core">
       <UniqueIdentifier>{54be7958-134e-46ca-ab85-e7ad9e0ac20e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Input">
+      <UniqueIdentifier>{da8d47f9-6e10-406e-9057-e39a3fa66723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Input">
+      <UniqueIdentifier>{f53e121d-8027-4fc1-b758-72574fe0253b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Input">
+      <UniqueIdentifier>{4f259214-f0e1-4c18-83e4-50a2493e4b98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Physics">
+      <UniqueIdentifier>{026cb2e2-4a03-4cac-9828-d279722accae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Physics">
+      <UniqueIdentifier>{64984986-870c-461a-82ca-de40c5361d2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Prefabs">
+      <UniqueIdentifier>{ebc9abe9-8fb6-4321-8b8c-668b417fbf51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Prefabs">
+      <UniqueIdentifier>{bb96a890-4eab-42c4-9406-eac7a39efeac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -149,6 +170,27 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Render\ParallaxSystem.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +292,60 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\PhysicsLayers.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\PhysicsMaterial.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\ColliderShape.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\Collider2DComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\CollisionEvents.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Input\MovementIntentComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Input\PlayerInputComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Physics\CollisionHelpers.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\ParallaxComponent.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Render\ParallaxSystem.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

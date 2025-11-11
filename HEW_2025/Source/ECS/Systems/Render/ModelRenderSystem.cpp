@@ -17,49 +17,57 @@ using namespace DirectX;
 //--------------------------------------------------------------
 void ModelRenderSystem::Render(const World& world)
 {
-    // World内の全エンティティから Transform + ModelRenderer を持つものを走査
     world.View<TransformComponent, ModelRendererComponent>(
         [&](EntityId /*e*/, const TransformComponent& tr, const ModelRendererComponent& mr)
         {
-            // モデルが無効 or 非表示ならスキップ
             if (!mr.visible || !mr.model)
-            {
                 return;
-            }
 
-            //------------------------------------------------------
-            // 1) ワールド行列を構築
-            //------------------------------------------------------
-            // スケーリング行列
+            // ---------- 1) モデル側のローカル行列 ----------
+            using namespace DirectX;
+
+            // モデルだけのスケーリング
+            const XMMATRIX LS = XMMatrixScaling(
+                mr.localScale.x,
+                mr.localScale.y,
+                mr.localScale.z
+            );
+
+            // モデルだけの回転（度 → rad）
+            const XMMATRIX LRx = XMMatrixRotationX(XMConvertToRadians(mr.localRotationDeg.x));
+            const XMMATRIX LRy = XMMatrixRotationY(XMConvertToRadians(mr.localRotationDeg.y));
+            const XMMATRIX LRz = XMMatrixRotationZ(XMConvertToRadians(mr.localRotationDeg.z));
+
+            // モデルだけの平行移動
+            const XMMATRIX LT = XMMatrixTranslation(
+                mr.localOffset.x,
+                mr.localOffset.y,
+                mr.localOffset.z
+            );
+
+            // ローカル変換は「モデルの原点をどうするか」なので先に作る
+            const XMMATRIX L = LS * LRx * LRy * LRz * LT;
+
+            // ---------- 2) エンティティのワールド行列 ----------
             const XMMATRIX S = XMMatrixScaling(tr.scale.x, tr.scale.y, tr.scale.z);
-            // 回転行列（度→ラジアン変換）
             const XMMATRIX Rx = XMMatrixRotationX(XMConvertToRadians(tr.rotationDeg.x));
             const XMMATRIX Ry = XMMatrixRotationY(XMConvertToRadians(tr.rotationDeg.y));
             const XMMATRIX Rz = XMMatrixRotationZ(XMConvertToRadians(tr.rotationDeg.z));
-            // 平行移動行列
             const XMMATRIX T = XMMatrixTranslation(tr.position.x, tr.position.y, tr.position.z);
+            const XMMATRIX Wentity = S * Rx * Ry * Rz * T;
 
-            // 行列合成（スケール→回転→平行移動）
-            const XMMATRIX W = S * Rx * Ry * Rz * T;
+            // ---------- 3) 最終ワールド行列 ----------
+            // ローカル → エンティティ の順で掛ける
+            const XMMATRIX W = L * Wentity;
 
-            //------------------------------------------------------
-            // 2) WVP行列をGPUに渡せる形式にする
-            //------------------------------------------------------
-            DirectX::XMFLOAT4X4 wvp[3]; ///< [0]=World, [1]=View, [2]=Proj
-
-            // World行列は転置して格納（HLSL行列と合わせる）
+            // ---------- 4) WVP送信 ----------
+            DirectX::XMFLOAT4X4 wvp[3];
             XMStoreFloat4x4(&wvp[0], XMMatrixTranspose(W));
-
-            // View / Proj は外部から受け取ったものをそのまま使用
             wvp[1] = m_V;
             wvp[2] = m_P;
-
-            // シェーダ側に行列セット
             ShaderList::SetWVP(wvp);
 
-            //------------------------------------------------------
-            // 3) モデル描画
-            //------------------------------------------------------
+            // ---------- 5) 描画 ----------
             mr.model->Draw();
         });
 }
@@ -69,9 +77,13 @@ void ModelRenderSystem::Render(const World& world)
 //--------------------------------------------------------------
 void ModelRenderSystem::ApplyDefaultLighting(float camY, float camRadius)
 {
-    // 白色光を上方から当てるような単純な設定
-    ShaderList::SetLight({ 1.0f, 1.0f, 1.0f, 1.0f }, { -1.0f, -1.0f, -1.0f });
+    // カメラ位置を基にライトを当てる: ライトがカメラ位置からシーンの手前->奥に向かうようにする
+    DirectX::XMFLOAT3 camPos = { 0.0f, -1.0, 1.0f };
 
-    // カメラ位置をセット（円軌道上に配置する想定）
-    ShaderList::SetCameraPos({ 0.0f, camY, -camRadius });
+    // 光の強さを少し上げて全体を明るくする
+    // ライト方向にはカメラ位置を渡す（シェーダ内で negation されるため、結果的にカメラからシーンへ向かう光になる）
+    ShaderList::SetLight({ 1.0f, 1.0f, 1.0f, 1.0f }, camPos);
+
+    // カメラ位置もシェーダへ
+    ShaderList::SetCameraPos(camPos);
 }
