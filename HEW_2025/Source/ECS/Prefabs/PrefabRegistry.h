@@ -40,10 +40,12 @@ public:
      */
     struct SpawnParams
     {
-        DirectX::XMFLOAT3 position{ 0.0f, 0.0f, 0.0f }; ///< 生成位置（ワールド座標）
-        DirectX::XMFLOAT3 rotationDeg{ 0.0f, 0.0f, 0.0f }; ///< 生成回転（度数法）
-        DirectX::XMFLOAT3 scale{ 1.0f, 1.0f, 1.0f }; ///< 生成スケール
-        int                padIndex = -1;                 ///< どのプレイヤー入力に紐づけるか（-1なら未指定）
+        DirectX::XMFLOAT3 position{ 0.0f, 0.0f, 0.0f };   ///< 生成位置（ワールド座標）
+        DirectX::XMFLOAT3 rotationDeg{ 0.0f, 0.0f, 0.0f };///< 生成回転（度数法）
+        DirectX::XMFLOAT3 scale{ 1.0f, 1.0f, 1.0f };      ///< 生成スケール
+        int               padIndex = -1;                  ///< どのプレイヤー入力に紐づけるか（-1なら未指定）
+
+        std::string       modelAlias;                     ///< 使いたいモデルを直接指定する場合
     };
 
     /**

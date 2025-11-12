@@ -9,7 +9,19 @@
 
 struct MovementIntentComponent
 {
-    float moveX = 0.0f;   ///< -1.0(左)～1.0(右)
-    bool  jump = false;  ///< 今フレームジャンプしたいか
-    bool  dash = false;  ///< ダッシュなどを将来入れるなら
+    bool jump = false;                // 通常ジャンプ
+    bool forceJumpRequested = false;  // 強制ジャンプ要求
+    bool forceJumpConsumed = false;   // 強制ジャンプ消費済み
+    float moveX = 0.0f;               // 移動（必要なら追加）
+    bool dash = false;                // ダッシュ（必要なら追加）
+
+    // 向き（1:右, -1:左）
+    int facing = 1;
+
+    // ブリンク
+    bool blinkRequested = false; // ブリンク要求
+    bool blinkConsumed = false;  // ブリンク消費済みフラグ
+    float blinkSpeed = 0.0f;     // ブリンク時の速度
+    bool isBlinking = false;     // ブリンク中フラグ
 };
+

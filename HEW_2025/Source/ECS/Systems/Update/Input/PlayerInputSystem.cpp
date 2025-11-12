@@ -7,28 +7,94 @@
  *********************************************************************/
 #include "PlayerInputSystem.h"
 #include "System/Input.h"   // ←あなたの環境の入力ヘッダ名に合わせてください
+#include <cmath> // 追加: 補間用
+
+// --- 追加: 角度補間関数 ---
+namespace 
+{
+    // 角度の線形補間（度数法、-180～180の範囲で最短経路補間）
+    float LerpAngle(float from, float to, float t)
+    {
+        float diff = std::fmod(to - from + 540.0f, 360.0f) - 180.0f;
+        return from + diff * t;
+    }
+}
 
 void PlayerInputSystem::Update(World& world, float /*dt*/)
 {
+    // 各プレイヤーのIntent取得
+    MovementIntentComponent* intent1 = nullptr;
+    MovementIntentComponent* intent2 = nullptr;
     world.View<PlayerInputComponent, MovementIntentComponent>(
+        [&](EntityId, const PlayerInputComponent& pic, MovementIntentComponent& intent) {
+            if (pic.playerIndex == 0) intent1 = &intent;
+            if (pic.playerIndex == 1) intent2 = &intent;
+        }
+    );
+
+    // 入力初期化・入力反映
+    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent>(
         [&](EntityId,
             const PlayerInputComponent& pic,
-            MovementIntentComponent& intent)
+            MovementIntentComponent& intent,
+            TransformComponent& tr)
         {
-            // 毎フレーム初期化
             intent.moveX = 0.0f;
             intent.jump = false;
             intent.dash = false;
-
+            // 向きはmoveX入力で更新
             switch (pic.playerIndex)
             {
             case 0: ReadPlayer0(intent); break;
             case 1: ReadPlayer1(intent); break;
             default: break;
             }
+            // moveXが0でなければ向きを更新
+            if (intent.moveX > 0.01f) 
+                intent.facing = 1;
+            else if (intent.moveX < -0.01f) intent.facing = -1;
+
+            // --- 回転 ---
+            float targetY = (intent.facing == 1) ? 120.0f : -120.0f;
+            float lerpSpeed = 0.2f; // 0.0～1.0: 値を大きくすると速く回転
+            tr.rotationDeg.y = LerpAngle(tr.rotationDeg.y, targetY, lerpSpeed);
         }
     );
+
+    // --- Rボタンジャンプ（相手に1回だけ） ---
+    if (intent2 && !intent2->forceJumpConsumed) {
+        if (IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+            intent2->forceJumpRequested = true;
+            intent2->forceJumpConsumed = true;
+        }
+    }
+    if (intent1 && !intent1->forceJumpConsumed) {
+        if (IsPadTrigger(1, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+            intent1->forceJumpRequested = true;
+            intent1->forceJumpConsumed = true;
+        }
+    }
+
+    // --- Lボタンブリンク（相手に1回だけ、今向いている方向に高速移動） ---
+    constexpr float BLINK_SPEED = 15.0f; // ブリンク速度（調整可）
+    if (intent2 && !intent2->blinkConsumed) {
+        if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
+        {
+            intent2->blinkRequested = true;
+            intent2->blinkConsumed = true;
+            intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
+        }
+    }
+    if (intent1 && !intent1->blinkConsumed) 
+    {
+        if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
+            intent1->blinkRequested = true;
+            intent1->blinkConsumed = true;
+            intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
+        }
+    }
 }
+
 
 /**
  * 1P入力

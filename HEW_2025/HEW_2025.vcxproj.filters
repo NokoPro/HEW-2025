@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{05b041e5-461b-4c45-b320-505e0d1d7fbd}</UniqueIdentifier>
     </Filter>
@@ -106,6 +102,19 @@
     <Filter Include="Source\ソース ファイル\ECS\Prefabs">
       <UniqueIdentifier>{bb96a890-4eab-42c4-9406-eac7a39efeac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Game">
+      <UniqueIdentifier>{0baa0a8f-d6ea-4095-b3b0-3f85e3fc5493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Game">
+      <UniqueIdentifier>{4057b762-d9e5-4923-85b7-84de8ec03bdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
+      <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -186,11 +195,32 @@
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Systems\Update\Render\ParallaxSystem.cpp">
-      <Filter>Source\ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Game\GoalSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,14 +368,35 @@
     <ClInclude Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Render\ParallaxComponent.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\Systems\Update\Render\ParallaxSystem.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabGoal.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Tag\Tag.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

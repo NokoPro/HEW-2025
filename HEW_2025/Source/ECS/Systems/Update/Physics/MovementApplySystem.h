@@ -26,11 +26,11 @@ private:
     // 地上にいるときの加速の強さ
     const float m_groundAccel = 40.0f;
     // 空中での加速（空中制御）少し弱め
-    const float m_airAccel = 15.0f;
+    const float m_airAccel = 10.0f;
     // 地上での最大速度
     const float m_maxSpeedX = 6.0f;
     // ジャンプ速度
-    const float m_jumpSpeed = 20.5f;
+    const float m_jumpSpeed = 15.5f;
     // 重力（ここで足してもいいし、専用のGravitySystemを作ってもよい）
     const float m_gravity = -25.0f;
 };

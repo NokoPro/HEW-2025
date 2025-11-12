@@ -20,13 +20,17 @@ class Collision2DSystem : public IUpdateSystem
 {
 public:
     Collision2DSystem(CollisionEventBuffer* buf)
-        : m_buf(buf)
+        : m_buf(buf), m_eventBuffer(buf)
     {
     }
 
     void Update(World& world, float dt) override;
 
+    // m_eventBufferへのgetter（外部アクセス用）
+    CollisionEventBuffer* GetEventBuffer() const { return m_eventBuffer; }
+
 private:
+    CollisionEventBuffer* m_eventBuffer = nullptr;
     CollisionEventBuffer* m_buf = nullptr;
 
     // AABB同士のめり込みを直す

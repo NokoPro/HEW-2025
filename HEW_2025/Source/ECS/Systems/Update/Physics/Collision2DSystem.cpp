@@ -2,10 +2,15 @@
 #include "Collision2DSystem.h"
 #include <algorithm>
 #include <cmath>
+#include "ECS/Components/Physics/CollisionEvents.h"
+#include "ECS/Components/Physics/PhysicsLayers.h"
 
-void Collision2DSystem::Update(World& world, float /*dt*/)
+void Collision2DSystem::Update(World& world, float dt)
 {
     if (m_buf) m_buf->Clear();
+
+    // 衝突イベントバッファをクリア
+    if (m_eventBuffer) m_eventBuffer->Clear();
 
     // 全部と全部を見回す
     world.View<TransformComponent, Collider2DComponent>(
@@ -40,6 +45,11 @@ void Collision2DSystem::Update(World& world, float /*dt*/)
                             m_buf->Add(e1, e2, true);
                             m_buf->Add(e2, e1, true);
                         }
+                        if (m_eventBuffer)
+                        {
+                            m_eventBuffer->Add(e1, e2, true);
+                            m_eventBuffer->Add(e2, e1, true);
+                        }
                         return;
                     }
 
@@ -56,6 +66,11 @@ void Collision2DSystem::Update(World& world, float /*dt*/)
                     {
                         m_buf->Add(e1, e2, false);
                         m_buf->Add(e2, e1, false);
+                    }
+                    if (m_eventBuffer)
+                    {
+                        m_eventBuffer->Add(e1, e2, false);
+                        m_eventBuffer->Add(e2, e1, false);
                     }
                 }
             );

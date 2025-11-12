@@ -1,13 +1,16 @@
 /*****************************************************************//**
  * @file   FollowCameraSystem.cpp
- * @brief  縦スクロールのサイドビュー用に拡張したフォローカメラ
+ * @brief  縦スクロール（SideScroll）：強制スクロール優先 → 上位プレイヤー追従
  * @details
- * - カメラを表すエンティティに ActiveCameraTag を付けておくと対象になる
- * - CameraRigComponent の mode で挙動を変える
- *   - Orbit … 従来通りのターゲット注視オービット
- *   - SideScroll … 上方向に一定速度で進みつつ、ターゲットがさらに上に行ったらそっちに合わせる
- * - 毎フレーム View / Proj を転置して保持し、Geometory にも書き込む
+ *  - 強制スクロールの発火条件は「Deathゾーンの上端が画面下端から25%ラインに達したら」。
+ *  - 発火中は下限拘束（Death上端が25%を超えない）を守りつつ、上にいるプレイヤーがいればそちらへも追従。
+ *  - 非発火中は、上昇も下降も“常に”最上位プレイヤーに追従。
+ *  - 追従はデッドゾーン＋指数スムージングでガタつきを抑制。
+ *
+ * @author 浅野勇生
+ * @date   2025/11/13
  *********************************************************************/
+
 #include "FollowCameraSystem.h"
 #include "ECS/World.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
@@ -15,29 +18,52 @@
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "System/Geometory.h"
+#include "ECS/Tag/Tag.h"
 
 #include <DirectXMath.h>
-#include <algorithm>
+#include <algorithm>  // std::min, std::max
+#include <cmath>      // std::exp, std::fabs
+#include <cfloat>     // FLT_MAX
 
 using namespace DirectX;
+using std::min;
+using std::max;
 
 void FollowCameraSystem::Update(World& world, float dt)
 {
-    // カメラを1つ探す
+    // ============================
+    // 1) Deathゾーンの「上端Y」を収集
+    //    top = 中心Y + 半高さ (scale.y を半高さとして扱う前提)
+    // ============================
+    float deathTopY = -FLT_MAX;
+    world.View<TagDeathZone, TransformComponent>(
+        [&](EntityId, const TagDeathZone&, const TransformComponent& t)
+        {
+            const float topY = t.position.y + t.scale.y;
+            if (topY > deathTopY)
+            {
+                deathTopY = topY;
+            }
+        }
+    );
+
+    // ============================
+    // 2) アクティブなカメラを処理
+    // ============================
     world.View<ActiveCameraTag, Camera3DComponent, TransformComponent>(
         [&](EntityId /*camEnt*/,
             ActiveCameraTag& /*tag*/,
             Camera3DComponent& rig,
             TransformComponent& camTr)
         {
-            // 複数プレイヤーの中で最もYが高いものを探す
+            // ---- 最上位（最もYが高い）プレイヤーを収集 ----
             XMFLOAT3 highestTargetPos = { 0.0f, -FLT_MAX, 0.0f };
             bool anyTargetFound = false;
 
             world.View<PlayerInputComponent, TransformComponent>(
                 [&](EntityId /*e*/, const PlayerInputComponent& /*pic*/, TransformComponent& t)
                 {
-                    float ty = t.position.y + rig.lookAtOffset.y;
+                    const float ty = t.position.y + rig.lookAtOffset.y;
                     if (!anyTargetFound || ty > highestTargetPos.y)
                     {
                         highestTargetPos.x = t.position.x + rig.lookAtOffset.x;
@@ -48,79 +74,103 @@ void FollowCameraSystem::Update(World& world, float dt)
                 }
             );
 
-            // カメラのpivot初期値
+            // ---- 基準pivot（ターゲットがいればそれ） ----
             XMFLOAT3 pivot = camTr.position;
             if (anyTargetFound)
             {
                 pivot = highestTargetPos;
             }
 
-            // カメラ現在位置
+            // ---- 現在カメラ位置 ----
             XMFLOAT3 camPos = camTr.position;
 
             switch (rig.mode)
             {
             case Camera3DComponent::Mode::Orbit:
             {
+                // 既存のオービット挙動
                 const float yawRad = XMConvertToRadians(rig.orbitYawDeg);
                 const float pitchRad = XMConvertToRadians(rig.orbitPitchDeg);
-                const float cosPitch = cosf(pitchRad);
-                const float sinPitch = sinf(pitchRad);
-                const float cosYaw = cosf(yawRad);
-                const float sinYaw = sinf(yawRad);
-                camPos.x = pivot.x + rig.orbitDistance * cosPitch * cosYaw;
-                camPos.y = pivot.y + rig.orbitDistance * sinPitch;
-                camPos.z = pivot.z + rig.orbitDistance * cosPitch * sinYaw;
+                const float cosP = cosf(pitchRad);
+                const float sinP = sinf(pitchRad);
+                const float cosY = cosf(yawRad);
+                const float sinY = sinf(yawRad);
+
+                camPos.x = pivot.x + rig.orbitDistance * cosP * cosY;
+                camPos.y = pivot.y + rig.orbitDistance * sinP;
+                camPos.z = pivot.z + rig.orbitDistance * cosP * sinY;
                 camTr.position = camPos;
                 break;
             }
 
             case Camera3DComponent::Mode::SideScroll:
             {
-                const float baseY = rig.baseScrollY;
+                // ---- 画面幾何（正射影） ----
+                const float H = rig.orthoHeight;
                 const float camCenterY = camPos.y;
+                const float camBottomY = camCenterY - H * 0.5f;
 
-                if (anyTargetFound)
-                {
-                    const float highestY = highestTargetPos.y;
-                    if (!rig.followingTarget && highestY > camCenterY + rig.followMarginY)
-                    {
-                        rig.followingTarget = true;
-                    }
-                    if (rig.followingTarget)
-                    {
-                        if (highestY < baseY - rig.returnToAutoMargin)
-                        {
-                            rig.followingTarget = false;
-                        }
-                    }
-                }
+                // 画面下端から25%のライン（ここにDeath“上端”が触れたら強制スクロール発火）
+                const float triggerY = camBottomY + H * 0.25f;
+                const bool  autoRequired = (deathTopY >= triggerY);
 
-                if (rig.followingTarget && anyTargetFound)
+                // 強制スクロール時に死守すべき下限：
+                //   (camBottomY + 0.25H >= deathTopY) ⇔ camPos.y >= deathTopY + 0.25H
+                const float minCamYByDeath = deathTopY + H * 0.25f;
+
+                // プレイヤー追従（“いちばん上のプレイヤー”）
+                const bool  hasPlayer = anyTargetFound;
+                const float followY = hasPlayer ? highestTargetPos.y : camPos.y;
+
+                // 目標Yの決定
+                float targetY = camPos.y;
+                if (autoRequired)
                 {
-                    camPos.y = highestTargetPos.y;
+                    // ★優先度1：強制スクロール（絶対・下限拘束＋上昇速度）
+                    const float steppedUp = camPos.y + rig.scrollSpeed * dt;
+                    const float desiredAuto = max(steppedUp, minCamYByDeath);
+
+                    // 上にプレイヤーがいれば、下限を守りつつそちらへも追従
+                    targetY = hasPlayer ? max(desiredAuto, followY) : desiredAuto;
                 }
                 else
                 {
-                    camPos.y += rig.scrollSpeed * dt;
-                    if (camPos.y < baseY) camPos.y = baseY;
+                    // ★優先度2/3：非発火中は“常に”最上位プレイヤーに追従（上昇・下降とも）
+                    targetY = followY;
                 }
 
-                camPos.x = rig.sideFixedX;
+                // 任意のベース下限を割らない（使っている場合）
+                if (targetY < rig.baseScrollY)
+                {
+                    targetY = rig.baseScrollY;
+                }
 
+                // デッドゾーン → 指数スムージング（ガタつき抑制）
+                const float diff = targetY - camPos.y;
+                if (std::fabs(diff) > rig.followDeadzoneY)
+                {
+                    const float t = (rig.followSmoothTimeY <= 1e-5f)
+                        ? 1.0f
+                        : (1.0f - std::exp(-(1.0f / rig.followSmoothTimeY) * dt));
+                    camPos.y += diff * t;
+                }
+
+                // X/Zはサイドビュー固定。Zはなめらかに復帰（depthLerpSpeed=0なら即時）
+                camPos.x = rig.sideFixedX;
                 if (rig.depthLerpSpeed <= 0.0f)
                 {
                     camPos.z = rig.sideFixedZ;
                 }
                 else
                 {
-                    const float diff = rig.sideFixedZ - camPos.z;
-                    const float t = (std::min)(1.0f, rig.depthLerpSpeed * dt);
-                    camPos.z += diff * t;
+                    const float dz = rig.sideFixedZ - camPos.z;
+                    const float tz = min(1.0f, rig.depthLerpSpeed * dt);
+                    camPos.z += dz * tz;
                 }
 
                 camTr.position = camPos;
 
+                // 注視点はX方向にオフセット、YはカメラY、Zは前方固定ぶんを足す
                 pivot.x = camPos.x + rig.sideLookAtX;
                 pivot.y = camPos.y;
                 pivot.z = camPos.z + 10.0f;
@@ -131,10 +181,13 @@ void FollowCameraSystem::Update(World& world, float dt)
                 break;
             }
 
-            // ビュー/プロジェクション作成
+            // ============================
+            // 3) ビュー / プロジェクション更新（転置して保持）
+            // ============================
             XMVECTOR eye = XMLoadFloat3(&camTr.position);
             XMVECTOR at = XMLoadFloat3(&pivot);
             XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
             XMMATRIX V = XMMatrixLookAtLH(eye, at, up);
             XMMATRIX P;
             if (rig.mode == Camera3DComponent::Mode::SideScroll)
@@ -146,7 +199,8 @@ void FollowCameraSystem::Update(World& world, float dt)
             else
             {
                 P = XMMatrixPerspectiveFovLH(
-                    XMConvertToRadians(rig.fovY), rig.aspect, rig.nearZ, rig.farZ);
+                    XMConvertToRadians(rig.fovY),
+                    rig.aspect, rig.nearZ, rig.farZ);
             }
 
             XMStoreFloat4x4(&m_viewT, XMMatrixTranspose(V));

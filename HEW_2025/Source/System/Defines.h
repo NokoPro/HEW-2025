@@ -22,9 +22,13 @@ static const float GRAVITY = 0.98f;
 // タイトル
 static const char* APP_TITLE = "DX22_2PGame";
 
+// DeathZone関連
+constexpr static float kDeathZoneSpeedY = 0.5f; /// DeathZoneのY速度
+constexpr static float kDeathZoneHalfHeight = METER(15.f); /// DeathZoneの高さ半分
+
 // 画面サイズ
-static const int SCREEN_WIDTH	= 1280;
-static const int SCREEN_HEIGHT	= 720;
+static const int SCREEN_WIDTH	= 1920;
+static const int SCREEN_HEIGHT	= 1080;
 
 // グリッドサイズ(デバッグ用
 static const int	DEBUG_GRID_NUM		= 10;			// グリッド中心から端までの線の本数

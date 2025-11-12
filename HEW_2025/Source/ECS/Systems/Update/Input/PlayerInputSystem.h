@@ -16,6 +16,7 @@
 
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "ECS/Components/Input/MovementIntentComponent.h"
+#include "ECS/Components/Physics/TransformComponent.h"
 
 class PlayerInputSystem final : public IUpdateSystem
 {

@@ -55,10 +55,17 @@ struct Camera3DComponent
     float orbitDistance = 8.0f;
     DirectX::XMFLOAT3 lookAtOffset{ 0.0f, 1.5f, 0.0f };
 
-    // SideScroll用（今回新しく足したやつ）
+    // SideScroll用
     float scrollSpeed = 1.0f;    // カメラが自動で上に進む速度
     float followOffsetY = 1.5f;    // プレイヤー頭よりちょい上を見るとき
     float followMarginY = 0.5f;    // これだけ離れたら追従に切り替える
+
+    float followSmoothTimeY = 0.12f;   // 追従の“なまり”時間（大きいほどゆっくり）
+    float followDeadzoneY = 0.02f;   // 目標との差がこの範囲なら動かさない（ワールド座標系）
+    float autoToggleInterval = 0.25f;   // 自動スクロールON/OFFの最短切替間隔[s]（ビビり抑止）
+
+    bool  autoScroll = false;
+    float autoToggleTimer = 0.0f;    // 前回トグルからの経過時間
 
     float sideFixedX = 0.0f;    // サイドビューなのでX固定
     float sideFixedZ = -10.0f;  // 奥行き固定

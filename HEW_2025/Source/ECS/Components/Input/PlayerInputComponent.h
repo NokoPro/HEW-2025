@@ -9,5 +9,5 @@
 
 struct PlayerInputComponent
 {
-    int playerIndex = 0;   ///< 0番ならキーボード/1P、1番なら2P、など
+    int playerIndex = 0;   ///< 0番なら1P、1番なら2P、など
 };

@@ -37,6 +37,8 @@
 #include "ECS/Systems/Update/Physics/Collision2DSystem.h"
 #include "ECS/Systems/Render/CollisionDebugRenderSystem.h"
 
+#include "ECS/Prefabs/PrefabRegistry.h"
+#include "ECS/Prefabs/PrefabPlayer.h"
 
  /**
   * @class TestScene
@@ -55,6 +57,8 @@ private:
     World          m_world;
     SystemRegistry m_sys;
 
+    PrefabRegistry m_prefabs;
+
     // 描画システム（行列を渡す用）
     ModelRenderSystem* m_drawModel = nullptr;
     // カメラシステム（行列をもらう用）
@@ -72,4 +76,5 @@ private:
     // プレイヤーを覚えておくとカメラのターゲットに使える
     EntityId             m_playerEntity = kInvalidEntity;
     EntityId             m_playerEntity2 = kInvalidEntity;
+    EntityId             m_goalEntity = kInvalidEntity;
 };

@@ -23,19 +23,197 @@
 #include "System/Defines.h"
 #include "System/CameraMath.h"
 
+#include "ECS/Prefabs/PrefabPlayer.h"
+#include "ECS/Prefabs/PrefabFloor.h"
+#include "ECS/Prefabs/PrefabWall.h"
+#include "ECS/Prefabs/PrefabStaticBlock.h"
+#include "ECS/Prefabs/PrefabGoal.h"
+#include "ECS/Prefabs/PrefabDeathZone.h"
+
 #include <cstdio>
 #include <DirectXMath.h>
+#include <Windows.h> // For MessageBox
 
 // Add PhysicsStepSystem include
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
+#include "ECS/Systems/Update/Game/GoalSystem.h"
+#include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 
 using namespace DirectX;
+
+// テストステージ作成
+namespace
+{
+	void MakeStage(World& world, PrefabRegistry& prefabs)
+	{
+        // 最初の床
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 0.0f, 39.0f, 0.0f };
+            sp.scale = { 10.0f, 1.0f, 1.0f };   // 横長の床
+            prefabs.Spawn("Floor", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 0.0f, -15.0f, 0.0f };
+            sp.scale = { 35.0f, 6.0f, 1.0f };   // 横長の床
+            prefabs.Spawn("Floor", world, sp);
+        }
+
+		// 壁
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 0.0f, 8.0f, 0.0f };
+            sp.scale = { 0.5f, 30.0f, 1.0f };   // 細長い柱 → 壁にしてもOK
+            prefabs.Spawn("Wall", world, sp);
+        }
+
+
+		// 静的ブロック
+		// 1P側
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -17.0f, -5.0f, 0.0f };
+            sp.scale = { 2.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -23.0f, 3.0f, 0.0f };
+            sp.scale = { 2.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -10.0f, 10.5f, 0.0f };
+            sp.scale = { 1.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -2.5f, 18.5f, 0.0f };
+            sp.scale = { 2.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -11.0f, 26.0f, 0.0f };
+            sp.scale = { 10.5f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -22.f, 21.5f, 0.0f };
+            sp.scale = { 3.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { -19.0f, 33.0f, 0.0f };
+            sp.scale = { 0.5f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+
+		// 2P側
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 15.0f, 0.0f, 0.0f };
+            sp.scale = { 2.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+		}
+		{
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { 24.0f, 8.0f, 0.0f };
+			sp.scale = { 1.0f, 0.5f, 1.0f };
+			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+			prefabs.Spawn("StaticBlock", world, sp);
+		}
+		{
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { 3.5f, 2.0f, 0.0f };
+			sp.scale = { 3.0f, 0.5f, 1.0f };
+			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+			prefabs.Spawn("StaticBlock", world, sp);
+		}
+		{
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { 24.0f, 15.5f, 0.0f };
+			sp.scale = { 1.0f, 0.5f, 1.0f };
+			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+			prefabs.Spawn("StaticBlock", world, sp);
+		}
+		{
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { 2.5f, 17.5f, 0.0f };
+			sp.scale = { 2.0f, 0.5f, 1.0f };
+			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+			prefabs.Spawn("StaticBlock", world, sp);
+		}
+        {
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { 2.5f, 25.5f, 0.0f };
+			sp.scale = { 2.0f, 0.5f, 1.0f };
+			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+			prefabs.Spawn("StaticBlock", world, sp);
+		}
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 12.0f, 31.0f, 0.0f };
+            sp.scale = { 0.5f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+		}
+		{
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { 23.f, 26.5f, 0.0f };
+			sp.scale = { 3.0f, 0.5f, 1.0f };
+			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+			prefabs.Spawn("StaticBlock", world, sp);
+		}
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 20.0f, 38.0f, 0.0f };
+            sp.scale = { 0.5f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 11.0f, 43.0f, 0.0f };
+            sp.scale = { 1.f, 5.f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
+	}
+}
 
 //----------------------------------------------------------
 // コンストラクタ
 //----------------------------------------------------------
 TestScene::TestScene()
 {
+    RegisterPlayerPrefab(m_prefabs);
+    RegisterFloorPrefab(m_prefabs);
+    RegisterWallPrefab(m_prefabs);
+    RegisterStaticBlockPrefab(m_prefabs);
+    RegisterGoalPrefab(m_prefabs); // ゴールプレハブ登録
+    RegisterDeathZonePrefab(m_prefabs); // Deathゾーンプレハブ登録
+
     //
     // 1. アセット取得
     //
@@ -62,7 +240,11 @@ TestScene::TestScene()
     // 2-2.5 Rigidbody の速度を位置に反映する物理ステップ（重力で変化した速度を位置へ適用）
     m_sys.AddUpdate<PhysicsStepSystem>(&m_colBuf);
     // 2-3 当たり判定（めり込み解消＆イベント）
-    m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
+    auto* colSys = &m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
+
+    m_sys.AddUpdate<GoalSystem>(colSys); // GoalSystemを追加
+    m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
+
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
@@ -72,223 +254,68 @@ TestScene::TestScene()
     m_debugCollision = &m_sys.AddRender<CollisionDebugRenderSystem>();
 
     //
-    // 3. 床を1枚つくる（静的コライダー）
+    // 3. ステージ作成
     //
+	MakeStage(m_world, m_prefabs);
+
+    // ゴールオブジェクト生成
     {
-        EntityId ground = m_world.Create();
-
-        // 位置は画面のちょい下あたり
-        auto& tr = m_world.Add<TransformComponent>(
-            ground,
-            XMFLOAT3{ 0.0f, -5.0f, 0.0f },
-            XMFLOAT3{ 0.0f, 0.0f, 0.0f },
-            XMFLOAT3{ 20.0f, 1.0f, 1.0f }
-        );
-
-        auto& mr = m_world.Add<ModelRendererComponent>(ground);
-        mr.model = m_groundModel;
-
-        mr.localScale = {1.f,1.f,1.f};
-
-        mr.visible = true;
-
-        auto& col = m_world.Add<Collider2DComponent>(ground);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = tr.scale.x;
-        col.aabb.halfY = tr.scale.y;
-        col.layer = Physics::LAYER_GROUND;
-        col.hitMask = Physics::LAYER_PLAYER;
-        col.isStatic = true;    // ←動かないやつ
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.0f, 43.0f, 0.0f }; // ステージ上部など適当な位置
+        sp.scale = { 2.0f, 2.0f, 2.0f };
+        m_goalEntity = m_prefabs.Spawn("Goal", m_world, sp);
     }
 
-    {
-        EntityId ground = m_world.Create();
-
-        // 位置は画面のちょい下あたり
-        auto& tr = m_world.Add<TransformComponent>(
-            ground,
-            XMFLOAT3{ 30.0f, 2.0f, 0.0f },
-            XMFLOAT3{ 0.0f, 0.0f, 0.0f },
-            XMFLOAT3{ 20.0f, 1.0f, 1.0f }
-        );
-
-        auto& mr = m_world.Add<ModelRendererComponent>(ground);
-        mr.model = m_groundModel;
-
-        mr.localScale = { 1.f,1.f,1.f };
-
-        mr.visible = true;
-
-        auto& col = m_world.Add<Collider2DComponent>(ground);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = tr.scale.x;
-        col.aabb.halfY = tr.scale.y;
-        col.layer = Physics::LAYER_GROUND;
-        col.hitMask = Physics::LAYER_PLAYER;
-        col.isStatic = true;    // ←動かないやつ
-    }
-
-    {
-        EntityId ground = m_world.Create();
-
-        // 位置は画面のちょい下あたり
-        auto& tr = m_world.Add<TransformComponent>(
-            ground,
-            XMFLOAT3{ 0.0f, 25.0f, 0.0f },
-            XMFLOAT3{ 0.0f, 0.0f, 0.0f },
-            XMFLOAT3{ 0.5f, 50.0f, 1.0f }
-        );
-
-        auto& mr = m_world.Add<ModelRendererComponent>(ground);
-        mr.model = m_groundModel;
-
-        mr.localScale = { 1.f,1.f,1.f };
-
-        mr.visible = true;
-
-        auto& col = m_world.Add<Collider2DComponent>(ground);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = tr.scale.x;
-        col.aabb.halfY = tr.scale.y;
-        col.layer = Physics::LAYER_GROUND;
-        col.hitMask = Physics::LAYER_PLAYER;
-        col.isStatic = true;    // ←動かないやつ
-    }
-
-    {
-        EntityId ground = m_world.Create();
-
-        // 位置は画面のちょい下あたり
-        auto& tr = m_world.Add<TransformComponent>(
-            ground,
-            XMFLOAT3{ 18.0f, 25.0f, 0.0f },
-            XMFLOAT3{ 0.0f, 0.0f, 0.0f },
-            XMFLOAT3{ 1.0f, 50.0f, 1.0f }
-        );
-
-        auto& mr = m_world.Add<ModelRendererComponent>(ground);
-        mr.model = m_groundModel;
-
-        mr.localScale = { 1.f,1.f,1.f };
-
-        mr.visible = true;
-
-        auto& col = m_world.Add<Collider2DComponent>(ground);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = tr.scale.x;
-        col.aabb.halfY = tr.scale.y;
-        col.layer = Physics::LAYER_GROUND;
-        col.hitMask = Physics::LAYER_PLAYER;
-        col.isStatic = true;    // ←動かないやつ
-    }
-
-    {
-        EntityId ground = m_world.Create();
-
-        // 位置は画面のちょい下あたり
-        auto& tr = m_world.Add<TransformComponent>(
-            ground,
-            XMFLOAT3{ -18.0f, 25.0f, 0.0f },
-            XMFLOAT3{ 0.0f, 0.0f, 0.0f },
-            XMFLOAT3{ 1.0f, 50.0f, 1.0f }
-        );
-
-        auto& mr = m_world.Add<ModelRendererComponent>(ground);
-        mr.model = m_groundModel;
-
-        mr.localScale = { 1.f,1.f,1.f };
-
-        mr.visible = true;
-
-        auto& col = m_world.Add<Collider2DComponent>(ground);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = tr.scale.x;
-        col.aabb.halfY = tr.scale.y;
-        col.layer = Physics::LAYER_GROUND;
-        col.hitMask = Physics::LAYER_PLAYER;
-        col.isStatic = true;    // ←動かないやつ
-    }
 
 
     //
-    // 3. プレイヤー生成（カメラのターゲット）
+    // 4. プレイヤー生成（カメラのターゲット）
     //
     {
-        m_playerEntity = m_world.Create();
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { -10.0f, -10.0f, 0.0f };
+        sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
+        sp.scale = { 1.f, 1.f, 1.f };
+        sp.padIndex = 0;                         // 1P
+        sp.modelAlias = "mdl_slime";           // ← 明示的に1Pモデルを指定
 
-        // Transform
-        auto& tr = m_world.Add<TransformComponent>(
-            m_playerEntity,
-            DirectX::XMFLOAT3{ -10.0f, 0.0f, 0.0f },   // ← z を 0 にした
-            DirectX::XMFLOAT3{ 0.0f, 180.0f, 0.0f },
-            DirectX::XMFLOAT3{ 0.06f, 0.06f, 0.06f }
-        );
-
-        // 入力の対象にする（1P）
-        auto& inp = m_world.Add<PlayerInputComponent>(m_playerEntity);
-        inp.playerIndex = 0;   // ←2Pを試すときはここを1にするだけ
-
-        // 入力の結果を受け取る箱
-        m_world.Add<MovementIntentComponent>(m_playerEntity);
-
-        // 物理ボディ
-        auto& rb = m_world.Add<Rigidbody2DComponent>(m_playerEntity);
-        rb.useGravity = true;
-
-        auto& mr = m_world.Add<ModelRendererComponent>(m_playerEntity);
-        mr.model = m_playerModel;
-        mr.visible = true;
-
-        // 当たり（プレイヤーの当たり判定）
-        auto& col = m_world.Add<Collider2DComponent>(m_playerEntity);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = 1.5f;
-        col.aabb.halfY = 1.5f;
-        col.layer = Physics::LAYER_PLAYER;
-        col.hitMask = Physics::LAYER_GROUND;
-        col.isStatic = false;
-		col.offset = XMFLOAT2{ 0.0f, 1.5f }; // 足元に合わせる
+        m_playerEntity = m_prefabs.Spawn("Player", m_world, sp);
     }
 
     {
-        m_playerEntity2 = m_world.Create();
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 10.0f, -10.0f, 0.0f };
+        sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
+        sp.scale = { 1.f, 1.f, 1.f };
+        sp.padIndex = 1;                         // 2P
+        sp.modelAlias = "mdl_slime";           // ← 2P用モデル
 
-        // Transform
-        auto& tr = m_world.Add<TransformComponent>(
-            m_playerEntity2,
-            DirectX::XMFLOAT3{ 10.0f, 0.0f, 0.0f },   // ← z を 0 にした
-            DirectX::XMFLOAT3{ 0.0f, 180.0f, 0.0f },
-            DirectX::XMFLOAT3{ 0.06f, 0.06f, 0.06f }
-        );
-
-        // 入力の対象にする（1P）
-        auto& inp = m_world.Add<PlayerInputComponent>(m_playerEntity2);
-        inp.playerIndex = 1;   // ←2Pを試すときはここを1にするだけ
-
-        // 入力の結果を受け取る箱
-        m_world.Add<MovementIntentComponent>(m_playerEntity2);
-
-        // 物理ボディ
-        auto& rb = m_world.Add<Rigidbody2DComponent>(m_playerEntity2);
-        rb.useGravity = true;
-
-        auto& mr = m_world.Add<ModelRendererComponent>(m_playerEntity2);
-        mr.model = m_playerModel;
-        mr.visible = true;
-
-        // 当たり（プレイヤーの当たり判定）
-        auto& col = m_world.Add<Collider2DComponent>(m_playerEntity2);
-        col.shape = ColliderShapeType::AABB2D;
-        col.aabb.halfX = 1.5f;
-        col.aabb.halfY = 1.5f;
-        col.layer = Physics::LAYER_PLAYER;
-        col.hitMask = Physics::LAYER_GROUND;
-        col.isStatic = false;
-        col.offset = XMFLOAT2{ 0.0f, 1.5f }; // 足元に合わせる
+        m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
     }
 
+    // Deathゾーン生成（画面下部に設置）
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.0f, -30.0f, 0.0f }; // ステージ下部
+        sp.scale = { 60.0f, kDeathZoneHalfHeight, 1.0f };     // 横幅広め
+        m_prefabs.Spawn("DeathZone", m_world, sp);
+    }
+
+    // 左右の壁
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 26.0f, 25.0f, 0.0f };
+        sp.scale = { 1.0f, 50.0f, 1.0f };
+        m_prefabs.Spawn("Wall", m_world, sp);
+    }
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { -26.0f, 25.0f, 0.0f };
+        sp.scale = { 1.0f, 50.0f, 1.0f };
+        m_prefabs.Spawn("Wall", m_world, sp);
+    }
     //
-    // 4. カメラエンティティ生成
+    // 5. カメラエンティティ生成
     //
     {
         EntityId camEnt = m_world.Create();
@@ -315,18 +342,18 @@ TestScene::TestScene()
         cam.farZ = 10.0f;
 
         // サイドビュー用の固定値
-        cam.scrollSpeed = 0.5f;   // 好きな速度に調整
+        cam.scrollSpeed = kDeathZoneSpeedY;   // 好きな速度に調整
         cam.followOffsetY = 1.5f;
         cam.followMarginY = 0.5f;
         cam.sideFixedX = 0.0f;
         cam.sideFixedZ = -15.0f;
         cam.sideLookAtX = 0.0f;
-        cam.lookAtOffset = XMFLOAT3{ 0.0f, -5.5f, 0.0f };
-        cam.orthoHeight = 20.0f;
+        cam.lookAtOffset = XMFLOAT3{ 0.0f, 0.0f, 0.0f };
+        cam.orthoHeight = 30.0f;
     }
 
     //
-    // 5. ライト（前と同じ）
+    // 6. ライト
     //
     ModelRenderSystem::ApplyDefaultLighting(2.75f, 6.0f);
 }
@@ -348,7 +375,6 @@ TestScene::~TestScene()
 //----------------------------------------------------------
 void TestScene::Update()
 {
-    // 今はとくにUpdateするものがなければ固定dtで回すだけでもいい
     const float dt = 1.0f / 60.0f;
     m_sys.Tick(m_world, dt);
 }

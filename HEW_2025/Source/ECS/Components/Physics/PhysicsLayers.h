@@ -20,7 +20,8 @@ namespace Physics
         LAYER_PLAYER_HURT = 1 << 2,  // プレイヤーの被弾用
         LAYER_GROUND = 1 << 3,
         LAYER_MOVING_PLAT = 1 << 4,
-        LAYER_WIND = 1 << 5,
+        LAYER_GOAL = 1 << 5,
+        LAYER_DESU_ZONE = 1 << 6,
         // 必要に応じて足していく
     };
 }

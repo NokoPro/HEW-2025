@@ -30,9 +30,7 @@ void MovementApplySystem::Update(World& world, float dt)
             const float accel = onGround ? m_groundAccel : m_airAccel;
 
             // 現在速度をターゲットに寄せていく
-            // （氷ならfrictionが小さいので寄りがゆっくりになる）
-            // v += (target - v) * accel * friction * dt でもいいけど、
-            // ここではシンプルに加速方向だけ決めて足す
+            // 加速方向だけ決めて足す
             float vx = rb.velocity.x;
 
             // ターゲットより左なら右に加速、右なら左に加速
@@ -54,15 +52,30 @@ void MovementApplySystem::Update(World& world, float dt)
                 vx += (toTarget > 0.0f) ? add : -add;
             }
 
-            // 4. ジャンプ処理（地上だけ）
-            if (intent.jump && onGround)
+
+            // --- 着地したらブリンク・ジャンプ消費状態をリセット ---
+            if (rb.onGround)
+            {
+                intent.forceJumpConsumed = false;
+                intent.blinkConsumed = false;
+                intent.isBlinking = false; // ブリンク終了
+            }
+
+            // --- 強制ジャンプ ---
+            if (intent.forceJumpRequested)
             {
                 rb.velocity.y = m_jumpSpeed;
-                rb.onGround = false;  // 空中に出た
+                intent.forceJumpRequested = false;
+                intent.forceJumpConsumed = true; // ★ジャンプ消費済みにする
+            }
+            // --- 通常ジャンプ ---
+            else if (intent.jump && onGround)
+            {
+                rb.velocity.y = m_jumpSpeed;
+                rb.onGround = false;
             }
             else
             {
-                // ジャンプしてないなら重力を適用
                 if (rb.useGravity)
                 {
                     rb.velocity.y += m_gravity * dt;
@@ -79,6 +92,16 @@ void MovementApplySystem::Update(World& world, float dt)
 
             // 6. 計算した横速度を戻す
             rb.velocity.x = vx;
+
+            // --- ブリンク処理 ---
+            if (intent.blinkRequested)
+            {
+                rb.velocity.x = intent.blinkSpeed;
+                intent.blinkRequested = false;
+                intent.blinkSpeed = 0.0f;
+                intent.isBlinking = true; // ブリンク開始
+            }
+
         }
     );
 }
