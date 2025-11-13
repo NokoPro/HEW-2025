@@ -20,6 +20,8 @@
 #include "System/AssetManager.h"
 #include <DirectXMath.h>
 #include <unordered_map>
+#include <vector>
+#include <algorithm>
 
  /**
   * @class SpriteRenderSystem
@@ -27,6 +29,23 @@
   */
 class SpriteRenderSystem : public IRenderSystem
 {
+private:
+    /**
+     * @brief ソートと描画のためのスプライト一時情報.
+     */
+    struct SortableSprite
+    {
+        // ソート用キー
+        int layer;      // Sprite2DComponent::layer
+        float zDepth;   // TransformComponent::position.z
+
+        // 描画用データ
+        DirectX::XMFLOAT4X4 world; // ワールド行列
+        DirectX::XMFLOAT2 offset;
+        DirectX::XMFLOAT2 size; // 表示サイズ
+        Texture* hTex;          // テクスチャハンドル
+    };
+
 public:
     // カメラ行列を受け取る
     void SetViewProj(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& proj)
