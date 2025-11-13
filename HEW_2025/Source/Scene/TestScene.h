@@ -79,4 +79,5 @@ private:
     EntityId             m_playerEntity = kInvalidEntity;
     EntityId             m_playerEntity2 = kInvalidEntity;
     EntityId             m_goalEntity = kInvalidEntity;
+
 };
