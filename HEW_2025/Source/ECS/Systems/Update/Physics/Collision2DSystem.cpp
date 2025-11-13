@@ -1,4 +1,10 @@
-// ECS/Systems/Physics/Collision2DSystem.cpp
+/*********************************************************************/
+/* @file   Collision2DSystem.cpp
+ * @brief  当たり判定の2Dシステム実装
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "Collision2DSystem.h"
 #include <algorithm>
 #include <cmath>
@@ -59,6 +65,7 @@ void Collision2DSystem::Update(World& world, float dt)
                     auto* rb1 = world.TryGet<Rigidbody2DComponent>(e1);
                     auto* rb2 = world.TryGet<Rigidbody2DComponent>(e2);
 
+					// めり込みを解消する
                     ResolveAabbPair(t1, c1, rb1, t2, c2, rb2);
 
                     // イベントも出しておく

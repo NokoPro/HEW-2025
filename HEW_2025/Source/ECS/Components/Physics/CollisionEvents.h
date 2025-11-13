@@ -26,11 +26,13 @@ struct CollisionEventBuffer
 
     void Clear()
     {
+		/// 衝突イベントをクリア
         events.clear();
     }
 
     void Add(EntityId a, EntityId b, bool trigger)
     {
+		/// 衝突イベントを追加
         events.push_back(CollisionEvent{ a, b, trigger });
     }
 };

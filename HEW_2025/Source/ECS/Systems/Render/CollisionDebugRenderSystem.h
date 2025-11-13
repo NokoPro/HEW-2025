@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   CollisionDebugRenderSystem.h
+ * @brief  当たり判定のデバッグレンダリングシステム定義
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #pragma once
 #include "../IRenderSystem.h"
 #include <DirectXMath.h>
@@ -25,8 +32,8 @@ public:
     void Render(const World& world) override;
 
 private:
-    DirectX::XMFLOAT4X4 m_view{};
-    DirectX::XMFLOAT4X4 m_proj{};
+	DirectX::XMFLOAT4X4 m_view{};   /// カメラのビュー行列
+	DirectX::XMFLOAT4X4 m_proj{};   /// カメラのプロジェクション行列
 
     // 表示のオン/オフフラグ（F2 でトグル）
     bool m_enabled = true;

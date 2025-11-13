@@ -20,12 +20,15 @@ void RegisterStaticBlockPrefab(PrefabRegistry& registry)
     registry.Register("StaticBlock",
         [](World& w, const PrefabRegistry::SpawnParams& sp) -> EntityId
         {
+			/// エンティティ生成
             EntityId e = w.Create();
             if (e == kInvalidEntity)
                 return kInvalidEntity;
 
+			/// Transform（scale はそのまま使えるようにしておく）
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
 
+			/// 見た目
             auto& mr = w.Add<ModelRendererComponent>(e);
             const char* mdlName =
                 (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
@@ -37,6 +40,7 @@ void RegisterStaticBlockPrefab(PrefabRegistry& registry)
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
 
+			/// 当たり：静的な床
             auto& col = w.Add<Collider2DComponent>(e);
             col.shape = ColliderShapeType::AABB2D;
             col.aabb.halfX = tr.scale.x;

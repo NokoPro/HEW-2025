@@ -1,8 +1,15 @@
+/*********************************************************************/
+/* @file   PhysicsStepSystem.h
+ * @brief  重力・当たり判定・衝突解決などを行う物理ステップシステム
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #pragma once
 #include "../../IUpdateSystem.h"
 #include "ECS/World.h"
 
-// 使うコンポーネントたち
+/// Components
 #include "../../../Components/Physics/TransformComponent.h"
 #include "../../../Components/Physics/Rigidbody2DComponent.h"
 #include "../../../Components/Physics/Collider2DComponent.h"
@@ -34,6 +41,7 @@ public:
     void Update(World& world, float dt) override;
 
 private:
+	// 衝突イベントバッファ
     CollisionEventBuffer* m_eventBuffer = nullptr;
 
     // AABB同士の当たりを解決する補助

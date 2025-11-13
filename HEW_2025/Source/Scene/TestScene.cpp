@@ -1,7 +1,10 @@
 /*****************************************************************//**
  * @file   TestScene.cpp
  * @brief  ECSを試すためのテストシーン実装
- *
+ * - プレイヤー操作、物理、当たり判定、カメラ、描画などを統合した簡易ステージ
+ * - 2人同時プレイ対応
+ * - シンプルなゴール判定とDeathゾーンも実装
+ * 
  * @author 浅野勇生
  * @date   2025/11/11
  *********************************************************************/
@@ -9,20 +12,27 @@
 #include "ECS/Systems/SystemRegistry.h"
 #include "ECS/World.h"
 
+ /// ECS コンポーネント群
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/ModelComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
 
+/// ECS システム群
+#include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
+#include "ECS/Systems/Update/Game/GoalSystem.h"
+#include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 #include "ECS/Systems/Render/ModelRenderSystem.h"
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 
+/// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
 #include "System/DirectX/ShaderList.h"
 #include "System/Defines.h"
 #include "System/CameraMath.h"
 
+/// プレファブ群
 #include "ECS/Prefabs/PrefabPlayer.h"
 #include "ECS/Prefabs/PrefabFloor.h"
 #include "ECS/Prefabs/PrefabWall.h"
@@ -34,16 +44,13 @@
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
 
-// Add PhysicsStepSystem include
-#include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
-#include "ECS/Systems/Update/Game/GoalSystem.h"
-#include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 
 using namespace DirectX;
 
 // テストステージ作成
 namespace
 {
+	/// @brief ステージの床・壁・ブロックを作成する
 	void MakeStage(World& world, PrefabRegistry& prefabs)
 	{
         // 最初の床
@@ -239,10 +246,13 @@ TestScene::TestScene()
     m_sys.AddUpdate<MovementApplySystem>();
     // 2-2.5 Rigidbody の速度を位置に反映する物理ステップ（重力で変化した速度を位置へ適用）
     m_sys.AddUpdate<PhysicsStepSystem>(&m_colBuf);
-    // 2-3 当たり判定（めり込み解消＆イベント）
+    // 2-3.1 当たり判定（めり込み解消＆イベント）
     auto* colSys = &m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
 
+	// 2-3.2 ゴール判定システム追加
     m_sys.AddUpdate<GoalSystem>(colSys); // GoalSystemを追加
+    
+	// 2-3.3 Deathゾーン判定システム追加
     m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
 
     // 2-4 カメラ（最終位置を見たいので最後）
@@ -277,7 +287,7 @@ TestScene::TestScene()
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
         sp.scale = { 1.f, 1.f, 1.f };
         sp.padIndex = 0;                         // 1P
-        sp.modelAlias = "mdl_slime";           // ← 明示的に1Pモデルを指定
+        sp.modelAlias = "mdl_slime";           
 
         m_playerEntity = m_prefabs.Spawn("Player", m_world, sp);
     }
@@ -314,6 +324,7 @@ TestScene::TestScene()
         sp.scale = { 1.0f, 50.0f, 1.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
+
     //
     // 5. カメラエンティティ生成
     //
@@ -365,9 +376,7 @@ TestScene::TestScene()
 TestScene::~TestScene()
 {
 
-    // World側にUninitがあればここで呼ぶ
-    m_world.Destroy(1); // 今回は適当、必要なら全破棄ループを書く
-    // m_world.Uninit(); を作ってるならそれでもOK
+    m_world.Destroy(1);
 }
 
 //----------------------------------------------------------
@@ -375,6 +384,7 @@ TestScene::~TestScene()
 //----------------------------------------------------------
 void TestScene::Update()
 {
+	// 固定フレームレート想定で更新
     const float dt = 1.0f / 60.0f;
     m_sys.Tick(m_world, dt);
 }
@@ -384,6 +394,7 @@ void TestScene::Update()
 //----------------------------------------------------------
 void TestScene::Draw()
 {
+	// カメラのビュー・プロジェクション行列をセット
     if (m_followCamera)
     {
         const auto& V = m_followCamera->GetView();
@@ -395,5 +406,6 @@ void TestScene::Draw()
             m_debugCollision->SetViewProj(V, P);
     }
 
+	// モデル描画
     m_sys.Render(m_world);
 }

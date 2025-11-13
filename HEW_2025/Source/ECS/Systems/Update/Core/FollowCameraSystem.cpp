@@ -21,9 +21,9 @@
 #include "ECS/Tag/Tag.h"
 
 #include <DirectXMath.h>
-#include <algorithm>  // std::min, std::max
-#include <cmath>      // std::exp, std::fabs
-#include <cfloat>     // FLT_MAX
+#include <algorithm>  
+#include <cmath>      
+#include <cfloat>     
 
 using namespace DirectX;
 using std::min;
@@ -33,7 +33,7 @@ void FollowCameraSystem::Update(World& world, float dt)
 {
     // ============================
     // 1) Deathゾーンの「上端Y」を収集
-    //    top = 中心Y + 半高さ (scale.y を半高さとして扱う前提)
+    //    top = 中心Y + 半高さ
     // ============================
     float deathTopY = -FLT_MAX;
     world.View<TagDeathZone, TransformComponent>(
@@ -73,7 +73,7 @@ void FollowCameraSystem::Update(World& world, float dt)
                     }
                 }
             );
-
+            
             // ---- 基準pivot（ターゲットがいればそれ） ----
             XMFLOAT3 pivot = camTr.position;
             if (anyTargetFound)
@@ -89,13 +89,14 @@ void FollowCameraSystem::Update(World& world, float dt)
             case Camera3DComponent::Mode::Orbit:
             {
                 // 既存のオービット挙動
-                const float yawRad = XMConvertToRadians(rig.orbitYawDeg);
-                const float pitchRad = XMConvertToRadians(rig.orbitPitchDeg);
-                const float cosP = cosf(pitchRad);
-                const float sinP = sinf(pitchRad);
-                const float cosY = cosf(yawRad);
-                const float sinY = sinf(yawRad);
+				const float yawRad = XMConvertToRadians(rig.orbitYawDeg);     /// 方位角
+				const float pitchRad = XMConvertToRadians(rig.orbitPitchDeg); /// 仰俯角
+				const float cosP = cosf(pitchRad);                            /// 仰俯角のcos/sin
+				const float sinP = sinf(pitchRad);                            /// 仰俯角のcos/sin
+				const float cosY = cosf(yawRad);                              /// 方位角のcos/sin
+				const float sinY = sinf(yawRad);                              /// 方位角のcos/sin
 
+				/// カメラ位置計算（球面座標→直交座標変換）
                 camPos.x = pivot.x + rig.orbitDistance * cosP * cosY;
                 camPos.y = pivot.y + rig.orbitDistance * sinP;
                 camPos.z = pivot.z + rig.orbitDistance * cosP * sinY;
@@ -120,13 +121,13 @@ void FollowCameraSystem::Update(World& world, float dt)
 
                 // プレイヤー追従（“いちばん上のプレイヤー”）
                 const bool  hasPlayer = anyTargetFound;
-                const float followY = hasPlayer ? highestTargetPos.y : camPos.y;
+				const float followY = hasPlayer ? highestTargetPos.y : camPos.y;    /// プレイヤー追従目標Y
 
                 // 目標Yの決定
                 float targetY = camPos.y;
                 if (autoRequired)
                 {
-                    // ★優先度1：強制スクロール（絶対・下限拘束＋上昇速度）
+                    // 優先度1：強制スクロール（絶対・下限拘束＋上昇速度）
                     const float steppedUp = camPos.y + rig.scrollSpeed * dt;
                     const float desiredAuto = max(steppedUp, minCamYByDeath);
 
@@ -135,7 +136,7 @@ void FollowCameraSystem::Update(World& world, float dt)
                 }
                 else
                 {
-                    // ★優先度2/3：非発火中は“常に”最上位プレイヤーに追従（上昇・下降とも）
+                    // 優先度2/3：非発火中は“常に”最上位プレイヤーに追従（上昇・下降とも）
                     targetY = followY;
                 }
 
@@ -155,7 +156,7 @@ void FollowCameraSystem::Update(World& world, float dt)
                     camPos.y += diff * t;
                 }
 
-                // X/Zはサイドビュー固定。Zはなめらかに復帰（depthLerpSpeed=0なら即時）
+                /// X/Zはサイドビュー固定。Zはなめらかに復帰（depthLerpSpeed=0なら即時）
                 camPos.x = rig.sideFixedX;
                 if (rig.depthLerpSpeed <= 0.0f)
                 {
@@ -190,21 +191,28 @@ void FollowCameraSystem::Update(World& world, float dt)
 
             XMMATRIX V = XMMatrixLookAtLH(eye, at, up);
             XMMATRIX P;
+
+			/// モード別プロジェクション行列
             if (rig.mode == Camera3DComponent::Mode::SideScroll)
             {
+				/// 正射影（サイドビュー用）
                 const float orthoHeight = rig.orthoHeight;
                 const float orthoWidth = orthoHeight * rig.aspect;
                 P = XMMatrixOrthographicLH(orthoWidth, orthoHeight, rig.nearZ, rig.farZ);
             }
             else
             {
+				/// 通常の透視投影
                 P = XMMatrixPerspectiveFovLH(
                     XMConvertToRadians(rig.fovY),
                     rig.aspect, rig.nearZ, rig.farZ);
             }
 
+			/// 転置して保存
             XMStoreFloat4x4(&m_viewT, XMMatrixTranspose(V));
             XMStoreFloat4x4(&m_projT, XMMatrixTranspose(P));
+
+			/// Geometory 側にも設定
             Geometory::SetView(m_viewT);
             Geometory::SetProjection(m_projT);
         });

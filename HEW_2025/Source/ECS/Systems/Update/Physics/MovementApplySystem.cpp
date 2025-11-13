@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   MovementApplySystem.cpp
+ * @brief  移動適用システム実装
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "MovementApplySystem.h"
 #include <algorithm>  // std::clamp
 

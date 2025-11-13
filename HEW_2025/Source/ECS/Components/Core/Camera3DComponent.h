@@ -10,83 +10,116 @@
 #include <cstdint>
 #include "ECS/ECS.h"  // EntityId
 
- /**
-  * @brief サイドビュー縦スクロール＋ふつうの3Dカメラをまとめたコンポーネント
-  */
+/**
+ * @brief サイドビュー縦スクロール＋一般的な3Dカメラの設定をまとめたコンポーネント
+ *  
+ * このコンポーネントは2種類のモードをサポートします:
+ * - Orbit: ターゲットの周囲を回るオービットカメラ
+ * - SideScroll: 縦スクロールのサイドビュー（主に2Dライクなフォロー挙動）
+ */
 struct Camera3DComponent
 {
     // =========================
     // 純粋なカメラパラメータ
     // =========================
+
+    /** @brief カメラ位置 (eye) の X 座標 */
     float eyeX = 0.0f;
+    /** @brief カメラ位置 (eye) の Y 座標 */
     float eyeY = 5.0f;
+    /** @brief カメラ位置 (eye) の Z 座標 */
     float eyeZ = -10.0f;
 
+    /** @brief 注視点 (target) の X 座標 */
     float targetX = 0.0f;
+    /** @brief 注視点 (target) の Y 座標 */
     float targetY = 0.0f;
+    /** @brief 注視点 (target) の Z 座標 */
     float targetZ = 0.0f;
 
+    /** @brief カメラの上方向ベクトルの X 成分 */
     float upX = 0.0f;
+    /** @brief カメラの上方向ベクトルの Y 成分 */
     float upY = 1.0f;
+    /** @brief カメラの上方向ベクトルの Z 成分 */
     float upZ = 0.0f;
 
+    /** @brief 垂直視野角 (degrees) */
     float fovY = 60.0f;
+    /** @brief アスペクト比 (width / height) */
     float aspect = 16.0f / 9.0f;
+    /** @brief ニアクリップ距離 */
     float nearZ = 0.1f;
+    /** @brief ファークリップ距離 */
     float farZ = 1000.0f;
 
     // =========================
     // ここから制御(リグ)用
     // =========================
+    /** @brief カメラ制御モード */
     enum class Mode
     {
-        Orbit,      // 既存のターゲットを回り込むやつ
-        SideScroll  // 縦スクロールのサイドビュー
+        /** @brief ターゲットを中心に回り込むオービットカメラ */
+        Orbit,
+        /** @brief 縦スクロールのサイドビュー（Y方向に自動追従など） */
+        SideScroll
     };
 
+    /** @brief 使用するモード */
     Mode mode = Mode::Orbit;
 
-    // 追従対象
+    /** @brief 追従対象のエンティティID (0 = 無効) */
     EntityId target = 0;
 
-    // Orbit用
+    // Orbit 用パラメータ
+    /** @brief オービットのヨー角 (度) */
     float orbitYawDeg = 90.0f;
+    /** @brief オービットのピッチ角 (度) */
     float orbitPitchDeg = 0.0f;
+    /** @brief ターゲットからの距離 */
     float orbitDistance = 8.0f;
+    /** @brief 注視点に対するオフセット（ワールド座標） */
     DirectX::XMFLOAT3 lookAtOffset{ 0.0f, 1.5f, 0.0f };
 
-    // SideScroll用
-    float scrollSpeed = 1.0f;    // カメラが自動で上に進む速度
-    float followOffsetY = 1.5f;    // プレイヤー頭よりちょい上を見るとき
-    float followMarginY = 0.5f;    // これだけ離れたら追従に切り替える
+    // SideScroll 用パラメータ
+    /** @brief カメラが自動で上に進む速度（ワールド単位/秒） */
+    float scrollSpeed = 1.0f;
+    /** @brief 追従時に注視するYオフセット（プレイヤーの頭上など） */
+    float followOffsetY = 1.5f;
+    /** @brief この距離以上離れていたら追従に切り替える閾値（ワールド単位） */
+    float followMarginY = 0.5f;
 
-    float followSmoothTimeY = 0.12f;   // 追従の“なまり”時間（大きいほどゆっくり）
-    float followDeadzoneY = 0.02f;   // 目標との差がこの範囲なら動かさない（ワールド座標系）
-    float autoToggleInterval = 0.25f;   // 自動スクロールON/OFFの最短切替間隔[s]（ビビり抑止）
+    /** @brief 追従のスムース時間（大きいほど遅れて追従） */
+    float followSmoothTimeY = 0.12f;
+    /** @brief 追従のデッドゾーン（目標との差がこれ以内なら移動しない） */
+    float followDeadzoneY = 0.02f;
+    /** @brief 自動スクロールのトグル最短間隔（秒） */
+    float autoToggleInterval = 0.25f;
 
+    /** @brief 自動スクロールが有効か */
     bool  autoScroll = false;
-    float autoToggleTimer = 0.0f;    // 前回トグルからの経過時間
+    /** @brief 前回トグルからの経過時間（秒） */
+    float autoToggleTimer = 0.0f;
 
-    float sideFixedX = 0.0f;    // サイドビューなのでX固定
-    float sideFixedZ = -10.0f;  // 奥行き固定
-    float sideLookAtX = 0.0f;    // 常にこのX方向を見る
+    /** @brief サイドビュー時に X を固定する値 */
+    float sideFixedX = 0.0f;
+    /** @brief サイドビュー時の固定 Z（奥行き） */
+    float sideFixedZ = -10.0f;
+    /** @brief サイドビュー時に常に向く X 方向（注視点の X） */
+    float sideLookAtX = 0.0f;
 
-    // Orthographic view height (world units). Smaller => more zoomed in.
-    // Used in SideScroll mode to control zoom.
+    /** @brief 正射影時の表示高さ（ワールド単位）。値が小さいほどズームイン */
     float orthoHeight = 10.0f;
 
-    // How fast camera depth (Z) interpolates towards sideFixedZ (units per second factor)
-    // Larger -> snappier. 0 means instant set.
+    /** @brief 深度(Z)を sideFixedZ に近づける補間速度（秒率）。0で即時反映 */
     float depthLerpSpeed = 10.0f;
 
-    // Reference Y position considered as the "default" camera Y (e.g. initial Y).
-    // If all players are below this Y, the camera will resume automatic vertical scrolling.
+    /** @brief 自動スクロールの基準となる Y（初期カメラY等） */
     float baseScrollY = 0.0f;
 
-    // Runtime flag: whether camera is currently locked to follow target Y.
+    /** @brief 実行時フラグ: 現在ターゲットのYにロックして追従中か */
     bool followingTarget = false;
 
-    // When deciding to resume auto-scroll, require the highest target to be this much below baseScrollY
-    // (useful to keep camera above hazards like rising magma).
+    /** @brief 自動スクロール再開判定で、最高ターゲットが baseScrollY よりこの値だけ下にある必要がある */
     float returnToAutoMargin = 0.5f;
 };

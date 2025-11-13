@@ -1,4 +1,10 @@
-// ECS/Systems/Physics/Collision2DSystem.h
+/*********************************************************************/
+/* @file   Collision2DSystem.h
+ * @brief  当たり判定の2Dシステム定義
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #pragma once
 #include "../../IUpdateSystem.h"
 #include "ECS/World.h"
@@ -30,7 +36,10 @@ public:
     CollisionEventBuffer* GetEventBuffer() const { return m_eventBuffer; }
 
 private:
+	// 衝突イベントバッファ（外部からセットされる想定）
     CollisionEventBuffer* m_eventBuffer = nullptr;
+
+	//  internal用バッファ（ResolveAabbPair内でイベント追加に使う）
     CollisionEventBuffer* m_buf = nullptr;
 
     // AABB同士のめり込みを直す

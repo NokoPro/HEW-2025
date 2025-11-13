@@ -1,3 +1,13 @@
+/*********************************************************************/
+/* @file   ModelRenderSystem.cpp
+ * @brief  モデルを描画するレンダリングシステム実装
+ * - TransformComponent と ModelRendererComponent を組み合わせて描画する
+ * - ビュー・プロジェクション行列は外部からセットされる設計
+ * - 照明やカメラ位置は ShaderList の静的関数経由で設定する
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "ModelRenderSystem.h"
 #include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"

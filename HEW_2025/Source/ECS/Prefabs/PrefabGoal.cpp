@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   PrefabGoal.cpp
+ * @brief  ゴールプレハブ実装
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "PrefabGoal.h"
 #include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"
@@ -12,6 +19,7 @@ void RegisterGoalPrefab(PrefabRegistry& registry)
     registry.Register("Goal", 
         [](World& world, const PrefabRegistry::SpawnParams& sp) -> EntityId 
         {
+			// エンティティ生成
             EntityId e = world.Create();
             if (e == kInvalidEntity)
                 return kInvalidEntity;

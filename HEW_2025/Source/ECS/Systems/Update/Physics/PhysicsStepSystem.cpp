@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   PhysicsStepSystem.cpp
+ * @brief  重力・当たり判定・衝突解決などを行う物理ステップシステム
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "PhysicsStepSystem.h"
 #include <algorithm> // std::min, std::max, std::abs
 
@@ -59,11 +66,13 @@ void PhysicsStepSystem::Update(World& world, float dt)
                             const float ayMin = t1.position.y + c1.offset.y - c1.aabb.halfY;
                             const float ayMax = t1.position.y + c1.offset.y + c1.aabb.halfY;
 
+							// BのAABB（offset含む）
                             const float bxMin = t2.position.x + c2.offset.x - c2.aabb.halfX;
                             const float bxMax = t2.position.x + c2.offset.x + c2.aabb.halfX;
                             const float byMin = t2.position.y + c2.offset.y - c2.aabb.halfY;
                             const float byMax = t2.position.y + c2.offset.y + c2.aabb.halfY;
 
+							// 重なってるか
                             const bool overlapX = (axMin < bxMax) && (axMax > bxMin);
                             const bool overlapY = (ayMin < byMax) && (ayMax > byMin);
 
@@ -90,6 +99,7 @@ void PhysicsStepSystem::Update(World& world, float dt)
     //    今回は土台なのでここまで。
 }
 
+// AABB vs AABB の衝突解決
 void PhysicsStepSystem::ResolveAabbVsAabb(EntityId a, TransformComponent& ta, Collider2DComponent& ca, Rigidbody2DComponent* ra,
     EntityId b, TransformComponent& tb, Collider2DComponent& cb, Rigidbody2DComponent* rb)
 {
@@ -100,13 +110,14 @@ void PhysicsStepSystem::ResolveAabbVsAabb(EntityId a, TransformComponent& ta, Co
     const float ayMax = ta.position.y + ca.offset.y + ca.aabb.halfY;
 
     // BのAABB（offset含む）
-    const float bxMin = tb.position.x + cb.offset.x - cb.aabb.halfX;
+    const float bxMin = tb.position.x + cb.offset.x - cb.aabb.halfX;    
     const float bxMax = tb.position.x + cb.offset.x + cb.aabb.halfX;
     const float byMin = tb.position.y + cb.offset.y - cb.aabb.halfY;
     const float byMax = tb.position.y + cb.offset.y + cb.aabb.halfY;
 
-    const bool overlapX = (axMin < bxMax) && (axMax > bxMin);
-    const bool overlapY = (ayMin < byMax) && (ayMax > byMin);
+	// 重なってるか
+	const bool overlapX = (axMin < bxMax) && (axMax > bxMin);   // X方向
+	const bool overlapY = (ayMin < byMax) && (ayMax > byMin);   // Y方向
 
     if (!overlapX || !overlapY)
         return;
@@ -127,11 +138,13 @@ void PhysicsStepSystem::ResolveAabbVsAabb(EntityId a, TransformComponent& ta, Co
         const float bCenterY = tb.position.y + cb.offset.y;
         const float dir = (aCenterY >= bCenterY) ? 1.0f : -1.0f; // 1: A above B -> push apart along +y for A
 
+		// Y方向の解決
         if (!aStatic && bStatic)
         {
             // Bが静的ならAを全部動かす
             ta.position.y += dir * overlapYAmount;
-            if (ra) {
+            if (ra) 
+            {
                 ra->velocity.y = 0.0f;
                 // onGround = true になる条件: Aが上でBが床なら
                 if (dir > 0.0f) ra->onGround = true;
@@ -171,6 +184,7 @@ void PhysicsStepSystem::ResolveAabbVsAabb(EntityId a, TransformComponent& ta, Co
         // 横方向の解決（X優先）
         const float dir = (ta.position.x + ca.offset.x >= tb.position.x + cb.offset.x) ? 1.0f : -1.0f; // 1: A is right of B -> push A right
 
+		// X方向の解決
         if (!aStatic && bStatic)
         {
             ta.position.x += dir * overlapXAmount;

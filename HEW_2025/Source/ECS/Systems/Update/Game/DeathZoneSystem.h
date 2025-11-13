@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   DeathZoneSystem.h
+ * @brief  €–Sƒ][ƒ“ƒVƒXƒeƒ€
+ * 
+ * @author ó–ì—E¶
+ * @date   2025/11/13
+ *********************************************************************/
 #pragma once
 #include "ECS/Systems/IUpdateSystem.h"
 #include "ECS/World.h"
@@ -10,6 +17,6 @@ public:
     void Update(class World& world, float dt) override;
 private:
 
-    Collision2DSystem* m_colSys = nullptr;
-    bool m_triggered = false;
+	Collision2DSystem* m_colSys = nullptr;  /// €–Sƒ][ƒ“‚Ì“–‚½‚è”»’èƒVƒXƒeƒ€
+	bool m_triggered = false;               /// €–Sƒ][ƒ“‚ÉG‚ê‚½‚©‚Ç‚¤‚©
 };

@@ -1,7 +1,14 @@
+/*********************************************************************/
+/* @file   CollisionDebugRenderSystem.cpp
+ * @brief  当たり判定のデバッグレンダリングシステム実装
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "CollisionDebugRenderSystem.h"
 #include "ECS/World.h"
 
-// あなたのコンポーネントたち
+// コンポーネント
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Physics/Collider2DComponent.h"
 

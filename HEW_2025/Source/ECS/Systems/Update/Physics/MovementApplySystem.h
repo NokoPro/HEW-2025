@@ -1,3 +1,12 @@
+/*********************************************************************/
+/* @file   MovementApplySystem.h
+ * @brief  移動適用システム定義
+ * 
+ * - 入力(Intent)を実際の物理ボディ(Rigidbody)に反映するSystem
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #pragma once
 #include "../../IUpdateSystem.h"
 #include "ECS/World.h"

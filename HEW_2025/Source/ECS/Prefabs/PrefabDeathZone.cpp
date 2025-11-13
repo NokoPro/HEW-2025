@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   PrefabDeathZone.cpp
+ * @brief  死亡ゾーン（DeathZone）プレハブ実装
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/13
+ *********************************************************************/
 #include "PrefabDeathZone.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Physics/Collider2DComponent.h"
