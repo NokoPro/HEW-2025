@@ -3,6 +3,7 @@
  * @brief  Sprite2DComponent を持つエンティティを描画するSystem
  *
  * - Sprite2DComponent を持っているエンティティをすべて描画する
+ * - テクスチャは AssetManager から取得し、キャッシュしておく
  * 
  * @author 土本蒼翔
  * @author 浅野勇生
