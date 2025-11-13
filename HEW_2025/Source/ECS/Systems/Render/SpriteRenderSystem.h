@@ -4,6 +4,7 @@
  *
  * - Sprite2DComponent を持っているエンティティをすべて描画する
  * 
+ * @author 土本蒼翔
  * @author 浅野勇生
  * @author 川谷優真
  * @date   2025/11/11
