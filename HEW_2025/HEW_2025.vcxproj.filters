@@ -231,10 +231,10 @@
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
     </ClCompile>
-    <ClCompile Include="AudioManagerSystem.cpp">
+    <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="AudioPlaySystem.cpp">
+    <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Audio</Filter>
     </ClCompile>
   </ItemGroup>
@@ -416,10 +416,10 @@
     <ClInclude Include="AudioComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="AudioManagerSystem.h">
+    <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="AudioPlaySystem.h">
+    <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
     </ClInclude>
   </ItemGroup>
