@@ -61,6 +61,8 @@ private:
 
     // 描画システム（行列を渡す用）
     ModelRenderSystem* m_drawModel = nullptr;
+    // Sprite 描画システム（2D UI 等）
+    class SpriteRenderSystem* m_drawSprite = nullptr;
     // カメラシステム（行列をもらう用）
     FollowCameraSystem* m_followCamera = nullptr;
 

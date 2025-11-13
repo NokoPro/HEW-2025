@@ -258,10 +258,31 @@ TestScene::TestScene()
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
+    
+    // 2Dスプライト描画システム（UI等）
+    m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
+
     // 2-5 描画
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
-    
+
     m_debugCollision = &m_sys.AddRender<CollisionDebugRenderSystem>();
+
+    // テスト用UIスプライトを1つ生成 (Assets/Data.csv に alias "icon" が登録されている想定)
+    {
+        EntityId ui = m_world.Create();
+        if (ui != kInvalidEntity)
+        {
+            m_world.Add<TransformComponent>(ui, XMFLOAT3{ 0.0f, 20.0f, 0.0f }, XMFLOAT3{ 0.0f, 0.0f, 0.0f }, XMFLOAT3{ 1.0f, 1.0f, 1.0f });
+            Sprite2DComponent sp;
+            sp.alias = "tex_background"; // alias must exist in Assets/Data.csv
+
+            sp.width = 70.0f;
+            sp.height = 50.0f;
+            sp.originX = 0.5f;
+            sp.originY = 0.6f;
+            m_world.Add<Sprite2DComponent>(ui, sp);
+        }
+    }
 
     //
     // 3. ステージ作成
@@ -402,6 +423,8 @@ void TestScene::Draw()
 
         if (m_drawModel)
             m_drawModel->SetViewProj(V, P);
+        if (m_drawSprite)
+            m_drawSprite->SetViewProj(V, P);
         if (m_debugCollision)
             m_debugCollision->SetViewProj(V, P);
     }
