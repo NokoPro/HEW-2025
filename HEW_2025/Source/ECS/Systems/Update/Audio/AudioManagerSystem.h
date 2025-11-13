@@ -1,3 +1,4 @@
+#pragma once
 #include <xaudio2.h>
 #include <wrl/client.h>
 #include <unordered_map>
