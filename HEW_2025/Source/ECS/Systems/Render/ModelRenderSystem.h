@@ -14,6 +14,10 @@
 
 #include "../IRenderSystem.h"
 #include <DirectXMath.h>
+#include <vector>
+
+// Model.hをインクルードせず、前方宣言だけで済ませる
+
 
  /**
   * @class ModelRenderSystem
@@ -53,4 +57,25 @@ public:
 private:
     DirectX::XMFLOAT4X4 m_V{}; ///< ビュー行列（転置済み）
     DirectX::XMFLOAT4X4 m_P{}; ///< プロジェクション行列（転置済み）
+
+private:
+    /**
+     * @brief ソートと描画のためのモデル一時情報.
+     */
+    struct SortableModel
+    {
+        // ソート用キー
+        int layer; // <ModelRendererComponent::layer
+
+        // 描画用データ
+        DirectX::XMFLOAT4X4 world; // ワールド行列(Transpose済み)
+        Model* model;              // モデルハンドル
+    };
+
+    // 描画リスト(毎フレーム使いまわす)
+    std::vector<SortableModel>m_modelList;
 };
+
+
+
+
