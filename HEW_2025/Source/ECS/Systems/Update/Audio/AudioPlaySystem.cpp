@@ -1,30 +1,22 @@
 #include "ECS/Systems/Update/Audio/AudioPlaySystem.h"
 #include "ECS/Systems/Update/Audio/AudioManagerSystem.h"
 #include <iostream>
+#include <fstream>
 
 void AudioPlaySystem::Update(World& world, float dt)
 {
-    static bool bgmStarted = false; // 一度だけ再生するためのフラグ
-    if (!bgmStarted)
-    {
-        auto& audio = AudioManagerSystem::Instance();
+    static bool started = false;
+    if (started) return;
 
-        // BGMファイルの相対パス（プロジェクトの実行フォルダからの相対）
-        // 実行時のカレントディレクトリが「HEW_2025\」なら下記でOK
-        std::wstring bgmPath = L"Assets/Audio/BGM.wav";
+    auto& audio = AudioManagerSystem::Instance();
 
-        // 1? WAVファイルをロード
-        if (!audio.LoadBGM("MainBGM", bgmPath))
-        {
-            std::wcerr << L"[AudioPlaySystem] BGMの読み込みに失敗: " << bgmPath << std::endl;
-            return;
-        }
+    audio.Initialize(); // ←必要
+  
+    if (!audio.LoadBGM("MainBGM", L"C:/HAL/HEW2.5D/HEW_2025/Assets/Audio/BGMHEW.wav"))
+        return;
 
-        // 2? ループ再生でBGMを再生
-        audio.PlayBGM("MainBGM", true); // true = ループ再生
-        audio.SetBGMVolume(0.8f);       // 音量（0.0～1.0）
+    audio.PlayBGM("MainBGM", true);
+    audio.SetBGMVolume(0.8f);
 
-        std::cout << "[AudioPlaySystem] BGM再生開始" << std::endl;
-        bgmStarted = true;
-    }
+    started = true;
 }

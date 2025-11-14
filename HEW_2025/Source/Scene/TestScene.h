@@ -39,7 +39,8 @@
 
 #include "ECS/Prefabs/PrefabRegistry.h"
 #include "ECS/Prefabs/PrefabPlayer.h"
-
+//追加
+#include"ECS/Systems/Update/Audio/AudioPlaySystem.h"
  /**
   * @class TestScene
   * @brief 開発中にECSの動作確認をするためのシーン
