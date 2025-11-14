@@ -12,7 +12,8 @@ void AudioPlaySystem::Update(World& world, float dt)
 
     audio.Initialize(); // Å©ïKóv
   
-    if (!audio.LoadBGM("MainBGM", L"C:/HAL/HEW2.5D/HEW_2025/Assets/Audio/BGMHEW.wav"))
+
+    if (!audio.LoadBGM("MainBGM", L"Assets/Audio/BGM.wav"))
         return;
 
     audio.PlayBGM("MainBGM", true);
