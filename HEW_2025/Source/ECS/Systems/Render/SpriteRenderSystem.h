@@ -62,6 +62,9 @@ public:
         Sprite::SetView(m_view);
         Sprite::SetProjection(m_proj);
 
+        // 描画リストをクリア
+        m_spriteList.clear();
+
         world.View<TransformComponent, Sprite2DComponent>(
             [&](EntityId, const TransformComponent& tr, const Sprite2DComponent& sp)
             {
@@ -115,4 +118,7 @@ private:
 
     // alias -> AssetHandle<Texture> キャッシュ
     std::unordered_map<std::string, AssetHandle<Texture>> m_texCache;
+
+    // 描画リスト(毎フレーム使いまわす)
+    std::vector<SortableSprite> m_spriteList;
 };

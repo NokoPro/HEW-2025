@@ -22,4 +22,18 @@ struct ModelRendererComponent
     DirectX::XMFLOAT3 localOffset{ 0.f,0.f,0.f };
 	DirectX::XMFLOAT3 localRotationDeg{ 0.f,0.f,0.f };
 	DirectX::XMFLOAT3 localScale{ 1.f,1.f,1.f };
+
+    /**
+     * @brief 描画レイヤー(優先度)
+     * @details
+     * この値でソートされます。
+     * 数値が小さいほど「奥」に、大きいほど手前に描画されます。
+     * (例:3D背景 = -20, 3Dキャラ = 0, 2Dエフェクト = 10)
+     * カメラに近いもの(Zが小さいもの)が手前に描画されます(Zバッファによる深度テスト)。.
+     */
+    int layer = 0;
 };
+
+
+
+
