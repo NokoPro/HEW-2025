@@ -15,8 +15,7 @@
 #include "../IRenderSystem.h"
 #include <DirectXMath.h>
 #include <vector>
-
-// Model.hをインクルードせず、前方宣言だけで済ませる
+#include "System/Model.h"
 
 
  /**
