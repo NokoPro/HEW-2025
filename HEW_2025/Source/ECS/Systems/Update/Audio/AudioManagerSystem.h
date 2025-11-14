@@ -17,6 +17,8 @@ public:
     void PlayBGM(const std::string& name, bool loop);
     void StopBGM();
     void SetBGMVolume(float vol);
+    void PlaySE(const std::string& name, float volume );
+
 
 private:
     AudioManagerSystem() = default;
@@ -33,4 +35,12 @@ private:
 
     IXAudio2SourceVoice* bgmVoice = nullptr;
     std::map<std::string, SoundData> sounds;
+
+    struct SEVoice
+    {
+        IXAudio2SourceVoice* voice = nullptr;
+        bool playing = false;
+    };
+
+    std::map<std::string, SEVoice> seVoices; // äe SE ÇÃçƒê∂èÛë‘Çï€éù
 };

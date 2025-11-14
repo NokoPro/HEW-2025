@@ -413,9 +413,6 @@
     <ClInclude Include="Source\ECS\Tag\Tag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
     </ClInclude>
-    <ClInclude Include="AudioComponent.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Components\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
     </ClInclude>

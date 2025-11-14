@@ -4,6 +4,8 @@
 #include <mmreg.h>
 #include <mmsystem.h>
 #include <vector>
+#include <thread>   // std::thread 用
+#include <chrono>   // Sleep を std::chrono::milliseconds に変える場合
 
 #pragma comment(lib, "winmm.lib")
 
@@ -158,4 +160,39 @@ void AudioManagerSystem::SetBGMVolume(float vol)
 {
     if (bgmVoice)
         bgmVoice->SetVolume(vol);
+}
+
+void AudioManagerSystem::PlaySE(const std::string& name, float volume)
+{
+    auto it = sounds.find(name);
+    if (it == sounds.end()) return;
+
+    // 再生中ならスキップ（重複防止）
+    auto& seState = seVoices[name];
+    if (seState.playing) return;
+
+    auto& data = it->second;
+
+    IXAudio2SourceVoice* seVoice = nullptr;
+    if (FAILED(xAudio->CreateSourceVoice(&seVoice, &data.wfx))) return;
+
+    seVoice->SetVolume(volume);
+    seVoice->SubmitSourceBuffer(&data.buffer);
+    seVoice->Start(0);
+
+    seState.voice = seVoice;
+    seState.playing = true;
+
+    // 再生終了を監視して Voice を破棄
+    std::thread([&seState]() {
+        XAUDIO2_VOICE_STATE state{};
+        do {
+            seState.voice->GetState(&state);
+            Sleep(1);
+        } while (state.BuffersQueued > 0);
+
+        seState.voice->DestroyVoice();
+        seState.voice = nullptr;
+        seState.playing = false;
+        }).detach();
 }
