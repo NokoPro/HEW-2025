@@ -115,6 +115,12 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
       <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Gimick">
+      <UniqueIdentifier>{bed1d36e-9858-41b6-98c1-c759d72de0e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Gimick">
+      <UniqueIdentifier>{059dd130-e041-436c-9eb2-a05aabca356e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -221,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -397,6 +409,12 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Tag\Tag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

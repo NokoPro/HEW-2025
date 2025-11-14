@@ -23,6 +23,7 @@
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
 #include "ECS/Systems/Update/Game/GoalSystem.h"
 #include "ECS/Systems/Update/Game/DeathZoneSystem.h"
+#include "ECS/Systems/Update/Gimick/MovingPlatformSystem.h"
 #include "ECS/Systems/Render/ModelRenderSystem.h"
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 
@@ -39,6 +40,7 @@
 #include "ECS/Prefabs/PrefabStaticBlock.h"
 #include "ECS/Prefabs/PrefabGoal.h"
 #include "ECS/Prefabs/PrefabDeathZone.h"
+#include "ECS/Prefabs/PrefabMovingPlatform.h"
 
 #include <cstdio>
 #include <DirectXMath.h>
@@ -76,6 +78,14 @@ namespace
             prefabs.Spawn("Wall", world, sp);
         }
 
+		// 移動足場
+        {
+			PrefabRegistry::SpawnParams sp;
+			sp.position = { -10.0f, 0.0f, 0.0f };
+			sp.rotationDeg = { 180.0f, 0.0f, 0.0f };
+			sp.scale = { 1.f, 1.0f, 1.0f };
+			prefabs.Spawn("MovingPlatform", world, sp);
+        }
 
 		// 静的ブロック
 		// 1P側
@@ -214,12 +224,13 @@ namespace
 //----------------------------------------------------------
 TestScene::TestScene()
 {
-    RegisterPlayerPrefab(m_prefabs);
-    RegisterFloorPrefab(m_prefabs);
-    RegisterWallPrefab(m_prefabs);
-    RegisterStaticBlockPrefab(m_prefabs);
-    RegisterGoalPrefab(m_prefabs); // ゴールプレハブ登録
-    RegisterDeathZonePrefab(m_prefabs); // Deathゾーンプレハブ登録
+	RegisterPlayerPrefab(m_prefabs);            // プレイヤープレハブ登録
+	RegisterFloorPrefab(m_prefabs);             // 床プレハブ登録
+	RegisterWallPrefab(m_prefabs);              // 壁プレハブ登録
+	RegisterStaticBlockPrefab(m_prefabs);       // 静的ブロックプレハブ登録
+    RegisterGoalPrefab(m_prefabs);              // ゴールプレハブ登録
+    RegisterDeathZonePrefab(m_prefabs);         // Deathゾーンプレハブ登録
+	RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
 
     //
     // 1. アセット取得
@@ -240,6 +251,10 @@ TestScene::TestScene()
     //
     // 2. System登録（順番が重要）
     //
+    
+	// 2-0 移動床システム（当たり判定の前に動かす必要がある）
+	m_sys.AddUpdate<MovingPlatformSystem>();
+    
     // 2-1 入力 → Intent
     m_sys.AddUpdate<PlayerInputSystem>();
     // 2-2 Intent → Rigidbody（加速・ジャンプ・重力）

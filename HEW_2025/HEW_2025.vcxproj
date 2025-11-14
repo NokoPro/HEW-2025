@@ -152,6 +152,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\GoalSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.cpp" />
@@ -206,6 +208,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabGoal.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h" />
@@ -219,6 +222,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.h" />
