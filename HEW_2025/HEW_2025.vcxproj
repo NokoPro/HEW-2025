@@ -158,6 +158,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
