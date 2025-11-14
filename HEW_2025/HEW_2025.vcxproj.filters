@@ -222,6 +222,9 @@
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Main.h">
