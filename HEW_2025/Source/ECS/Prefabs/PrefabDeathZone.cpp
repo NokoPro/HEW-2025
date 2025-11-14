@@ -37,6 +37,9 @@ void RegisterDeathZonePrefab(PrefabRegistry& registry)
         // モデル描画用コンポーネント追加
         std::string modelName = sp.modelAlias.empty() ? "mdl_deathzone" : sp.modelAlias;
         auto model = AssetManager::GetModel(modelName.c_str());
+
+
+
         if (model) {
             // シェーダ設定（必要に応じて変更）
             model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));

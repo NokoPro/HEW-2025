@@ -88,6 +88,9 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 			mr.localScale = { 1.f, 1.25f, 0.95f }; // 適当な大きさに調整
 			mr.localOffset = { 0.f, 0.f, 0.f }; // 足元を原点に合わせる
 
+            // レイヤー
+            mr.layer = 0; // プレイヤーの基準は「0」
+
             if (mr.model)
             {
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
