@@ -62,7 +62,8 @@
 EntityId e = world.Create();
 auto& tr = world.Add<TransformComponent>(e, pos, rotDeg, scale);
 auto& rb = world.Add<Rigidbody2DComponent>(e);
-if (world.Has<Rigidbody2DComponent>(e)) {
+if (world.Has<Rigidbody2DComponent>(e))
+{
     rb.velocity.x = 1.0f;
 }
 
@@ -85,14 +86,16 @@ world.View<TransformComponent, Rigidbody2DComponent>([&](EntityId e, TransformCo
 例（抜粋）:
 ```
 // Components/Physics/TransformComponent.h
-struct TransformComponent {
+struct TransformComponent
+{
     DirectX::XMFLOAT3 position{ 0,0,0 };
     DirectX::XMFLOAT3 rotationDeg{ 0,0,0 };
     DirectX::XMFLOAT3 scale{ 1,1,1 };
 };
 
 // Components/Physics/Rigidbody2DComponent.h
-struct Rigidbody2DComponent {
+struct Rigidbody2DComponent
+{
     DirectX::XMFLOAT2 velocity{ 0,0 };
     DirectX::XMFLOAT2 accumulatedForce{ 0,0 };
     float mass = 1.0f;
@@ -101,7 +104,8 @@ struct Rigidbody2DComponent {
 };
 
 // Components/Physics/Collider2DComponent.h
-struct Collider2DComponent {
+struct Collider2DComponent
+ {
     ColliderShapeType shape = ColliderShapeType::AABB2D;
     Physics::LayerMask layer = Physics::LAYER_DEFAULT;
     Physics::LayerMask hitMask = 0xFFFFFFFF;
@@ -115,7 +119,8 @@ struct Collider2DComponent {
 };
 
 // Components/Render/ModelComponent.h
-struct ModelRendererComponent {
+struct ModelRendererComponent
+{
     AssetHandle<Model> model;
     bool visible = true;
     DirectX::XMFLOAT3 localOffset{ 0,0,0 };
@@ -154,7 +159,8 @@ void MovementApplySystem::Update(World& world, float dt)
         {
             const bool onGround = rb.onGround;
             float friction = 1.0f;
-            if (auto* col = world.TryGet<Collider2DComponent>(e)) {
+            if (auto* col = world.TryGet<Collider2DComponent>(e))
+            {
                 friction = std::clamp(col->material.friction, 0.0f, 1.0f);
             }
 
@@ -176,7 +182,8 @@ void MovementApplySystem::Update(World& world, float dt)
 
 Render 実装例（3D モデル描画、`Render/ModelRenderSystem.h`）:
 ```
-class ModelRenderSystem final : public IRenderSystem {
+class ModelRenderSystem final : public IRenderSystem
+ {
 public:
     void SetViewProj(const DirectX::XMFLOAT4X4& V, const DirectX::XMFLOAT4X4& P) { m_V = V; m_P = P; }
     void Render(const World& world) override; // World.View で Transform + ModelRenderer を走査して描画
@@ -493,6 +500,7 @@ private:
 - 中括弧 `{}` を同一行に置かない（必ず改行して配置）
 - `extern` やグローバル変数の濫用は禁止（スコープを最小化し依存を注入する）
 - クラスの `public` に状態（可変データ）を直置きしない（カプセル化し `private` + アクセサ/メソッドで提供）
+- hファイルに関数を理由もなくべた書きしない！！最小限のものにとどめましょう！
 
 ---
 
