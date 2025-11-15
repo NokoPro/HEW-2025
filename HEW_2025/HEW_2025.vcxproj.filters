@@ -401,5 +401,8 @@
     <ClInclude Include="Source\ECS\Tag\Tag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

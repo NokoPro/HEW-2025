@@ -201,6 +201,7 @@
     <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />

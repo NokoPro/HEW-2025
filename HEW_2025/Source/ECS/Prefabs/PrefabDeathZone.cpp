@@ -46,6 +46,7 @@ void RegisterDeathZonePrefab(PrefabRegistry& registry)
             model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             auto& mr = world.Add<ModelRendererComponent>(e, model);
 			mr.localScale = { 1.f, 0.5f, 1.f };
+            mr.layer = -10;
         }
 
 		// DeathZoneƒ^ƒO•t—^
