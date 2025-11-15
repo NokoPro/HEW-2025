@@ -7,6 +7,7 @@
  *********************************************************************/
 #include "MovementApplySystem.h"
 #include <algorithm>  // std::clamp
+#include "System/DebugSettings.h"
 
 void MovementApplySystem::Update(World& world, float dt)
 {
@@ -76,7 +77,7 @@ void MovementApplySystem::Update(World& world, float dt)
                 intent.forceJumpConsumed = true; // ★ジャンプ消費済みにする
             }
             // --- 通常ジャンプ ---
-            else if (intent.jump && onGround)
+            else if (intent.jump && (onGround || DebugSettings::Get().infiniteJump))
             {
                 rb.velocity.y = m_jumpSpeed;
                 rb.onGround = false;

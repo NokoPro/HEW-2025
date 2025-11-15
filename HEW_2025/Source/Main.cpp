@@ -63,6 +63,8 @@
 #include "System/Sprite.h"
 #include "System/AssetCatalog.h"
 #include "System/AssetManager.h"
+#include "System/ImGuiLayer.h"
+#include "System/DebugSettings.h"
 
  // 追加：ゲーム本体
 #include "Game.h"
@@ -120,6 +122,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
         return 0;
     }
 
+    // ImGui初期化（有効化時のみ）
+    ImGuiLayer::Init(hWnd);
+
     // ここでゲーム(ECS)側も初期化
     Game_Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -148,8 +153,20 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
         if (elapsed >= targetMs)
         {
+            // F5でUI表示切り替え（キー入力はInput更新前でも問題なしのためここで）
+            if (IsKeyTrigger(VK_F5))
+            {
+                DebugSettings::Get().imguiEnabled = !DebugSettings::Get().imguiEnabled;
+            }
+
+            // ImGuiフレーム開始
+            ImGuiLayer::BeginFrame();
+
             Update();
             Draw();
+
+            // ImGuiフレーム描画
+            ImGuiLayer::EndFrameAndRender();
             lastTick = now;
         }
         else
@@ -166,6 +183,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
     // ゲーム側終了
     Game_Uninit();
+
+    // ImGui終了
+    ImGuiLayer::Shutdown();
 
     Uninit();
     DestroyWindow(hWnd);

@@ -179,6 +179,7 @@
     <ClCompile Include="Source\System\DirectX\ShaderList.cpp" />
     <ClCompile Include="Source\System\DirectX\Texture.cpp" />
     <ClCompile Include="Source\System\Geometory.cpp" />
+    <ClCompile Include="Source\System\ImGuiLayer.cpp" />
     <ClCompile Include="Source\System\Input.cpp" />
     <ClCompile Include="Source\System\Model.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Debug\DebugSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.h" />
@@ -234,6 +236,7 @@
     <ClInclude Include="Source\System\AssetManager.h" />
     <ClInclude Include="Source\System\CameraHelper.h" />
     <ClInclude Include="Source\System\CameraMath.h" />
+    <ClInclude Include="Source\System\DebugSettings.h" />
     <ClInclude Include="Source\System\Defines.h" />
     <ClInclude Include="Source\System\DirectX\DirectX.h" />
     <ClInclude Include="Source\System\DirectX\MeshBuffer.h" />
@@ -241,6 +244,7 @@
     <ClInclude Include="Source\System\DirectX\ShaderList.h" />
     <ClInclude Include="Source\System\DirectX\Texture.h" />
     <ClInclude Include="Source\System\Geometory.h" />
+    <ClInclude Include="Source\System\ImGuiLayer.h" />
     <ClInclude Include="Source\System\Input.h" />
     <ClInclude Include="Source\System\Model.h" />
     <ClInclude Include="Source\System\Sprite.h" />

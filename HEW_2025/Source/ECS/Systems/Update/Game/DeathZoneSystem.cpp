@@ -13,23 +13,29 @@
 #include "ECS/Components/Input/PlayerInputComponent.h"
 
 #include "System/Defines.h"
+#include "System/DebugSettings.h"
 
 #include <Windows.h> // MessageBox
 
 void DeathZoneSystem::Update(World& world, float dt)
 {
-    // Deathゾーンを上昇させる
+    const bool magmaOn = DebugSettings::Get().magmaEnabled;
+    const float speedScale = DebugSettings::Get().magmaSpeedScale;
+     // Deathゾーンを上昇させる
     world.View<TransformComponent, Collider2DComponent>(
         [&](EntityId e, TransformComponent& tr, Collider2DComponent& col) 
 {
         if (col.layer == Physics::LAYER_DESU_ZONE) 
         {
-            tr.position.y += dt * kDeathZoneSpeedY; // 上昇速度（調整可）
+            if (magmaOn)
+            {
+                tr.position.y += dt * kDeathZoneSpeedY * speedScale; // 上昇速度（調整可）
+            }
         }
     });
-
-	/// Deathゾーンに触れたかチェック
-    if (m_triggered || !m_colSys) return;
+ 
+ 	/// Deathゾーンに触れたかチェック
+    if (!magmaOn || m_triggered || !m_colSys) return;
     CollisionEventBuffer* eventBuffer = m_colSys->GetEventBuffer();
     if (!eventBuffer) return;
 

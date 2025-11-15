@@ -25,6 +25,7 @@
 #include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 #include "ECS/Systems/Render/ModelRenderSystem.h"
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
+#include "ECS/Systems/Update/Debug/DebugSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -240,6 +241,11 @@ TestScene::TestScene()
     //
     // 2. System登録（順番が重要）
     //
+#ifdef _DEBUG
+    // 2-0 Debugトグル
+    m_sys.AddUpdate<DebugSystem>();
+#endif // _DEBUG
+
     // 2-1 入力 → Intent
     m_sys.AddUpdate<PlayerInputSystem>();
     // 2-2 Intent → Rigidbody（加速・ジャンプ・重力）
