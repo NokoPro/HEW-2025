@@ -9,7 +9,9 @@
 - [6. 新しく追加する手順（実践レシピ）](#6-新しく追加する手順実践レシピ)
 - [7. よくある落とし穴と Tips](#7-よくある落とし穴と-tips)
 - [8. 主要コンポーネント・システム・タグ（抜粋）](#8-主要コンポーネントシステムタグ抜粋)
-- [9. コーディング規約について（原文）](#9-コーディング規約について原文)
+- [9. コーディング規約について](#9-コーディング規約について)
+- [10. やったらダメなこと（禁止事項）](#10-やったらダメなこと禁止事項)
+- [11. Q&A よくある質問](#11-qa-よくある質問)
 
 このドキュメントは、現状のコードベース（C++17）をもとに、ECS（Entity-Component-System）の実際の使い方をわかりやすく解説します。
 - Entity の作成方法
@@ -38,7 +40,7 @@
 
 ---
 
-## 1. 基本概念とコア API
+## 1. 基本概念とコア API 🔧
 
 - `EntityId` は `uint32_t` の ID。`0` は無効（`kInvalidEntity`）
 - `World` は全コンポーネントストレージの管理者で、型ごとに自動でストレージを生成（`std::type_index` をキーに動的管理）
@@ -67,9 +69,12 @@ world.View<TransformComponent, Rigidbody2DComponent>([&](EntityId e, TransformCo
 });
 ```
 
+> [!TIP]
+> `View` の先頭型は走査の起点になります。密な型を先頭にすると高速になりやすいです。
+
 ---
 
-## 2. コンポーネントの作り方・使い方
+## 2. コンポーネントの作り方・使い方 🧩
 
 コンポーネントは Plain な `struct` として定義します。World 側は型ごとに自動ストレージを持つため、集中登録は不要です。
 
@@ -124,9 +129,12 @@ mr.model = AssetManager::GetModel("mdl_ground");
 mr.visible = true;
 ```
 
+> [!IMPORTANT]
+> レイヤーマスクの計算はビット OR `|` を使います（論理 OR `||` は不可）。
+
 ---
 
-## 3. System の作り方（Update/Render）と登録
+## 3. System の作り方（Update/Render）と登録 🚀
 
 - Update 系は `IUpdateSystem` を継承し、`void Update(World& world, float dt)` を実装
 - Render 系は `IRenderSystem` を継承し、`void Render(const World& world)` を実装
@@ -190,18 +198,12 @@ m_sys.Tick(m_world, dt);     // Update 系を順次実行
 m_sys.Render(m_world);       // Render 系を順次実行
 ```
 
-カメラと描画の繋ぎ込み:
-```
-// Update 後、カメラから View/Proj を取得して Render システムへ渡す
-const auto& V = m_followCamera->GetView();
-const auto& P = m_followCamera->GetProj();
-m_drawModel->SetViewProj(V, P);
-m_debugCollision->SetViewProj(V, P);
-```
+> [!NOTE]
+> Update と Render は別レジストリに保持され、`Tick`/`Render` で順序通りに実行されます。
 
 ---
 
-## 4. Prefab の仕組みと新しい作り方・登録方法
+## 4. Prefab の仕組みと新しい作り方・登録方法 🧱
 
 Prefab は「エンティティ生成関数」を名前（文字列）に紐付けておき、任意に Spawn できる仕組みです（`Prefabs/PrefabRegistry.h`）。
 
@@ -266,14 +268,12 @@ sp.modelAlias = "mdl_slime";
 EntityId player = m_prefabs.Spawn("Player", m_world, sp);
 ```
 
-よく使うレイヤ設定（例、`PrefabFloor.cpp`, `PrefabGoal.cpp`, `PrefabDeathZone.cpp`）：
-- 地面: `layer = LAYER_GROUND`, `hitMask = LAYER_PLAYER`, `isStatic = true`
-- ゴール: `layer = LAYER_GOAL`, `hitMask = LAYER_PLAYER`, `isTrigger = true`
-- デスゾーン: `layer = LAYER_DESU_ZONE`, `hitMask = LAYER_PLAYER`, `isTrigger = true`
+> [!TIP]
+> `SpawnParams` の `modelAlias` を使うと、レベルデザイン側からモデル差し替えが容易になります。
 
 ---
 
-## 5. TestScene の流れ（現状コードの全体像）
+## 5. TestScene の流れ（現状コードの全体像） 🗺️
 
 - アセットの取得とシェーダ設定（`AssetManager`, `ShaderList`）
 - System 登録（入力 → 移動適用 → 物理ステップ → 衝突判定/解決 → ゲームロジック → カメラ → レンダリング）
@@ -298,7 +298,7 @@ cam.target = m_playerEntity; // 追従対象
 
 ---
 
-## 6. 新しく追加する手順（実践レシピ）
+## 6. 新しく追加する手順（実践レシピ） 🆕
 
 - 新しい Component を作る
   1) `ECS/Components/...` に `struct` を定義
@@ -323,7 +323,7 @@ cam.target = m_playerEntity; // 追従対象
 
 ---
 
-## 7. よくある落とし穴と Tips
+## 7. よくある落とし穴と Tips ⚠️
 
 - ヒットレイヤの OR はビット OR `|` を使う
   - 例: `col.hitMask = Physics::LAYER_GROUND | Physics::LAYER_GOAL;`
@@ -336,7 +336,7 @@ cam.target = m_playerEntity; // 追従対象
 
 ---
 
-## 8. 主要コンポーネント・システム・タグ（抜粋）
+## 8. 主要コンポーネント・システム・タグ（抜粋） 📚
 
 - コンポーネント
   - `TransformComponent`（位置/回転/スケール）
@@ -363,7 +363,34 @@ cam.target = m_playerEntity; // 追従対象
 
 ---
 
-## 9. コーディング規約について
+## 9. コーディング規約について 📐
+
+> [!IMPORTANT]
+> 本プロジェクトでは、以下を強く推奨/必須とします。
+>
+> - 中括弧 `{}` は「改行して置く（Allman スタイル）」
+>   - クラス/構造体/名前空間/関数/制御構文すべてで適用
+>   - 例：
+>     ```cpp
+>     class Foo
+>     {
+>     public:
+>         void Bar()
+>         {
+>             if (cond)
+>             {
+>                 Do();
+>             }
+>         }
+>     };
+>     ```
+> - 生成 AI のコードをそのままコピー＆ペーストすることを禁止
+>   - 必ず内容を理解し、命名規約/設計方針/安全性に合わせて修正
+>   - 導入時はレビュー/ビルド/実行確認/スタイル統一を徹底
+
+---
+
+# HEW 2025 プロジェクト コーディング規約
 
 このドキュメントは、プロジェクトにおけるC++コードの命名規則とコメント規約を定義します。
 
@@ -455,3 +482,45 @@ private:
     int   m_playerEntity;   ///< プレイヤーエンティティのID
     DirectX::XMFLOAT4X4 m_viewT{};  ///< 転置済みビュー
 };
+
+```
+
+---
+
+## 10. やったらダメなこと（禁止事項） 🛑
+
+- 生成 AI のコードをそのままコピペしてコミットしない（理解・整形・規約準拠・レビュー必須）
+- レイヤーマスクで `||` を使わない（必ず `|`）
+- `Get<T>` を乱用しない（`TryGet<T>` と null チェックを優先）
+- `View` で走査中の先頭型ストレージを破壊的に変更しない（安全でない再ハッシュや大量削除は避ける）
+- マジックナンバー直書き（定数化・設定化）
+- 命名規約違反（PascalCase/camelCase/接頭辞の徹底）
+- 中括弧 `{}` を同一行に置かない（必ず改行して配置）
+
+---
+
+## 11. Q&A よくある質問 💬
+
+- Q: Component はどう作る？
+  - A: `ECS/Components/...` に `struct` を定義し、使う場所で `#include`。付与は `world.Add<YourComp>(e, ...)`、参照は `Get`/`TryGet`。
+
+- Q: System の登録方法は？
+  - A: Update 系は `m_sys.AddUpdate<YourSystem>(...)`、Render 系は `m_sys.AddRender<YourSystem>(...)`。実装は `IUpdateSystem` / `IRenderSystem` を継承。
+
+- Q: Prefab はどう作る/使う？
+  - A: `PrefabRegistry` に `Register("Name", SpawnFunc)`。生成は `registry.Spawn("Name", world, sp)`。`SpawnParams` で位置やモデル差し替え可。
+
+- Q: Entity/Component の削除は？
+  - A: `world.Destroy(e)` でエンティティ配下の各コンポーネントを一括削除。個別は `world.Remove<T>(e)`。
+
+- Q: 複数コンポーネントをまとめて処理？
+  - A: `world.View<A, B, C>([](EntityId, A&, B&, C&){ ... });` を使用。
+
+- Q: 衝突イベントはどう受け取る？
+  - A: `Collision2DSystem`（または `PhysicsStepSystem`）が書き込む `CollisionEventBuffer` を介して取得。Goal/Death 判定例は `GoalSystem.cpp` 参照。
+
+- Q: 当たり判定サイズが合わないときは？
+  - A: `Collider2DComponent.aabb.halfX/halfY` と `offset` を調整。見た目と原点がズレている場合は `ModelRendererComponent.localOffset` も活用。
+
+- Q: デバッグ描画で当たりを見たい
+  - A: `CollisionDebugRenderSystem` を Render レジストリに追加し、カメラの `View/Proj` を渡す。
