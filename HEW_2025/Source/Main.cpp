@@ -65,6 +65,7 @@
 #include "System/AssetManager.h"
 #include "System/ImGuiLayer.h"
 #include "System/DebugSettings.h"
+#include "System/DirectX/DirectX.h"
 
  // 追加：ゲーム本体
 #include "Game.h"
@@ -159,14 +160,26 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
                 DebugSettings::Get().imguiEnabled = !DebugSettings::Get().imguiEnabled;
             }
 
-            // ImGuiフレーム開始
+            // フレーム開始（ImGui → 3D描画 → ImGui描画 → Present）
             ImGuiLayer::BeginFrame();
 
+            // 入力とゲーム更新
             Update();
+
+            // バックバッファのクリアとシーン描画
+            BeginDrawDirectX();
             Draw();
 
-            // ImGuiフレーム描画
+            // 念のためデフォルトのレンダーターゲットに戻してからImGui描画
+            {
+                RenderTarget* rtv = GetDefaultRTV();
+                DepthStencil* dsv = GetDefaultDSV();
+                SetRenderTargets(1, &rtv, dsv);
+            }
+            // ImGui描画を行ってからPresent
             ImGuiLayer::EndFrameAndRender();
+            EndDrawDirectX();
+
             lastTick = now;
         }
         else
@@ -195,6 +208,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    // Give ImGui a chance to consume the event first
+    if (ImGuiLayer::WndProcHandler(hWnd, message, wParam, lParam))
+    {
+        return 1;
+    }
+
     switch (message)
     {
     case WM_MOUSEWHEEL:
@@ -249,10 +268,6 @@ void Update()
 
 void Draw()
 {
-    BeginDrawDirectX();
-
-    // ゲーム(ECS)の描画
+    // ゲーム(ECS)の描画のみ。Presentはメインループ側で行う。
     Game_Draw();
-
-    EndDrawDirectX();
 }

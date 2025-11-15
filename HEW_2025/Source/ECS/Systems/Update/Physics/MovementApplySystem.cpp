@@ -32,7 +32,7 @@ void MovementApplySystem::Update(World& world, float dt)
 
             // 3. 入力からターゲット速度を作る
             //    moveX が -1～1なので、これに最大速度を掛けるだけ
-            const float targetVelX = intent.moveX * m_maxSpeedX;
+            const float targetVelX = intent.moveX * m_maxSpeedX * DebugSettings::Get().playerSpeed;
 
             // 実際に使う加速の強さ（地上・空中で変える）
             const float accel = onGround ? m_groundAccel : m_airAccel;

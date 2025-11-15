@@ -115,6 +115,15 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
       <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libs">
+      <UniqueIdentifier>{4167b916-9dc9-487d-ae5d-05ea9263d737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\imgui">
+      <UniqueIdentifier>{0285c10f-8707-4881-9c52-4a9176a63bce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\imgui\backends">
+      <UniqueIdentifier>{df85185b-c38b-4f61-8214-1229d0e17b71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -224,6 +233,27 @@
     </ClCompile>
     <ClCompile Include="Source\System\ImGuiLayer.cpp">
       <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\imgui.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\imgui_demo.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\imgui_draw.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\imgui_tables.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\imgui_widgets.cpp">
+      <Filter>libs\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>libs\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>libs\imgui\backends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +439,30 @@
     </ClInclude>
     <ClInclude Include="Source\System\ImGuiLayer.h">
       <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\imconfig.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\imgui.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\imgui_internal.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\imstb_rectpack.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\imstb_textedit.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\imstb_truetype.h">
+      <Filter>libs\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\backends\imgui_impl_dx11.h">
+      <Filter>libs\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\imgui\backends\imgui_impl_win32.h">
+      <Filter>libs\imgui\backends</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

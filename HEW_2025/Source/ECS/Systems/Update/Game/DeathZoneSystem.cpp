@@ -21,7 +21,9 @@ void DeathZoneSystem::Update(World& world, float dt)
 {
     const bool magmaOn = DebugSettings::Get().magmaEnabled;
     const float speedScale = DebugSettings::Get().magmaSpeedScale;
-     // Deathゾーンを上昇させる
+    const bool god = DebugSettings::Get().godMode;
+
+    // Deathゾーンの上昇処理
     world.View<TransformComponent, Collider2DComponent>(
         [&](EntityId e, TransformComponent& tr, Collider2DComponent& col) 
 {
@@ -29,17 +31,17 @@ void DeathZoneSystem::Update(World& world, float dt)
         {
             if (magmaOn)
             {
-                tr.position.y += dt * kDeathZoneSpeedY * speedScale; // 上昇速度（調整可）
+                tr.position.y += dt * kDeathZoneSpeedY * speedScale; // 上昇速度（倍率）
             }
         }
     });
  
- 	/// Deathゾーンに触れたかチェック
+ 	/// Deathゾーンに被弾したかチェック
     if (!magmaOn || m_triggered || !m_colSys) return;
     CollisionEventBuffer* eventBuffer = m_colSys->GetEventBuffer();
     if (!eventBuffer) return;
-
-    // プレイヤーエンティティを特定
+ 
+    // プレイヤーエンティティ取得
     EntityId player1 = 0, player2 = 0;
     world.View<PlayerInputComponent>(
         [&](EntityId e, const PlayerInputComponent& pic)
@@ -47,18 +49,23 @@ void DeathZoneSystem::Update(World& world, float dt)
             if (player1 == 0) player1 = e;
             else if (player2 == 0) player2 = e;
         });
-
-    // 衝突イベントバッファからプレイヤーとDeathゾーンの衝突を探す
+ 
+    // 衝突イベントバッファからプレイヤーとDeathゾーンの接触を検出
     for (const auto& ev : eventBuffer->events) 
     {
         if ((ev.self == player1 || ev.self == player2) && ev.trigger) 
         {
-			/// プレイヤー側のコライダーを取得
+ 			/// 相手のコライダを取得
             auto* colOther = world.TryGet<Collider2DComponent>(ev.other);
             if (colOther && colOther->layer == Physics::LAYER_DESU_ZONE) 
             {
+                if (god)
+                {
+                    // ゴッドモード中は無視
+                    continue;
+                }
                 m_triggered = true;
-                MessageBoxA(nullptr, "Deathゾーンに当たった！", "Game Over", MB_OK | MB_ICONEXCLAMATION);
+                MessageBoxA(nullptr, "Deathゾーンに接触しました!", "Game Over", MB_OK | MB_ICONEXCLAMATION);
                 break;
             }
         }
