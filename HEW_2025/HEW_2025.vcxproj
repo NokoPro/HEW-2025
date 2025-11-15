@@ -187,6 +187,7 @@
     <ClCompile Include="Source\System\Work\_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FollowerSystem.h" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />

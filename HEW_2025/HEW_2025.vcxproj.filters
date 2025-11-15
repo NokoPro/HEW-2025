@@ -404,5 +404,8 @@
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
+    <ClInclude Include="FollowerSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
