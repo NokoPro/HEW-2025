@@ -399,4 +399,7 @@
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+  </ItemGroup>
 </Project>
