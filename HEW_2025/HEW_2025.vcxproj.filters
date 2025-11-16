@@ -124,6 +124,9 @@
     <Filter Include="libs\imgui\backends">
       <UniqueIdentifier>{df85185b-c38b-4f61-8214-1229d0e17b71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Debug">
+      <UniqueIdentifier>{b989191f-3d96-4184-aef8-155cc51f1a5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -430,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Tag\Tag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\Systems\Update\Debug\DebugSystem.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DebugSettings.h">
       <Filter>Source\ヘッダー ファイル</Filter>

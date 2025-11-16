@@ -1,8 +1,21 @@
+/*****************************************************************//**
+ * @file   ImGuiLayer.cpp
+ * @brief  ImGui レイヤー実装
+ * 
+ * - Dear ImGui の初期化・フレーム制御をまとめた薄いラッパー実装です。
+ * - 本レイヤーは IMGUI_ENABLED が定義されていない場合は空実装になります。
+ * - 表示するステータスを増やしたい場合は、`DebugSettings` に項目を追加し、
+ * -   `ImGuiLayer::BeginFrame()` 内のデバッグウィンドウにウィジェットを追加してください。
+ * - 入力をImGuiへ渡すには、アプリの `WndProc` で `ImGuiLayer::WndProcHandler()` を呼び出します。
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/16
+ *********************************************************************/
 #include "ImGuiLayer.h"
 #include "DirectX/DirectX.h"
 #include "DebugSettings.h"
 
-// We guard all ImGui usage behind IMGUI_ENABLED so the project builds without the library.
+// ImGui 有効化オプション
 #ifdef IMGUI_ENABLED
 
 #  if __has_include("../../libs/imgui/imgui.h")
@@ -23,7 +36,7 @@
 #    define IMGUI_HAS_DX11 1
 #  endif
 
-// Forward declaration of Win32 message handler (signature matches backend cpp).
+// Forward declare the Win32 WndProc handler
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #endif // IMGUI_ENABLED
@@ -34,6 +47,17 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARA
  */
 namespace ImGuiLayer
 {
+    /**
+     * @brief ImGui を初期化します。
+     * @param hWnd アプリケーションの Win32 ウィンドウハンドル。
+     * @details 次の条件が満たされている場合のみ初期化処理を行います:
+     *          IMGUI_ENABLED, IMGUI_HAS_CORE, IMGUI_HAS_WIN32, IMGUI_HAS_DX11。
+     *          ImGui コンテキストの作成、キーボードナビの有効化、
+     *          `ImGui_ImplWin32_Init` と `ImGui_ImplDX11_Init` によるバックエンド初期化を行います。
+     *          DX11 のデバイス/コンテキストは `DirectX/DirectX.h` の `GetDevice()` および `GetContext()` から取得します。
+     * @note 対応する `Shutdown()` を必ず呼び出してリソースを解放してください。
+     * @warning 複数回呼び出す再初期化は想定していません。
+     */
     void Init(HWND hWnd)
     {
 #if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_WIN32) && defined(IMGUI_HAS_DX11)
@@ -72,7 +96,7 @@ namespace ImGuiLayer
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // Simple debug window hook using DebugSettings
+		// --- デバッグウィンドウ ---
         if (DebugSettings::Get().imguiEnabled)
         {
             ImGui::Begin("Debug Settings");

@@ -294,7 +294,6 @@
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
-    <ClInclude Include="Source\ECS\Systems\Update\Debug\DebugSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.h" />
