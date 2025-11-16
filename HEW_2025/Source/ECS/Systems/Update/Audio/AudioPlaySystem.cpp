@@ -33,7 +33,7 @@ void AudioPlaySystem::Update(World& world, float dt)
             return;
 
         audio.PlayBGM("MainBGM", true);
-        audio.SetBGMVolume(0.3f);
+        audio.SetBGMVolume(0.1f);
 
         started = true;
     }
