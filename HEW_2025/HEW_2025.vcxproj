@@ -155,6 +155,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\GoalSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.cpp" />
@@ -191,6 +193,7 @@
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Input\MovementIntentComponent.h" />
     <ClInclude Include="Source\ECS\Components\Input\PlayerInputComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\Collider2DComponent.h" />
@@ -211,6 +214,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h" />
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h" />
@@ -223,6 +227,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.h" />

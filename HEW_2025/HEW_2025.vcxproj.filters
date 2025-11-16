@@ -234,6 +234,12 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Main.h">
@@ -414,6 +420,15 @@
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
