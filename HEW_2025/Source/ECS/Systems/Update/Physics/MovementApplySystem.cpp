@@ -101,13 +101,18 @@ void MovementApplySystem::Update(World& world, float dt)
             // 6. 計算した横速度を戻す
             rb.velocity.x = vx;
 
-            // --- ブリンク処理 ---
+            // --- ブリンク処理（空中限定＆未消費のみ） ---
             if (intent.blinkRequested)
             {
-                rb.velocity.x = intent.blinkSpeed;
+                if (!rb.onGround && !intent.blinkConsumed)
+                {
+                    rb.velocity.x = intent.blinkSpeed;
+                    intent.isBlinking = true;    // ブリンク開始
+                    intent.blinkConsumed = true; // 今回分を消費
+                }
+                // リクエストは毎フレームで必ずクリア（条件未満なら不発）
                 intent.blinkRequested = false;
                 intent.blinkSpeed = 0.0f;
-                intent.isBlinking = true; // ブリンク開始
             }
 
         }
