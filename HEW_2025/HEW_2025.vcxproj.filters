@@ -410,5 +410,8 @@
     <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\FollowerPrefab.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
