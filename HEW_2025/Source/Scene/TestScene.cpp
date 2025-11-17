@@ -11,6 +11,7 @@
 #include "TestScene.h"
 #include "ECS/Systems/SystemRegistry.h"
 #include "ECS/World.h"
+#include "ECS/Tag/Tag.h"
 
  /// ECS コンポーネント群
 #include "ECS/Components/Physics/TransformComponent.h"
