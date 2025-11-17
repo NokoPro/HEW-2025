@@ -3,7 +3,10 @@
  * @brief  ブリンク用UIフォロワーエンティティ生成プレハブ実装
  *
  * 生成後に Scene で FollowerComponent.targetId をプレイヤーへ設定してください。
- */
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/17
+ *********************************************************************/
 #include "PrefabFollowerBlink.h"
 
 #include "ECS/World.h"
@@ -25,7 +28,7 @@ void RegisterFollowerBlinkPrefab(PrefabRegistry& registry)
 
             // Sprite2D (ブリンクUI)
             auto& sp2d = w.Add<Sprite2DComponent>(e);
-            sp2d.alias = "ui_blink"; // アセット側に登録されている前提
+            sp2d.alias = "ui_blink"; // ブリンクのUI
             sp2d.width = 5.0f;
             sp2d.height = 5.0f;
             sp2d.originX = 0.5f;

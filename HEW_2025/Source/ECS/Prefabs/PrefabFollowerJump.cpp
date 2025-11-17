@@ -3,7 +3,10 @@
  * @brief  ジャンプ用UIフォロワーエンティティ生成プレハブ実装
  *
  * 生成後に Scene で FollowerComponent.targetId をプレイヤーへ設定してください。
- */
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/17
+ *********************************************************************/
 #include "PrefabFollowerJump.h"
 
 #include "ECS/World.h"

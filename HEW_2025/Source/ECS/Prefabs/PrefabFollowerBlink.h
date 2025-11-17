@@ -4,7 +4,10 @@
  *
  * プレイヤーに追従しブリンク入力時に表示する "ui_blink" 用スプライトエンティティ。
  * PlayerUISystem が alias="ui_blink" を判定して表示制御。
- */
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/17
+ *********************************************************************/
 #pragma once
 #include "PrefabRegistry.h"
 

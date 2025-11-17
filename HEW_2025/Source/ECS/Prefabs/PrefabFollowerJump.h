@@ -4,7 +4,10 @@
  *
  * プレイヤーに追従しジャンプ入力時に表示する "ui_jump" 用スプライトエンティティ。
  * PlayerUISystem が alias="ui_jump" を判定して表示制御。
- */
+ * 
+ * @author 浅野勇生
+ * @date   2025/11/17
+ *********************************************************************/
 #pragma once
 #include "PrefabRegistry.h"
 
