@@ -58,6 +58,7 @@ namespace
             PrefabRegistry::SpawnParams sp;
             sp.position = { 0.0f, 39.0f, 0.0f };
             sp.scale = { 10.0f, 1.0f, 1.0f };   // 横長の床
+            sp.rotationDeg = { 0.f,0.f,0.f };
             prefabs.Spawn("Floor", world, sp);
         }
 
@@ -351,13 +352,14 @@ TestScene::TestScene()
         cam.aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
         cam.nearZ = 0.1f;
         cam.farZ = 10.0f;
+        cam.fovY = 20.0f;
 
         // サイドビュー用の固定値
         cam.scrollSpeed = kDeathZoneSpeedY;   // 好きな速度に調整
         cam.followOffsetY = 1.5f;
         cam.followMarginY = 0.5f;
         cam.sideFixedX = 0.0f;
-        cam.sideFixedZ = -15.0f;
+        cam.sideFixedZ = -85.0f;
         cam.sideLookAtX = 0.0f;
         cam.lookAtOffset = XMFLOAT3{ 0.0f, 0.0f, 0.0f };
         cam.orthoHeight = 30.0f;
