@@ -306,7 +306,11 @@ TestScene::TestScene()
     // 2Dスプライト描画システム（UI等）
     m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
 
+#ifdef _DEBUG || _IMGUI_ENABLED
+	// デバッグ用当たり判定描画システム
     m_debugCollision = &m_sys.AddRender<CollisionDebugRenderSystem>();
+#endif // _DEBUG
+
 
     // テスト用UIスプライトを1つ生成 (Assets/Data.csv に alias "icon" が登録されている想定)
     //{
