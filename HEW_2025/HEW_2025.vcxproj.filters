@@ -228,6 +228,9 @@
     <ClCompile Include="PlayerUISystem.cpp">
       <Filter>Source\ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Main.h">
@@ -407,7 +410,7 @@
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
-    <ClInclude Include="FollowerSystem.h">
+    <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="PlayerUIComponent.h">
@@ -415,6 +418,9 @@
     </ClInclude>
     <ClInclude Include="PlayerUISystem.h">
       <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

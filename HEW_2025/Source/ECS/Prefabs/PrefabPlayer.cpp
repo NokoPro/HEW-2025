@@ -11,6 +11,7 @@
 #include "PrefabPlayer.h"
 
 #include "ECS/World.h"
+#include "ECS/Tag/Tag.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "ECS/Components/Input/MovementIntentComponent.h"
@@ -35,6 +36,9 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             {
                 return kInvalidEntity;
             }
+
+            //プレイヤーであることを示すタグを付与
+            w.Add<TagPlayer>(e);
 
             // Transform
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
