@@ -3,12 +3,20 @@
  * @brief  プレイヤーのUI描画するかを切り替える処理
  *
  * 時間経過でUIを消す処理
- * 
+ *
  * @author 土本蒼翔
  * @date   2025/11/17
  *********************************************************************/
-#include "PlayerUISystem.h"
+#pragma once
+#include "ECS/Systems/IUpdateSystem.h"
+#include "ECS/Components/Render/PlayerUIComponent.h"
 
-// UIを描画するかどうかの切り替え
+class PlayerUISystem
+{
+public:
+	/*PlayerUISystem();
+	~PlayerUISystem();*/
 
-// 時間経過でUIを消す処理
+	void PlayerUIUpdate();
+
+};

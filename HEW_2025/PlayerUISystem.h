@@ -14,8 +14,6 @@
 class PlayerUISystem
 {
 public:
-	/*PlayerUISystem();
-	~PlayerUISystem();*/
 
 	void PlayerUIUpdate();
 

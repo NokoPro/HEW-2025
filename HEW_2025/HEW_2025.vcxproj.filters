@@ -225,10 +225,10 @@
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerUISystem.cpp">
-      <Filter>Source\ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -413,14 +413,14 @@
     <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerUIComponent.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerUISystem.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\PlayerUIComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
