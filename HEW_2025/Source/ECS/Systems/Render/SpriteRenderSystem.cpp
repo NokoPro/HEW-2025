@@ -14,10 +14,15 @@ void SpriteRenderSystem::Render(const World& world)
 	// 1.描画リストをクリア
 	m_spriteList.clear();
 
-	// 2.すべてのスプライト情報を収集(Cullingは一旦省略)
+	// 2.すべてのスプライトを収集(Cullingは必要なら別途)
 	world.View<TransformComponent, Sprite2DComponent>(
 		[&](EntityId, const TransformComponent& tr, const Sprite2DComponent& sp)
 		{
+            // 非表示ならスキップ（テクスチャ取得もしない）
+            if (!sp.visible) return;
+            // alias が空ならスキップ
+            if (sp.alias.empty()) return;
+
 			// テクスチャ取得 & キャッシュ
 			AssetHandle<Texture> hTexHandle;
 			auto it = m_texCache.find(sp.alias);
@@ -32,7 +37,7 @@ void SpriteRenderSystem::Render(const World& world)
 			}
 
 			Texture* hTex = hTexHandle.get();
-			if (!hTex) return; // テクスチャがない場合はスキップ
+			if (!hTex) return; // テクスチャ無ければスキップ
 
 			// ソート用データ作成
 			SortableSprite spriteData;
@@ -41,12 +46,11 @@ void SpriteRenderSystem::Render(const World& world)
 			spriteData.hTex		= hTex;
 			spriteData.size		= XMFLOAT2(sp.width, sp.height);
 
-			// オフセット計算(Render時に行う計算をここで事前計算)
-			// offset = position + (0.5 - origin) * size
-			spriteData.offset.x = tr.position.x + (0.5 - sp.originX) * sp.width;
-			spriteData.offset.y = tr.position.y + (0.5 - sp.originY) * sp.height;
+			// オフセット計算(Render時に行わないでここで計算)
+			spriteData.offset.x = tr.position.x + (0.5f - sp.originX) * sp.width;
+			spriteData.offset.y = tr.position.y + (0.5f - sp.originY) * sp.height;
 
-			// ワールド行列(Z深度のみ反映し、XYはオフセットで扱う仕様に準拠)
+			// ワールド行列(Zレベルだけ反映。XYはオフセットで表現)
 			XMMATRIX W = XMMatrixTranslation(0.0f, 0.0f, tr.position.z);
 			XMStoreFloat4x4(&spriteData.world, XMMatrixTranspose(W));
 
@@ -56,20 +60,18 @@ void SpriteRenderSystem::Render(const World& world)
 	);
 
 	// 3.ソート
-	// ルート1:レイヤーが小さい順(奥->手前)
-	// ルート2:レイヤーが同じなら、Zが大きい順(奥->手前) ※Zが小さいほど手前という仕様のため
 	std::sort(m_spriteList.begin(), m_spriteList.end(),
 		[](const SortableSprite& a, const SortableSprite& b)
 		{
 			if (a.layer != b.layer)
 			{
-				return a.layer < b.layer; // レイヤー昇順(-10, 0, 10)
+				return a.layer < b.layer; // レイヤー優先(-10, 0, 10)
 			}
-			return a.zDepth > b.zDepth; // Z降順 (5.0, 0.0, -5.0) = 奥から手前へ
+			return a.zDepth > b.zDepth; // Z降順 (大きい=手前)
 		}
 	);
 
-	// 4.描画実行順
+	// 4.描画
 	Sprite::SetView(m_view);
 	Sprite::SetProjection(m_proj);
 

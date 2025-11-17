@@ -29,10 +29,7 @@ void PlayerUISystem::Update(World& world, float dt)
             {
                 ui.playerHI = true;            // ジャンプ通知
                 ui.playerUItimer = 1.0f;       // 表示時間リセット
-                if (sp.alias.empty())
-                {
-                    sp.alias = "uI_HOP";     // ジャンプUI用のテクスチャエイリアス
-                }
+                sp.visible = true;             // 描画ON（alias は固定: 例 "ui_jump"）
             }
 
             // タイマ減衰
@@ -43,7 +40,7 @@ void PlayerUISystem::Update(World& world, float dt)
                 {
                     ui.playerHI = false;
                     ui.playerUItimer = 0.0f;
-                    sp.alias.clear(); // 非表示にする
+                    sp.visible = false;        // 描画OFF
                 }
             }
         }

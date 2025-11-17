@@ -33,7 +33,16 @@ struct Sprite2DComponent
      * 手前に描画されます(Zソート)。
      */
     int layer = 0;
+
+    /**
+     * @brief 描画有効フラグ
+     * @details true のときのみ描画処理とテクスチャ取得を行います。
+     */
+    bool visible = true;
 };
+
+
+
 
 
 
