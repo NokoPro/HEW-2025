@@ -13,8 +13,8 @@
 // 表示保持時間
 static constexpr float UI_SHOW_TIME = 1.0f;
 // オフセット（カメラのオーソサイズに合わせ小さめ)
-static constexpr float OFFSET_JUMP_Y  = 3.0f;
-static constexpr float OFFSET_BLINK_Y = 3.0f;
+static constexpr float OFFSET_JUMP_Y  = 3.03f;       // 無理やり合わせてるから本番は統一
+static constexpr float OFFSET_BLINK_Y = 2.999f;
 
 void PlayerUISystem::Update(World& world, float dt)
 {

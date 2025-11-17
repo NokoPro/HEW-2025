@@ -39,7 +39,7 @@ void RegisterFollowerBlinkPrefab(PrefabRegistry& registry)
             // Follower (targetId は後で設定)
             auto& fol = w.Add<FollowerComponent>(e);
             fol.targetId = 0;      // 未設定
-            fol.offset = {1.3f, 6.0f}; // PlayerUISystemで再設定されるため初期値のみ
+            fol.offset = {-1.45f, 6.0f}; // PlayerUISystemで再設定されるため初期値のみ
 
             // UI状態コンポーネント
             w.Add<PlayerUIComponet>(e);
