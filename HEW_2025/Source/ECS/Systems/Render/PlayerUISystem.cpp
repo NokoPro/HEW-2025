@@ -2,37 +2,42 @@
 /* @file   PlayerUISystem.cpp
  * @brief  プレイヤーのUI描画するかを切り替える処理
  *
- * ルール: プレイヤーがジャンプ入力した瞬間にUI表示を有効化し、
- * 一定時間経過で自動的に非表示。
+ * ルール: 対象プレイヤー(=FollowerComponent.targetId)がジャンプ入力/強制ジャンプ要求した瞬間に
+ * UI表示を有効化し、一定時間経過で自動的に非表示。
  *
  * @author 土本蒼翔
  * @date   2025/11/17
  *********************************************************************/
 #include "PlayerUISystem.h"
+#include "ECS/Components/Render/FollowerComponent.h"
+#include "ECS/Components/Input/PlayerInputComponent.h"
 
 void PlayerUISystem::Update(World& world, float dt)
 {
-    // 1) 入力を見て、ジャンプが押されたらUIを点灯
-    bool anyJump = false;
-    world.View<PlayerInputComponent, MovementIntentComponent>(
-        [&](EntityId, const PlayerInputComponent&, const MovementIntentComponent& intent)
+    // 各UIエンティティごとに、対応するターゲットの入力状態を参照して表示を切替
+    world.View<FollowerComponent, PlayerUIComponet, Sprite2DComponent>(
+        [&](EntityId /*uiEnt*/, const FollowerComponent& follower, PlayerUIComponet& ui, Sprite2DComponent& sp)
         {
-            if (intent.forceJumpRequested) anyJump = true;
-        }
-    );
-
-    // 2) UIエンティティ群を更新（点灯/消灯、タイマ更新）
-    world.View<PlayerUIComponet, Sprite2DComponent>(
-        [&](EntityId, PlayerUIComponet& ui, Sprite2DComponent& sp)
-        {
-            if (anyJump)
+            // ターゲットのMovementIntentを取得
+            const PlayerInputComponent* intent = world.TryGet<PlayerInputComponent>(follower.targetId);
+            bool trigger = false;
+            if (intent)
             {
-                ui.playerHI = true;            // ジャンプ通知
-                ui.playerUItimer = 1.0f;       // 表示時間リセット
-                sp.visible = true;             // 描画ON（alias は固定: 例 "ui_jump"）
+                // 強制ジャンプ要求で点灯
+                if (intent->isJumpRequested)
+                {
+                    trigger = true;
+                }
             }
 
-            // タイマ減衰
+            if (trigger)
+            {
+                ui.playerHI = true;      // 点灯フラグ
+                ui.playerUItimer = 1.0f; // 表示時間リセット
+                sp.visible = true;       // 表示ON（テクスチャaliasは固定でOK）
+            }
+
+            // タイマ減衰して自動消灯
             if (ui.playerHI)
             {
                 ui.playerUItimer -= dt;
@@ -40,7 +45,7 @@ void PlayerUISystem::Update(World& world, float dt)
                 {
                     ui.playerHI = false;
                     ui.playerUItimer = 0.0f;
-                    sp.visible = false;        // 描画OFF
+                    sp.visible = false;  // 表示OFF
                 }
             }
         }

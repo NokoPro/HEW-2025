@@ -38,7 +38,7 @@ void RegisterWallPrefab(PrefabRegistry& registry)
             mr.visible = true;
 
             // ƒŒƒCƒ„[
-            //mr.layer = 10;
+            mr.layer = 20;
 
             if (mr.model)
             {

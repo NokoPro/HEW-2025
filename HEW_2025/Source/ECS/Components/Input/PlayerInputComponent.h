@@ -10,4 +10,5 @@
 struct PlayerInputComponent
 {
     int playerIndex = 0;   ///< 0番なら1P、1番なら2P、など
+	bool isJumpRequested = false; // ジャンプ入力があったか
 };

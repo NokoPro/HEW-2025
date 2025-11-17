@@ -38,7 +38,7 @@ namespace Prefabs
 				sp.alias = cfg.textureName;
 				sp.width = cfg.width;
 				sp.height = cfg.height;
-				sp.layer = 5; // プレイヤーより少し手前に表示
+				sp.layer = 205; // プレイヤーより少し手前に表示
 				// 原点を足元にするなら(0.5, 1.0)など調整
 				sp.originX = 0.5f;
 				sp.originY = 0.5f;
@@ -64,8 +64,8 @@ inline void RegisterFollowerPrefab(PrefabRegistry& registry)
 	// テスト用に既存の画像を指定
 	// 本番用の画像があれば指定する
 	cfg.textureName = "ui_HOP";
-	cfg.width = 40.0f;
-	cfg.height = 40.0f;
+	cfg.width = 6.0f;
+	cfg.height = 6.0f;
 
 	// "Follower"という名前で作成機能を登録
 	registry.Register("Follower", Prefabs::MakeFollowerPrefab(cfg));

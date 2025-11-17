@@ -36,7 +36,7 @@ void FollowerSystem::Update(World& world, float dt)
 				// ZŽ²‚ÍˆÛŽ‚µAXY‚Ì‚Ý’Ç]
 				const auto& targetPos = it->second;
 				tr.position.x = targetPos.x;
-				tr.position.y = targetPos.y;
+				tr.position.y = targetPos.y + 3;
 			}
 		}
 	);

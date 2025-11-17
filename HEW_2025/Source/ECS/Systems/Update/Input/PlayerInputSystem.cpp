@@ -25,23 +25,37 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     // 各プレイヤーのIntent取得
     MovementIntentComponent* intent1 = nullptr;
     MovementIntentComponent* intent2 = nullptr;
+
+	PlayerInputComponent* pic1 = nullptr;
+	PlayerInputComponent* pic2 = nullptr;
+
     world.View<PlayerInputComponent, MovementIntentComponent>(
-        [&](EntityId, const PlayerInputComponent& pic, MovementIntentComponent& intent) {
-            if (pic.playerIndex == 0) intent1 = &intent;
-            if (pic.playerIndex == 1) intent2 = &intent;
+        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent) {
+            if (pic.playerIndex == 0) 
+            {
+                intent1 = &intent;
+				pic1 = &pic;
+			}
+            if (pic.playerIndex == 1)
+            {
+                intent2 = &intent;
+				pic2 = &pic;
+            }
         }
     );
 
     // 入力初期化・入力反映
     world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent>(
         [&](EntityId,
-            const PlayerInputComponent& pic,
+            PlayerInputComponent& pic,
             MovementIntentComponent& intent,
             TransformComponent& tr)
         {
             intent.moveX = 0.0f;
             intent.jump = false;
             intent.dash = false;
+			pic.isJumpRequested = false;
+
             // 向きはmoveX入力で更新
             switch (pic.playerIndex)
             {
@@ -66,12 +80,14 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
+			pic1->isJumpRequested = true;
         }
     }
     if (intent1 && !intent1->forceJumpConsumed) {
         if (IsPadTrigger(1, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
             intent1->forceJumpRequested = true;
             intent1->forceJumpConsumed = true;
+			pic2->isJumpRequested = true;
         }
     }
 
