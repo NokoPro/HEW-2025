@@ -51,7 +51,7 @@ static const char* APP_TITLE = "DX22_2PGame";
 /** @name DeathZone 関連定数 */
 //@{
 /** @brief DeathZone の垂直移動速度 (Y方向) */
-constexpr static float kDeathZoneSpeedY = 0.5f; ///< DeathZoneのY速度
+constexpr static float kDeathZoneSpeedY = 0.f; ///< DeathZoneのY速度
 /** @brief DeathZone の半分の高さ (ワールド単位) */
 constexpr static float kDeathZoneHalfHeight = METER(15.f); ///< DeathZoneの高さ半分
 //@}

@@ -44,6 +44,8 @@
 #include "ECS/Prefabs/PrefabGoal.h"
 #include "ECS/Prefabs/PrefabDeathZone.h"
 #include "ECS/Prefabs/PrefabFollower.h"
+#include "ECS/Prefabs/PrefabFollowerJump.h"
+#include "ECS/Prefabs/PrefabFollowerBlink.h"
 
 #include <cstdio>
 #include <DirectXMath.h>
@@ -172,10 +174,10 @@ namespace
 		{
 			PrefabRegistry::SpawnParams sp;
 			sp.position = { 2.5f, 17.5f, 0.0f };
-			sp.scale = { 2.0f, 0.5f, 1.0f };
-			sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
-			prefabs.Spawn("StaticBlock", world, sp);
-		}
+		 sp.scale = { 2.0f, 0.5f, 1.0f };
+            sp.modelAlias = "mdl_ground"; // 別のモデルにしたかったらここだけ変える
+            prefabs.Spawn("StaticBlock", world, sp);
+        }
         {
 			PrefabRegistry::SpawnParams sp;
 			sp.position = { 2.5f, 25.5f, 0.0f };
@@ -225,7 +227,9 @@ TestScene::TestScene()
     RegisterStaticBlockPrefab(m_prefabs);
     RegisterGoalPrefab(m_prefabs); // ゴールプレハブ登録
     RegisterDeathZonePrefab(m_prefabs); // Deathゾーンプレハブ登録
-    RegisterFollowerPrefab(m_prefabs); // フォロワープレハブの追加
+    RegisterFollowerPrefab(m_prefabs); // 旧汎用フォロワープレハブ(後方互換)
+    RegisterFollowerJumpPrefab(m_prefabs);  // 新: ジャンプUI専用フォロワー
+    RegisterFollowerBlinkPrefab(m_prefabs); // 新: ブリンクUI専用フォロワー
 
     //
     // 1. アセット取得
@@ -271,30 +275,30 @@ TestScene::TestScene()
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
     
-    // 2Dスプライト描画システム（UI等）
-    m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
-
     // 2-5 描画
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
+
+    // 2Dスプライト描画システム（UI等）
+    m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
 
     m_debugCollision = &m_sys.AddRender<CollisionDebugRenderSystem>();
 
     // テスト用UIスプライトを1つ生成 (Assets/Data.csv に alias "icon" が登録されている想定)
-    {
-        EntityId ui = m_world.Create();
-        if (ui != kInvalidEntity)
-        {
-            m_world.Add<TransformComponent>(ui, XMFLOAT3{ 0.0f, 20.0f, 0.0f }, XMFLOAT3{ 0.0f, 0.0f, 0.0f }, XMFLOAT3{ 1.0f, 1.0f, 1.0f });
-            Sprite2DComponent sp;
-            sp.alias = "tex_background"; // alias must exist in Assets/Data.csv
+    //{
+    //    EntityId ui = m_world.Create();
+    //    if (ui != kInvalidEntity)
+    //    {
+    //        m_world.Add<TransformComponent>(ui, XMFLOAT3{ 0.0f, 20.0f, 0.0f }, XMFLOAT3{ 0.0f, 0.0f, 0.0f }, XMFLOAT3{ 1.0f, 1.0f, 1.0f });
+    //        Sprite2DComponent sp;
+    //        sp.alias = "tex_background"; // alias must exist in Assets/Data.csv
 
-            sp.width = 70.0f;
-            sp.height = 50.0f;
-            sp.originX = 0.5f;
-            sp.originY = 0.6f;
-            m_world.Add<Sprite2DComponent>(ui, sp);
-        }
-    }
+    //        sp.width = 70.0f;
+    //        sp.height = 50.0f;
+    //        sp.originX = 0.5f;
+    //        sp.originY = 0.6f;
+    //        m_world.Add<Sprite2DComponent>(ui, sp);
+    //    }
+    //}
 
     //
     // 3. ステージ作成
@@ -313,7 +317,7 @@ TestScene::TestScene()
 
     //
     // 4. プレイヤー生成（カメラのターゲット）
-    //
+    // プレイヤー1 + UI
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { -10.0f, -10.0f, 0.0f };
@@ -324,18 +328,27 @@ TestScene::TestScene()
 
         m_playerEntity = m_prefabs.Spawn("Player", m_world, sp);
 
-        // P1用のフォロワー生成
-        PrefabRegistry::SpawnParams spF;
-        spF.position = sp.position;
-        EntityId f1 = m_prefabs.Spawn("Follower", m_world, spF);
-
-        // P1のIDをセット
-        if (m_world.Has<FollowerComponent>(f1))
+        // --- 1P用ジャンプUIフォロワー生成 ---
         {
-            m_world.Get<FollowerComponent>(f1).targetId = m_playerEntity;
+            PrefabRegistry::SpawnParams spF; spF.position = sp.position;
+            EntityId jumpUI = m_prefabs.Spawn("FollowerJump", m_world, spF);
+            if (m_world.Has<FollowerComponent>(jumpUI))
+            {
+                m_world.Get<FollowerComponent>(jumpUI).targetId = m_playerEntity; // 1Pに追従
+            }
         }
-    }
+        // --- 1P用ブリンクUIフォロワー生成 ---
+        {
+            PrefabRegistry::SpawnParams spF; spF.position = sp.position;
+            EntityId blinkUI = m_prefabs.Spawn("FollowerBlink", m_world, spF);
+            if (m_world.Has<FollowerComponent>(blinkUI))
+            {
+                m_world.Get<FollowerComponent>(blinkUI).targetId = m_playerEntity; // 1Pに追従
+            }
+        }
+    } // <-- 1P ブロック閉じ
 
+    // プレイヤー2 + UI
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 10.0f, -10.0f, 0.0f };
@@ -346,17 +359,25 @@ TestScene::TestScene()
 
         m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
 
-        // P2用のフォロワー生成
-        PrefabRegistry::SpawnParams spF;
-        spF.position = sp.position;
-        EntityId f2 = m_prefabs.Spawn("Follower", m_world, spF);
-
-        // P2のIDをセット
-        if (m_world.Has<FollowerComponent>(f2))
+        // --- 2P用ジャンプUIフォロワー生成 ---
         {
-            m_world.Get<FollowerComponent>(f2).targetId = m_playerEntity2;
+            PrefabRegistry::SpawnParams spF; spF.position = sp.position;
+            EntityId jumpUI = m_prefabs.Spawn("FollowerJump", m_world, spF);
+            if (m_world.Has<FollowerComponent>(jumpUI))
+            {
+                m_world.Get<FollowerComponent>(jumpUI).targetId = m_playerEntity2; // 2Pに追従
+            }
         }
-    }
+        // --- 2P用ブリンクUIフォロワー生成 ---
+        {
+            PrefabRegistry::SpawnParams spF; spF.position = sp.position;
+            EntityId blinkUI = m_prefabs.Spawn("FollowerBlink", m_world, spF);
+            if (m_world.Has<FollowerComponent>(blinkUI))
+            {
+                m_world.Get<FollowerComponent>(blinkUI).targetId = m_playerEntity2; // 2Pに追従
+            }
+        }
+    } // <-- 2P ブロック閉じ
 
     // Deathゾーン生成（画面下部に設置）
     {

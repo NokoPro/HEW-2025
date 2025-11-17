@@ -1,7 +1,8 @@
 /*****************************************************************//**
- * @file   FollowerPrefab.h 
- * @brief       
-  * 
+ * @file   PrefabFollower.h 
+ * @brief  旧: フォロワーUIプレハブ (ジャンプ/ブリンク分離版は PrefabFollowerJump/Blink を参照)
+ * 
+ * 既存の呼び出し互換のため残すが、新規は RegisterFollowerJumpPrefab / RegisterFollowerBlinkPrefab を使用。
  * @author 川谷優真
  * @date   2025/11/17
  *********************************************************************/
@@ -26,33 +27,28 @@ namespace Prefabs
 		return[cfg](World& world, const PrefabRegistry::SpawnParams& p)->EntityId
 			{
 				const EntityId e = world.Create();
+				if (e == kInvalidEntity) return kInvalidEntity;
 
-				// 1.位置(Transform)
-				auto& tr = world.Add<TransformComponent>(e);
-				tr.position = p.position;
-				tr.rotationDeg = p.rotationDeg;
-				tr.scale = p.scale;
+				// Transform
+				world.Add<TransformComponent>(e, p.position, p.rotationDeg, p.scale);
 
-				// 2.画像(Sprite2D)
+				// Sprite2D (旧:汎用。現行はジャンプ用に ui_jump を想定)
 				auto& sp = world.Add<Sprite2DComponent>(e);
-				sp.alias = cfg.textureName;
+				sp.alias = cfg.textureName; // 例: "ui_jump"
 				sp.width = cfg.width;
 				sp.height = cfg.height;
-				sp.layer = 205; // プレイヤーより少し手前に表示
-				// 原点を足元にするなら(0.5, 1.0)など調整
+				sp.layer = 100;
 				sp.originX = 0.5f;
 				sp.originY = 0.5f;
 				sp.visible = false;
 
-				// 3.追従機能(Follower)
-				// targetIdは精製後にSceneGameで設定するため、ここでは初期値
+				// Follower
 				auto& fol = world.Add<FollowerComponent>(e);
 				fol.targetId = 0;
+				fol.offset = {0.0f,4.0f};
 
+				// UI状態
 				world.Add<PlayerUIComponet>(e);
-
-
-
 				return e;
 			};
 	}
@@ -60,13 +56,10 @@ namespace Prefabs
 
 inline void RegisterFollowerPrefab(PrefabRegistry& registry)
 {
+	// 旧API: 汎用フォロワー (ジャンプ用)
 	Prefabs::FollowerConfig cfg;
-	// テスト用に既存の画像を指定
-	// 本番用の画像があれば指定する
-	cfg.textureName = "ui_HOP";
-	cfg.width = 6.0f;
-	cfg.height = 6.0f;
-
-	// "Follower"という名前で作成機能を登録
+	cfg.textureName = "ui_jump";
+	cfg.width = 10.0f;
+	cfg.height = 10.0f;
 	registry.Register("Follower", Prefabs::MakeFollowerPrefab(cfg));
 }

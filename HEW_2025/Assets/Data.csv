@@ -6,4 +6,5 @@ texture,Assets/Texture/ugoku.png,ui_gauge_frame,2,0,1
 texture,Assets/Texture/circle.png,ui_gauge_target,2,0,1
 texture,Assets/Texture/tex_Background.jpg,tex_background,2,0,1
 model,Assets/Model/Block/sand_B.fbx,mdl_deathzone,2,0,1
-texture,Assets/Texture/UI/Hew_UI_HOP.png,ui_HOP,2,0,1
+texture,Assets/Texture/UI/Hew_UI_HOP.png,ui_jump,2,0,1
+texture,Assets/Texture/UI/UI_flip.png,ui_blink,2,0,1

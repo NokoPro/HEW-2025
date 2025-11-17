@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* @file   PlayerUISystem.cpp
- * @brief  プレイヤーのUI描画するかを切り替える処理（更新システム）
+ * @brief  プレイヤーのUI描画制御システム
  *
  * 時間経過でUIを消す処理
  *
@@ -10,11 +10,11 @@
 #pragma once
 #include "ECS/Systems/IUpdateSystem.h"
 #include "ECS/World.h"
-
 #include "ECS/Components/Render/PlayerUIComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
+#include "ECS/Components/Render/FollowerComponent.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
-#include "ECS/Components/Input/MovementIntentComponent.h"
+#include "System/Input.h" // パッド/キー入力取得
 
 class PlayerUISystem : public IUpdateSystem
 {

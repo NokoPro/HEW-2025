@@ -1,80 +1,106 @@
 /*********************************************************************/
 /* @file   PlayerUISystem.cpp
- * @brief  プレイヤーのUI描画するかを切り替える処理
+ * @brief  プレイヤー入力(強制ジャンプ/ブリンク)に応じたUI表示制御 (同時表示対応 / 個別タイマ)
  *
- * ルール: 対象プレイヤー(=FollowerComponent.targetId)がジャンプ入力/強制ジャンプ要求した瞬間に
- * UI表示を有効化し、一定時間経過で自動的に非表示。
- *
- * @author 土本蒼翔
+ * 各UIエンティティは alias ("ui_jump" / "ui_blink") で種類識別し、
+ * PlayerUIComponet でジャンプ/ブリンクを個別のタイマとフラグで管理。
+ * 
+ * @author 土本 蒼翔
  * @date   2025/11/17
  *********************************************************************/
 #include "PlayerUISystem.h"
-#include "ECS/Components/Render/FollowerComponent.h"
-#include "ECS/Components/Input/PlayerInputComponent.h"
+
+// 表示保持時間
+static constexpr float UI_SHOW_TIME = 1.0f;
+// オフセット（カメラのオーソサイズに合わせ小さめ)
+static constexpr float OFFSET_JUMP_Y  = 3.0f;
+static constexpr float OFFSET_BLINK_Y = 3.0f;
 
 void PlayerUISystem::Update(World& world, float dt)
 {
-    // 各UIエンティティごとに、対応するターゲットの入力状態を参照して表示を切替
-    world.View<FollowerComponent, PlayerUIComponet, Sprite2DComponent>(
-        [&](EntityId /*uiEnt*/, const FollowerComponent& follower, PlayerUIComponet& ui, Sprite2DComponent& sp)
+    // プレイヤー番号ごとの入力状態取得
+    // プレイヤーインデックス -> 入力トリガ保持
+    bool playerForceJump[2] = { false,false };
+    bool playerBlink[2]     = { false,false };
+
+    world.View<PlayerInputComponent>(
+        [&](EntityId, const PlayerInputComponent& pic)
         {
-            // ターゲットのMovementIntentを取得
-            const PlayerInputComponent* intent = world.TryGet<PlayerInputComponent>(follower.targetId);
-            bool JumpTrigger = false;
-            bool BlinkTrigger = false;
-            if (intent)
+            const int idx = pic.playerIndex;
+            if (idx < 0 || idx > 1) return; // 想定外はスキップ
+
+            // 強制ジャンプ(RB) ※押した瞬間のみUI表示をトリガ
+            if (IsPadTrigger(idx, XINPUT_GAMEPAD_RIGHT_SHOULDER))
             {
-                // 強制ジャンプ要求で点灯
-                if (intent->isJumpRequested)
+                playerForceJump[idx] = true;
+            }
+            // ブリンク(LB)
+            if (IsPadTrigger(idx, XINPUT_GAMEPAD_LEFT_SHOULDER))
+            {
+                playerBlink[idx] = true;
+            }
+        }
+    );
+
+    // UIエンティティ更新: Follower + PlayerUI + Sprite
+    world.View<FollowerComponent, PlayerUIComponet, Sprite2DComponent>(
+        [&](EntityId, FollowerComponent& follower, PlayerUIComponet& ui, Sprite2DComponent& sp)
+        {
+            // 追従対象の PlayerInputComponent が必要
+            const PlayerInputComponent* input = world.TryGet<PlayerInputComponent>(follower.targetId);
+            if (!input) { sp.visible = false; return; }
+            int idx = input->playerIndex;
+            if (idx < 0 || idx > 1) { sp.visible = false; return; }
+
+            // ジャンプUI
+            if (sp.alias == "ui_jump")
+            {
+                if (playerForceJump[idx])
                 {
-                    JumpTrigger = true;
+                    ui.jumpActive = true;
+                    ui.jumpTimer  = UI_SHOW_TIME;
+                    sp.visible = true;
+                    follower.offset.y = OFFSET_JUMP_Y;
                 }
-
-                // 強制ブリンク要求で点灯
-                if (intent->isBlinkRequested)
+                if (ui.jumpActive)
                 {
-                    BlinkTrigger = true;
+                    ui.jumpTimer -= dt;
+                    if (ui.jumpTimer <= 0.0f)
+                    {
+                        ui.jumpActive = false;
+                        ui.jumpTimer = 0.0f;
+                        sp.visible = false;
+                    }
                 }
+                ui.playerHI = ui.jumpActive; // 旧互換
+                ui.playerUItimer = ui.jumpTimer;
+                return;
             }
-
-            if (JumpTrigger)
+            // ブリンクUI
+            if (sp.alias == "ui_blink")
             {
-                ui.playerHI = true;      // 点灯フラグ
-                ui.playerUItimer = 1.0f; // 表示時間リセット
-                sp.visible = true;       // 表示ON（テクスチャaliasは固定でOK）
-            }
-
-            // タイマ減衰して自動消灯
-            if (ui.playerHI)
-            {
-                ui.playerUItimer -= dt;
-                if (ui.playerUItimer <= 0.0f)
+                if (playerBlink[idx])
                 {
-                    ui.playerHI = false;
-                    ui.playerUItimer = 0.0f;
-                    sp.visible = false;  // 表示OFF
+                    ui.blinkActive = true;
+                    ui.blinkTimer  = UI_SHOW_TIME;
+                    sp.visible = true;
+                    follower.offset.y = OFFSET_BLINK_Y;
                 }
-            }
-
-            if (BlinkTrigger)
-            {
-                ui.playerYO = true;      // 点灯フラグ
-                ui.playerUItimer = 1.0f; // 表示時間リセット
-                sp.visible = true;       // 表示ON（テクスチャaliasは固定でOK）
-            }
-
-            // タイマ減衰して自動消灯
-            if (ui.playerYO)
-            {
-                ui.playerUItimer -= dt;
-                if (ui.playerUItimer <= 0.0f)
+                if (ui.blinkActive)
                 {
-                    ui.playerYO = false;
-                    ui.playerUItimer = 0.0f;
-                    sp.visible = false;  // 表示OFF
+                    ui.blinkTimer -= dt;
+                    if (ui.blinkTimer <= 0.0f)
+                    {
+                        ui.blinkActive = false;
+                        ui.blinkTimer = 0.0f;
+                        sp.visible = false;
+                    }
                 }
+                ui.playerYO = ui.blinkActive; // 旧互換
+                return;
             }
-
+            // その他は非表示
+            sp.visible = false;
         }
     );
 }

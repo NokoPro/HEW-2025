@@ -35,8 +35,8 @@ void FollowerSystem::Update(World& world, float dt)
 				// 見つかったら、その座標(it->second)をコピー
 				// Z軸は維持し、XYのみ追従
 				const auto& targetPos = it->second;
-				tr.position.x = targetPos.x;
-				tr.position.y = targetPos.y + 3;
+				tr.position.x = targetPos.x + follower.offset.x;
+				tr.position.y = targetPos.y + follower.offset.y;
 			}
 		}
 	);

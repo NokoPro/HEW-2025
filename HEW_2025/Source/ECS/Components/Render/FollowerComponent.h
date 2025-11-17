@@ -10,11 +10,12 @@
 #include <DirectXMath.h>
 
 /**
- * @brief 他のエンティティに追従するコンポーネント.
+ * @brief このエンティティを targetId の位置へ追従させるコンポーネント
  */
 struct FollowerComponent
 {
-	EntityId targetId = 0; // 追従対象のエンティティID
+	EntityId targetId = 0;              // 追従対象のエンティティID
+	DirectX::XMFLOAT2 offset{0.0f,0.0f}; // 追従時に加算するXYオフセット（UI位置調整など）
 };
 
 
