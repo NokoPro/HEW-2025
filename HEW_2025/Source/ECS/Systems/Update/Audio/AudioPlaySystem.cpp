@@ -8,10 +8,11 @@
 
 void AudioPlaySystem::Update(World& world, float dt)
 {
+   
+
+
     static bool started = false;
-    auto& audio = AudioManagerSystem::Instance();
-    auto& P1SE = AudioManagerSystem::Instance();
-    auto& P2SE = AudioManagerSystem::Instance();
+  
     bool onGround1 = false;
     bool onGround2 = false;
 
@@ -19,26 +20,17 @@ void AudioPlaySystem::Update(World& world, float dt)
 
     if (!started)
     {
-
-        audio.Initialize();
-        P1SE.Initialize();
-        P2SE.Initialize();
-
-        if (!audio.LoadBGM("MainBGM", L"Assets/Audio/BGM.wav"))
-            return;
-
-        if (!P1SE.LoadBGM("JumpSE", L"Assets/Audio/jump.wav"))  // SEもロード
-            return;
-        if (!P2SE.LoadBGM("JumpSE1", L"Assets/Audio/jump1.wav"))  // SEもロード
-            return;
-
-        audio.PlayBGM("MainBGM", true);
-        audio.SetBGMVolume(0.1f);
+        AudioManager::Initialize();
+        AudioManager::LoadAudio("MainBGM", L"Assets/Audio/BGM.wav");
+        AudioManager::PlayBGM("MainBGM", true);
+        AudioManager::LoadAudio("JumpP1", L"Assets/Audio/jump.wav");
+        AudioManager::LoadAudio("JumpP2", L"Assets/Audio/jump1.wav");
+        AudioManager::SetBGMVolume(0.1f);
+    
 
         started = true;
     }
 
-    // auto& audio = AudioManagerSystem::Instance();
     // 各プレイヤーのIntent取得
     MovementIntentComponent* intent1 = nullptr;
     MovementIntentComponent* intent2 = nullptr;
@@ -69,8 +61,8 @@ void AudioPlaySystem::Update(World& world, float dt)
         if (intent1->jump)
         {
             onSE1 = false;
-            P1SE.PlaySE("JumpSE", 0.8f); // 音量 0.8
-
+           
+            AudioManager::PlaySE("JumpP1", 0.8f);
         }
     }
    if (onSE2)
@@ -78,8 +70,8 @@ void AudioPlaySystem::Update(World& world, float dt)
        if (intent2->jump)
        {
            onSE2 = false;
-           P2SE.PlaySE("JumpSE1", 0.8f); // 音量 0.8
-
+           
+           AudioManager::PlaySE("JumpP2", 0.8f);
        }
     }
    

@@ -3,44 +3,37 @@
 #include <xaudio2.h>
 #include <map>
 
-class AudioManagerSystem
+
+
+class AudioManager
 {
 public:
-    static AudioManagerSystem& Instance()
-    {
-        static AudioManagerSystem inst;
-        return inst;
-    }
-
-    bool Initialize();
-    bool LoadBGM(const std::string& name, const std::wstring& filepath);
-    void PlayBGM(const std::string& name, bool loop);
-    void StopBGM();
-    void SetBGMVolume(float vol);
-    void PlaySE(const std::string& name, float volume );
-
+    static bool Initialize();
+    static bool LoadAudio(const std::string& name,const std::wstring filepath);
+    static void PlayBGM(const std::string& name, bool loop);
+    static void StopBGM();
+    static void SetBGMVolume(float vol);
+    static void PlaySE(const std::string& naem, float volume);
 
 private:
-    AudioManagerSystem() = default;
-    ~AudioManagerSystem();
+    AudioManager() = delete; //インスタンス禁止
+    ~AudioManager() = delete;
 
-    IXAudio2* xAudio = nullptr;
-    IXAudio2MasteringVoice* masterVoice = nullptr;
+    static IXAudio2* xAudio;
+    static IXAudio2MasteringVoice* masterVoice;
 
     struct SoundData {
         WAVEFORMATEX wfx{};
         XAUDIO2_BUFFER buffer{};
         BYTE* audioData = nullptr;
     };
+    static IXAudio2SourceVoice* bgmVoice;
+    static std::map<std::string, SoundData> sounds;
 
-    IXAudio2SourceVoice* bgmVoice = nullptr;
-    std::map<std::string, SoundData> sounds;
-
-    struct SEVoice
-    {
+    struct SEVoice {
         IXAudio2SourceVoice* voice = nullptr;
         bool playing = false;
     };
 
-    std::map<std::string, SEVoice> seVoices; // 各 SE の再生状態を保持
+    static std::map<std::string, SEVoice> seVoices;
 };
