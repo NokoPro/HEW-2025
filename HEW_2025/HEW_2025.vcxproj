@@ -149,6 +149,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PlayerUISystem.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp" />
@@ -188,6 +189,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FollowerSystem.h" />
+    <ClInclude Include="PlayerUIComponent.h" />
+    <ClInclude Include="PlayerUISystem.h" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
