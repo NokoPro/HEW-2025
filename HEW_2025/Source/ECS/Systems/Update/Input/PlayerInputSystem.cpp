@@ -55,6 +55,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent.jump = false;
             intent.dash = false;
 			pic.isJumpRequested = false;
+            pic.isBlinkRequested = false;
 
             // Œü‚«‚ÍmoveX“ü—Í‚ÅXV
             switch (pic.playerIndex)
@@ -99,6 +100,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent2->blinkRequested = true;
             intent2->blinkConsumed = true;
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
+            pic1->isBlinkRequested = true;
         }
     }
     if (intent1 && !intent1->blinkConsumed) 
@@ -107,6 +109,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent1->blinkRequested = true;
             intent1->blinkConsumed = true;
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
+            pic2->isBlinkRequested = true;
         }
     }
 }

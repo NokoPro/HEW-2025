@@ -20,17 +20,24 @@ void PlayerUISystem::Update(World& world, float dt)
         {
             // ターゲットのMovementIntentを取得
             const PlayerInputComponent* intent = world.TryGet<PlayerInputComponent>(follower.targetId);
-            bool trigger = false;
+            bool JumpTrigger = false;
+            bool BlinkTrigger = false;
             if (intent)
             {
                 // 強制ジャンプ要求で点灯
                 if (intent->isJumpRequested)
                 {
-                    trigger = true;
+                    JumpTrigger = true;
+                }
+
+                // 強制ブリンク要求で点灯
+                if (intent->isBlinkRequested)
+                {
+                    BlinkTrigger = true;
                 }
             }
 
-            if (trigger)
+            if (JumpTrigger)
             {
                 ui.playerHI = true;      // 点灯フラグ
                 ui.playerUItimer = 1.0f; // 表示時間リセット
@@ -48,6 +55,26 @@ void PlayerUISystem::Update(World& world, float dt)
                     sp.visible = false;  // 表示OFF
                 }
             }
+
+            if (BlinkTrigger)
+            {
+                ui.playerYO = true;      // 点灯フラグ
+                ui.playerUItimer = 1.0f; // 表示時間リセット
+                sp.visible = true;       // 表示ON（テクスチャaliasは固定でOK）
+            }
+
+            // タイマ減衰して自動消灯
+            if (ui.playerYO)
+            {
+                ui.playerUItimer -= dt;
+                if (ui.playerUItimer <= 0.0f)
+                {
+                    ui.playerYO = false;
+                    ui.playerUItimer = 0.0f;
+                    sp.visible = false;  // 表示OFF
+                }
+            }
+
         }
     );
 }
