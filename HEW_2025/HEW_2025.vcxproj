@@ -149,7 +149,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FollowerSystem.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp" />
@@ -158,6 +157,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
@@ -188,7 +188,6 @@
     <ClCompile Include="Source\System\Work\_model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FollowerSystem.h" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
@@ -217,6 +216,7 @@
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\IUpdateSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />

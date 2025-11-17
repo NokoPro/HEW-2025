@@ -225,7 +225,7 @@
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
-    <ClCompile Include="FollowerSystem.cpp">
+    <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -407,7 +407,7 @@
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
-    <ClInclude Include="FollowerSystem.h">
+    <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
   </ItemGroup>
