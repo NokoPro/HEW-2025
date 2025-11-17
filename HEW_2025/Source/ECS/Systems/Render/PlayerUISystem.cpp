@@ -17,7 +17,7 @@ void PlayerUISystem::Update(World& world, float dt)
     world.View<PlayerInputComponent, MovementIntentComponent>(
         [&](EntityId, const PlayerInputComponent&, const MovementIntentComponent& intent)
         {
-            if (intent.jump || intent.forceJumpRequested) anyJump = true;
+            if (intent.forceJumpRequested) anyJump = true;
         }
     );
 

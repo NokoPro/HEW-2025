@@ -10,6 +10,7 @@
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Render/FollowerComponent.h"
 #include "ECS/Components/Physics/TransformComponent.h"
+#include "ECS/Components/Render/PlayerUIComponent.h"
 
 namespace Prefabs
 {
@@ -41,11 +42,16 @@ namespace Prefabs
 				// 原点を足元にするなら(0.5, 1.0)など調整
 				sp.originX = 0.5f;
 				sp.originY = 0.5f;
+				sp.visible = false;
 
 				// 3.追従機能(Follower)
 				// targetIdは精製後にSceneGameで設定するため、ここでは初期値
 				auto& fol = world.Add<FollowerComponent>(e);
 				fol.targetId = 0;
+
+				world.Add<PlayerUIComponet>(e);
+
+
 
 				return e;
 			};
@@ -57,7 +63,7 @@ inline void RegisterFollowerPrefab(PrefabRegistry& registry)
 	Prefabs::FollowerConfig cfg;
 	// テスト用に既存の画像を指定
 	// 本番用の画像があれば指定する
-	cfg.textureName = "ui_gauge_cursor";
+	cfg.textureName = "ui_HOP";
 	cfg.width = 40.0f;
 	cfg.height = 40.0f;
 

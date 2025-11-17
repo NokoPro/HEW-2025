@@ -28,6 +28,7 @@
 #include "ECS/Systems/Render/ModelRenderSystem.h"
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Render/FollowerSystem.h"
+#include "ECS/Systems/Render/PlayerUISystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -247,6 +248,8 @@ TestScene::TestScene()
     //
     // 2-1 入力 → Intent
     m_sys.AddUpdate<PlayerInputSystem>();
+    m_sys.AddUpdate<PlayerUISystem>();
+
     // 2-2 Intent → Rigidbody（加速・ジャンプ・重力）
     m_sys.AddUpdate<MovementApplySystem>();
     // 2-2.5 Rigidbody の速度を位置に反映する物理ステップ（重力で変化した速度を位置へ適用）
