@@ -18,6 +18,7 @@
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
+#include "ECS/Components/Render/FollowerComponent.h"
 
 /// ECS システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
@@ -25,6 +26,7 @@
 #include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 #include "ECS/Systems/Render/ModelRenderSystem.h"
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
+#include "ECS/Systems/Render/FollowerSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -39,6 +41,7 @@
 #include "ECS/Prefabs/PrefabStaticBlock.h"
 #include "ECS/Prefabs/PrefabGoal.h"
 #include "ECS/Prefabs/PrefabDeathZone.h"
+#include "ECS/Prefabs/PrefabFollower.h"
 
 #include <cstdio>
 #include <DirectXMath.h>
@@ -220,6 +223,7 @@ TestScene::TestScene()
     RegisterStaticBlockPrefab(m_prefabs);
     RegisterGoalPrefab(m_prefabs); // ゴールプレハブ登録
     RegisterDeathZonePrefab(m_prefabs); // Deathゾーンプレハブ登録
+    RegisterFollowerPrefab(m_prefabs); // フォロワープレハブの追加
 
     //
     // 1. アセット取得
@@ -254,6 +258,10 @@ TestScene::TestScene()
     
 	// 2-3.3 Deathゾーン判定システム追加
     m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
+
+    // 追加：追従システム
+    // 物理演算が終わった後の座標をもとに追従させる
+    m_sys.AddUpdate<FollowerSystem>();
 
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
@@ -311,6 +319,17 @@ TestScene::TestScene()
         sp.modelAlias = "mdl_slime";           
 
         m_playerEntity = m_prefabs.Spawn("Player", m_world, sp);
+
+        // P1用のフォロワー生成
+        PrefabRegistry::SpawnParams spF;
+        spF.position = sp.position;
+        EntityId f1 = m_prefabs.Spawn("Follower", m_world, spF);
+
+        // P1のIDをセット
+        if (m_world.Has<FollowerComponent>(f1))
+        {
+            m_world.Get<FollowerComponent>(f1).targetId = m_playerEntity;
+        }
     }
 
     {
@@ -322,6 +341,17 @@ TestScene::TestScene()
         sp.modelAlias = "mdl_slime";           // ← 2P用モデル
 
         m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
+
+        // P2用のフォロワー生成
+        PrefabRegistry::SpawnParams spF;
+        spF.position = sp.position;
+        EntityId f2 = m_prefabs.Spawn("Follower", m_world, spF);
+
+        // P2のIDをセット
+        if (m_world.Has<FollowerComponent>(f2))
+        {
+            m_world.Get<FollowerComponent>(f2).targetId = m_playerEntity2;
+        }
     }
 
     // Deathゾーン生成（画面下部に設置）
