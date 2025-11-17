@@ -94,20 +94,20 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
 
     // --- Lボタンブリンク（相手に1回だけ、今向いている方向に高速移動） ---
     constexpr float BLINK_SPEED = 15.0f; // ブリンク速度（調整可）
-    if (intent2 && !intent2->blinkConsumed) {
+    if (intent2) {
         if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
         {
             intent2->blinkRequested = true;
-            intent2->blinkConsumed = true;
+            // ?P???????????????Aconsume??"); MovementApplySystem???s
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
             pic1->isBlinkRequested = true;
         }
     }
-    if (intent1 && !intent1->blinkConsumed) 
+    if (intent1) 
     {
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
-            intent1->blinkConsumed = true;
+            // consume??u?????N?????????????????? MovementApplySystem ?側
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
             pic2->isBlinkRequested = true;
         }

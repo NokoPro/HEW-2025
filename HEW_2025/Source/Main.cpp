@@ -63,6 +63,9 @@
 #include "System/Sprite.h"
 #include "System/AssetCatalog.h"
 #include "System/AssetManager.h"
+#include "System/ImGuiLayer.h"
+#include "System/DebugSettings.h"
+#include "System/DirectX/DirectX.h"
 
  // 追加：ゲーム本体
 #include "Game.h"
@@ -120,6 +123,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
         return 0;
     }
 
+    // ImGui初期化（有効化時のみ）
+    ImGuiLayer::Init(hWnd);
+
     // ここでゲーム(ECS)側も初期化
     Game_Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -148,8 +154,32 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
         if (elapsed >= targetMs)
         {
+            // F5でUI表示切り替え（キー入力はInput更新前でも問題なしのためここで）
+            if (IsKeyTrigger(VK_F5))
+            {
+                DebugSettings::Get().imguiEnabled = !DebugSettings::Get().imguiEnabled;
+            }
+
+            // フレーム開始（ImGui → 3D描画 → ImGui描画 → Present）
+            ImGuiLayer::BeginFrame();
+
+            // 入力とゲーム更新
             Update();
+
+            // バックバッファのクリアとシーン描画
+            BeginDrawDirectX();
             Draw();
+
+            // 念のためデフォルトのレンダーターゲットに戻してからImGui描画
+            {
+                RenderTarget* rtv = GetDefaultRTV();
+                DepthStencil* dsv = GetDefaultDSV();
+                SetRenderTargets(1, &rtv, dsv);
+            }
+            // ImGui描画を行ってからPresent
+            ImGuiLayer::EndFrameAndRender();
+            EndDrawDirectX();
+
             lastTick = now;
         }
         else
@@ -167,6 +197,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
     // ゲーム側終了
     Game_Uninit();
 
+    // ImGui終了
+    ImGuiLayer::Shutdown();
+
     Uninit();
     DestroyWindow(hWnd);
     UnregisterClass(wc.lpszClassName, hInst);
@@ -175,6 +208,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    // Give ImGui a chance to consume the event first
+    if (ImGuiLayer::WndProcHandler(hWnd, message, wParam, lParam))
+    {
+        return 1;
+    }
+
     switch (message)
     {
     case WM_MOUSEWHEEL:
@@ -229,10 +268,6 @@ void Update()
 
 void Draw()
 {
-    BeginDrawDirectX();
-
-    // ゲーム(ECS)の描画
+    // ゲーム(ECS)の描画のみ。Presentはメインループ側で行う。
     Game_Draw();
-
-    EndDrawDirectX();
 }
