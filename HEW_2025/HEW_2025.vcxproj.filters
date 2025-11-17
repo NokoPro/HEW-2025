@@ -115,6 +115,12 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
       <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Gimick">
+      <UniqueIdentifier>{bed1d36e-9858-41b6-98c1-c759d72de0e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Gimick">
+      <UniqueIdentifier>{059dd130-e041-436c-9eb2-a05aabca356e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="libs">
       <UniqueIdentifier>{4167b916-9dc9-487d-ae5d-05ea9263d737}</UniqueIdentifier>
     </Filter>
@@ -233,6 +239,18 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\ImGuiLayer.cpp">
       <Filter>Source\ソース ファイル</Filter>
@@ -448,6 +466,21 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Tag\Tag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Gimick</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DebugSettings.h">
       <Filter>Source\ヘッダー ファイル</Filter>
