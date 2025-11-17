@@ -234,6 +234,8 @@
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\GoalSystem.cpp" />
@@ -312,6 +314,8 @@
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />

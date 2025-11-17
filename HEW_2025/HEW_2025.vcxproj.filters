@@ -115,6 +115,15 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
       <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Audio">
+      <UniqueIdentifier>{f6fbbfb0-cd31-45d4-aabd-2a53e5e86716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Audio">
+      <UniqueIdentifier>{8ba5a8a9-474f-47d2-81d7-acbc7ed8c58b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Audio">
+      <UniqueIdentifier>{f65e2b52-838a-458f-8ec9-00f754853625}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Gimick">
       <UniqueIdentifier>{bed1d36e-9858-41b6-98c1-c759d72de0e2}</UniqueIdentifier>
     </Filter>
@@ -239,6 +248,12 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Gimick</Filter>
@@ -466,6 +481,12 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Tag\Tag.h">
       <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>

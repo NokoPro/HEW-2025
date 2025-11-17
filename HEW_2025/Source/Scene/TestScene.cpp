@@ -296,6 +296,9 @@ TestScene::TestScene()
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
+    //追加
+    m_sys.AddUpdate<AudioPlaySystem>();
+
     
     // 2-5 描画
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
