@@ -29,16 +29,8 @@ void PlayerUISystem::Update(World& world, float dt)
             const int idx = pic.playerIndex;
             if (idx < 0 || idx > 1) return; // 想定外はスキップ
 
-            // 強制ジャンプ(RB) ※押した瞬間のみUI表示をトリガ
-            if (IsPadTrigger(idx, XINPUT_GAMEPAD_RIGHT_SHOULDER))
-            {
-                playerForceJump[idx] = true;
-            }
-            // ブリンク(LB)
-            if (IsPadTrigger(idx, XINPUT_GAMEPAD_LEFT_SHOULDER))
-            {
-                playerBlink[idx] = true;
-            }
+            playerBlink[idx] = pic.isBlinkRequested;
+            playerForceJump[idx] = pic.isJumpRequested;
         }
     );
 
