@@ -11,6 +11,7 @@
 #include "PrefabPlayer.h"
 
 #include "ECS/World.h"
+#include "ECS/Tag/Tag.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "ECS/Components/Input/MovementIntentComponent.h"
@@ -35,6 +36,9 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             {
                 return kInvalidEntity;
             }
+
+            //プレイヤーであることを示すタグを付与
+            w.Add<TagPlayer>(e);
 
             // Transform
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
@@ -87,6 +91,9 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             mr.visible = true;
 			mr.localScale = { 1.f, 1.25f, 0.95f }; // 適当な大きさに調整
 			mr.localOffset = { 0.f, 0.f, 0.f }; // 足元を原点に合わせる
+
+            // レイヤー
+            mr.layer = 0; // プレイヤーの基準は「0」
 
             if (mr.model)
             {

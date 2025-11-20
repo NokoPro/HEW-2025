@@ -25,23 +25,38 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     // 各プレイヤーのIntent取得
     MovementIntentComponent* intent1 = nullptr;
     MovementIntentComponent* intent2 = nullptr;
+
+	PlayerInputComponent* pic1 = nullptr;
+	PlayerInputComponent* pic2 = nullptr;
+
     world.View<PlayerInputComponent, MovementIntentComponent>(
-        [&](EntityId, const PlayerInputComponent& pic, MovementIntentComponent& intent) {
-            if (pic.playerIndex == 0) intent1 = &intent;
-            if (pic.playerIndex == 1) intent2 = &intent;
+        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent) {
+            if (pic.playerIndex == 0) 
+            {
+                intent1 = &intent;
+				pic1 = &pic;
+			}
+            if (pic.playerIndex == 1)
+            {
+                intent2 = &intent;
+				pic2 = &pic;
+            }
         }
     );
 
     // 入力初期化・入力反映
     world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent>(
         [&](EntityId,
-            const PlayerInputComponent& pic,
+            PlayerInputComponent& pic,
             MovementIntentComponent& intent,
             TransformComponent& tr)
         {
             intent.moveX = 0.0f;
             intent.jump = false;
             intent.dash = false;
+			pic.isJumpRequested = false;
+            pic.isBlinkRequested = false;
+
             // 向きはmoveX入力で更新
             switch (pic.playerIndex)
             {
@@ -66,31 +81,35 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
+			pic1->isJumpRequested = true;
         }
     }
     if (intent1 && !intent1->forceJumpConsumed) {
         if (IsPadTrigger(1, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
             intent1->forceJumpRequested = true;
             intent1->forceJumpConsumed = true;
+			pic2->isJumpRequested = true;
         }
     }
 
     // --- Lボタンブリンク（相手に1回だけ、今向いている方向に高速移動） ---
     constexpr float BLINK_SPEED = 15.0f; // ブリンク速度（調整可）
-    if (intent2 && !intent2->blinkConsumed) {
+    if (intent2) {
         if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
         {
             intent2->blinkRequested = true;
-            intent2->blinkConsumed = true;
+            // ?P???????????????Aconsume??"); MovementApplySystem???s
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
+            pic1->isBlinkRequested = true;
         }
     }
-    if (intent1 && !intent1->blinkConsumed) 
+    if (intent1) 
     {
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
-            intent1->blinkConsumed = true;
+            // consume??u?????N?????????????????? MovementApplySystem ?側
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
+            pic2->isBlinkRequested = true;
         }
     }
 }

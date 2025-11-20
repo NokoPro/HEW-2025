@@ -6,7 +6,7 @@
  *   ModelRendererComponent に登録されている Model を描画します。
  * - ビュー・プロジェクション行列はカメラシステムから受け取る設計です。
  * - 照明やカメラ位置は ShaderList の静的関数経由で設定します。
- *
+ * - 2025/11/14 レイヤーに基づきソートしてから描画する
  * @author 浅野勇生
  * @date   2025/11/8
  *********************************************************************/
@@ -14,6 +14,9 @@
 
 #include "../IRenderSystem.h"
 #include <DirectXMath.h>
+#include <vector>
+#include "System/Model.h"
+
 
  /**
   * @class ModelRenderSystem
@@ -53,4 +56,25 @@ public:
 private:
     DirectX::XMFLOAT4X4 m_V{}; ///< ビュー行列（転置済み）
     DirectX::XMFLOAT4X4 m_P{}; ///< プロジェクション行列（転置済み）
+
+private:
+    /**
+     * @brief ソートと描画のためのモデル一時情報.
+     */
+    struct SortableModel
+    {
+        // ソート用キー
+        int layer; // <ModelRendererComponent::layer
+
+        // 描画用データ
+        DirectX::XMFLOAT4X4 world; // ワールド行列(Transpose済み)
+        Model* model;              // モデルハンドル
+    };
+
+    // 描画リスト(毎フレーム使いまわす)
+    std::vector<SortableModel>m_modelList;
 };
+
+
+
+

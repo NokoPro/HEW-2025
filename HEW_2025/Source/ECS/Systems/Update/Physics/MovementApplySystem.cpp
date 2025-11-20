@@ -7,6 +7,7 @@
  *********************************************************************/
 #include "MovementApplySystem.h"
 #include <algorithm>  // std::clamp
+#include "System/DebugSettings.h"
 
 void MovementApplySystem::Update(World& world, float dt)
 {
@@ -31,7 +32,7 @@ void MovementApplySystem::Update(World& world, float dt)
 
             // 3. 入力からターゲット速度を作る
             //    moveX が -1～1なので、これに最大速度を掛けるだけ
-            const float targetVelX = intent.moveX * m_maxSpeedX;
+            const float targetVelX = intent.moveX * m_maxSpeedX * DebugSettings::Get().playerSpeed;
 
             // 実際に使う加速の強さ（地上・空中で変える）
             const float accel = onGround ? m_groundAccel : m_airAccel;
@@ -76,7 +77,7 @@ void MovementApplySystem::Update(World& world, float dt)
                 intent.forceJumpConsumed = true; // ★ジャンプ消費済みにする
             }
             // --- 通常ジャンプ ---
-            else if (intent.jump && onGround)
+            else if (intent.jump && (onGround || DebugSettings::Get().infiniteJump))
             {
                 rb.velocity.y = m_jumpSpeed;
                 rb.onGround = false;
@@ -100,13 +101,18 @@ void MovementApplySystem::Update(World& world, float dt)
             // 6. 計算した横速度を戻す
             rb.velocity.x = vx;
 
-            // --- ブリンク処理 ---
+            // --- ブリンク処理（空中限定＆未消費のみ） ---
             if (intent.blinkRequested)
             {
-                rb.velocity.x = intent.blinkSpeed;
+                if (!rb.onGround && !intent.blinkConsumed)
+                {
+                    rb.velocity.x = intent.blinkSpeed;
+                    intent.isBlinking = true;    // ブリンク開始
+                    intent.blinkConsumed = true; // 今回分を消費
+                }
+                // リクエストは毎フレームで必ずクリア（条件未満なら不発）
                 intent.blinkRequested = false;
                 intent.blinkSpeed = 0.0f;
-                intent.isBlinking = true; // ブリンク開始
             }
 
         }

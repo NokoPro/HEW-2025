@@ -12,33 +12,7 @@
  * @date   2025/10/28 - 二人プレイ機能作成
  * 
  * 
- * @update 2025/10/29
- *
- *作業内容： - 確認：既存コードでプロジェクト準備、プレイヤー表示、ゲームパッド移動処理が実装済みと判断
- *
- *　　　 　- 変更：計画を変更。タイミングゲージ実装を保留し、Bボタン入力によるプレイヤー移動を優先
- *
- *　　　 　- 追加：2P（パッド1番）の入力処理に対応 (PlayerInputSystem)
- *
- *　　　 tex- 追加：プレイヤー識別用 PlayerComponent を作成
- *
- *　　　 　- 追加：「ハイ！」アクションの状態管理用 HiActionComponent を作成
- *
- *　　　 　- 追加：Bボタン入力で HiActionComponent を Calling に変更する処理を実装 (PlayerInputSystem)
- *
- *　　　 　- 追加：「ハイ！」アクションの呼び出しと応答移動を実行する HiActionSystem を作成・登録
- *
- *　　　 　- 修正：PlayerInputSystem が Input.h を使用するように変更
- *
- *　　　 　- 削除：ジャンプ関連の処理を PlayerInputSystem, SceneGame, PlayerPrefab から削除
- *
- *　　　 　- 修正：HiActionSystem を物理演算後に実行し、Y軸速度を維持するように修正
- *
- *　　　 　- 修正：HiActionSystem の仕様を変更。片方が「待ち受け(Waiting)」、もう片方が「応答(Responding)」するロジックに変更。
- *
- *　　　 　- 追加：HiActionComponent に actionPressed フラグを追加。
- *
- *　　　 　- 修正：PlayerInputSystem が actionPressed フラグを立てるだけの役割に変更。
+ * @update 2025/10/29 - Git共有
  *
  * @author 浅野勇生
  * @author 奥田修也
@@ -63,6 +37,9 @@
 #include "System/Sprite.h"
 #include "System/AssetCatalog.h"
 #include "System/AssetManager.h"
+#include "System/ImGuiLayer.h"
+#include "System/DebugSettings.h"
+#include "System/DirectX/DirectX.h"
 
  // 追加：ゲーム本体
 #include "Game.h"
@@ -120,6 +97,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
         return 0;
     }
 
+    // ImGui初期化（有効化時のみ）
+    ImGuiLayer::Init(hWnd);
+
     // ここでゲーム(ECS)側も初期化
     Game_Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -148,8 +128,32 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
         if (elapsed >= targetMs)
         {
+            // F5でUI表示切り替え（キー入力はInput更新前でも問題なしのためここで）
+            if (IsKeyTrigger(VK_F5))
+            {
+                DebugSettings::Get().imguiEnabled = !DebugSettings::Get().imguiEnabled;
+            }
+
+            // フレーム開始（ImGui → 3D描画 → ImGui描画 → Present）
+            ImGuiLayer::BeginFrame();
+
+            // 入力とゲーム更新
             Update();
+
+            // バックバッファのクリアとシーン描画
+            BeginDrawDirectX();
             Draw();
+
+            // 念のためデフォルトのレンダーターゲットに戻してからImGui描画
+            {
+                RenderTarget* rtv = GetDefaultRTV();
+                DepthStencil* dsv = GetDefaultDSV();
+                SetRenderTargets(1, &rtv, dsv);
+            }
+            // ImGui描画を行ってからPresent
+            ImGuiLayer::EndFrameAndRender();
+            EndDrawDirectX();
+
             lastTick = now;
         }
         else
@@ -167,6 +171,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
     // ゲーム側終了
     Game_Uninit();
 
+    // ImGui終了
+    ImGuiLayer::Shutdown();
+
     Uninit();
     DestroyWindow(hWnd);
     UnregisterClass(wc.lpszClassName, hInst);
@@ -175,6 +182,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    // Give ImGui a chance to consume the event first
+    if (ImGuiLayer::WndProcHandler(hWnd, message, wParam, lParam))
+    {
+        return 1;
+    }
+
     switch (message)
     {
     case WM_MOUSEWHEEL:
@@ -229,10 +242,6 @@ void Update()
 
 void Draw()
 {
-    BeginDrawDirectX();
-
-    // ゲーム(ECS)の描画
+    // ゲーム(ECS)の描画のみ。Presentはメインループ側で行う。
     Game_Draw();
-
-    EndDrawDirectX();
 }
