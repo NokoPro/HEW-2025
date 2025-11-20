@@ -36,6 +36,10 @@ void RegisterWallPrefab(PrefabRegistry& registry)
                 (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
+
+            // ƒŒƒCƒ„[
+            mr.layer = 20;
+
             if (mr.model)
             {
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));

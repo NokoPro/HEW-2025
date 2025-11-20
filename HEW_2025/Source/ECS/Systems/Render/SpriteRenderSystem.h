@@ -2,7 +2,12 @@
  * @file   SpriteRenderSystem.h
  * @brief  Sprite2DComponent を持つエンティティを描画するSystem
  *
+ * - Sprite2DComponent を持っているエンティティをすべて描画する
+ * - テクスチャは AssetManager から取得し、キャッシュしておく
+ * 
+ * @author 土本蒼翔
  * @author 浅野勇生
+ * @author 川谷優真
  * @date   2025/11/11
  *********************************************************************/
 #pragma once
@@ -13,6 +18,10 @@
 
 #include "System/Sprite.h"
 #include "System/AssetManager.h"
+#include <DirectXMath.h>
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
 
  /**
   * @class SpriteRenderSystem
@@ -20,29 +29,41 @@
   */
 class SpriteRenderSystem : public IRenderSystem
 {
-public:
-    void Render(const World& world) override
+private:
+    /**
+     * @brief ソートと描画のためのスプライト一時情報.
+     */
+    struct SortableSprite
     {
-        using namespace DirectX;
+        // ソート用キー
+        int layer;      // Sprite2DComponent::layer
+        float zDepth;   // TransformComponent::position.z
 
-        world.View<TransformComponent, Sprite2DComponent>(
-            [&](EntityId, const TransformComponent& tr, const Sprite2DComponent& sp)
-            {
-                auto hTex = AssetManager::GetTexture(sp.alias);
-                if (!hTex)
-                {
-                    return;
-                }
+        // 描画用データ
+        DirectX::XMFLOAT4X4 world; // ワールド行列
+        DirectX::XMFLOAT2 offset;
+        DirectX::XMFLOAT2 size; // 表示サイズ
+        Texture* hTex;          // テクスチャハンドル
+    };
 
-                // 位置とサイズをセット
-                Sprite::SetOffset(XMFLOAT2(tr.position.x, tr.position.y));
-                Sprite::SetSize(XMFLOAT2(sp.width, sp.height));
-
-                // ビュー・プロジェクションはSpriteが静的に持ってるので、
-                // ここでは設定しなくてOK（必要なら最初の1回だけSetView/SetProjectionする）
-                Sprite::SetTexture(hTex.get());
-                Sprite::Draw();
-            }
-        );
+public:
+    // カメラ行列を受け取る
+    void SetViewProj(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& proj)
+    {
+        m_view = view;
+        m_proj = proj;
     }
+
+    void Render(const World& world) override;
+    
+
+private:
+    DirectX::XMFLOAT4X4 m_view{};   ///< カメラのビュー行列
+    DirectX::XMFLOAT4X4 m_proj{};   ///< カメラのプロジェクション行列
+
+    // alias -> AssetHandle<Texture> キャッシュ
+    std::unordered_map<std::string, AssetHandle<Texture>> m_texCache;
+
+    // 描画リスト(毎フレーム使いまわす)
+    std::vector<SortableSprite> m_spriteList;
 };

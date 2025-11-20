@@ -39,7 +39,8 @@
 
 #include "ECS/Prefabs/PrefabRegistry.h"
 #include "ECS/Prefabs/PrefabPlayer.h"
-
+//追加
+#include"ECS/Systems/Update/Audio/AudioPlaySystem.h"
  /**
   * @class TestScene
   * @brief 開発中にECSの動作確認をするためのシーン
@@ -61,6 +62,8 @@ private:
 
     // 描画システム（行列を渡す用）
     ModelRenderSystem* m_drawModel = nullptr;
+    // Sprite 描画システム（2D UI 等）
+    class SpriteRenderSystem* m_drawSprite = nullptr;
     // カメラシステム（行列をもらう用）
     FollowCameraSystem* m_followCamera = nullptr;
 
@@ -77,4 +80,5 @@ private:
     EntityId             m_playerEntity = kInvalidEntity;
     EntityId             m_playerEntity2 = kInvalidEntity;
     EntityId             m_goalEntity = kInvalidEntity;
+
 };

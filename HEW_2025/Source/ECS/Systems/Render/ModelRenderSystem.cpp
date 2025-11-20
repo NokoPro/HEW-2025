@@ -20,6 +20,8 @@
 #include "System/Geometory.h"
 #include "System/DirectX/ShaderList.h"
 
+#include <algorithm> // std::sortのために追加
+
 using namespace DirectX;
 
 //--------------------------------------------------------------
@@ -27,9 +29,16 @@ using namespace DirectX;
 //--------------------------------------------------------------
 void ModelRenderSystem::Render(const World& world)
 {
+    // 描画リストをクリア
+    m_modelList.clear();
+
+
     world.View<TransformComponent, ModelRendererComponent>(
         [&](EntityId /*e*/, const TransformComponent& tr, const ModelRendererComponent& mr)
         {
+            // .get()でポインタを取得
+            Model* modelPtr = mr.model.get();
+
             if (!mr.visible || !mr.model)
                 return;
 
@@ -70,16 +79,45 @@ void ModelRenderSystem::Render(const World& world)
             // ローカル → エンティティ の順で掛ける
             const XMMATRIX W = L * Wentity;
 
-            // ---------- 4) WVP送信 ----------
-            DirectX::XMFLOAT4X4 wvp[3];
-            XMStoreFloat4x4(&wvp[0], XMMatrixTranspose(W));
-            wvp[1] = m_V;
-            wvp[2] = m_P;
-            ShaderList::SetWVP(wvp);
+            //4)-----WVP送信の準備-----
+            DirectX::XMFLOAT4X4 wvp0_transposed; // 
+            XMStoreFloat4x4(&wvp0_transposed, XMMatrixTranspose(W));
 
-            // ---------- 5) 描画 ----------
-            mr.model->Draw();
+            // ---------- 5) リストへの追加 ----------
+            // ※元コードの描画処理はここでは行わない
+            m_modelList.push_back(SortableModel{
+                mr.layer,
+                wvp0_transposed,
+                modelPtr
+                });
         });
+
+    //--------------------
+    // 2.ソート(Sort)
+    //--------------------
+    std::sort(m_modelList.begin(), m_modelList.end(),
+        [](const SortableModel& a, const SortableModel& b)
+        {
+            return a.layer < b.layer;
+        }
+    );
+
+    //--------------------
+    // 3.描画(Draw)
+    //--------------------
+    DirectX::XMFLOAT4X4 wvp[3];
+    wvp[1] = m_V;
+    wvp[2] = m_P;
+
+    for (const auto& s : m_modelList)
+    {
+        // ※収穫時にnullチェック済みなので、s,modelがnullの心配はない
+        wvp[0] = s.world;
+
+        ShaderList::SetWVP(wvp);
+        s.model->Draw(); // s.modelはModel*なので、これはOK
+    }
+
 }
 
 //--------------------------------------------------------------
