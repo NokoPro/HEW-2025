@@ -267,9 +267,6 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
-    <ClCompile Include="Source\System\ImGuiLayer.cpp">
-      <Filter>Source\ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="..\libs\imgui\imgui.cpp">
       <Filter>libs\imgui</Filter>
     </ClCompile>
@@ -305,6 +302,12 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerJump.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\TestStageScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\ImGuiLayer.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -506,9 +509,6 @@
     <ClInclude Include="Source\System\DebugSettings.h">
       <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\ImGuiLayer.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="..\libs\imgui\imconfig.h">
       <Filter>libs\imgui</Filter>
     </ClInclude>
@@ -553,6 +553,12 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollowerBlink.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\TestStageScene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\ImGuiLayer.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

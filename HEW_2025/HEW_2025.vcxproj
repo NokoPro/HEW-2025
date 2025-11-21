@@ -249,6 +249,7 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
     <ClCompile Include="Source\Scene\TestScene.cpp" />
+    <ClCompile Include="Source\Scene\TestStageScene.cpp" />
     <ClCompile Include="Source\System\AssetCatalog.cpp" />
     <ClCompile Include="Source\System\AssetManager.cpp" />
     <ClCompile Include="Source\System\CameraMath.cpp" />
@@ -332,6 +333,7 @@
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\TestScene.h" />
+    <ClInclude Include="Source\Scene\TestStageScene.h" />
     <ClInclude Include="Source\System\AssetCatalog.h" />
     <ClInclude Include="Source\System\AssetManager.h" />
     <ClInclude Include="Source\System\CameraHelper.h" />

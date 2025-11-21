@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "Scene/SceneManager.h"
 #include "Scene/TestScene.h"
+#include "Scene/TestStageScene.h"
 
 namespace
 {
@@ -17,7 +18,7 @@ namespace
 bool Game_Init(HWND /*hWnd*/, unsigned int /*width*/, unsigned int /*height*/)
 {
     // 最初にテストシーンを起動
-    g_SceneManager.Change<TestScene>();
+    g_SceneManager.Change<TestStageScene>();
     return true;
 }
 
