@@ -41,9 +41,11 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARA
 
 #endif // IMGUI_ENABLED
 
+#include "Debug.h" // Debug.hをインクルード
+
 /**
  * @brief ImGui の初期化
- * @details IMGUI_ENABLED かつ backends が組み込まれているときのみ実処理を行う
+ * @details IMGUI_ENABLED かつ backends がインクルードされている時のみ処理を実行
  */
 namespace ImGuiLayer
 {
@@ -96,7 +98,10 @@ namespace ImGuiLayer
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-		// --- デバッグウィンドウ ---
+        // ここにデバッグウィンドウの描画処理を追加
+        Debug::DrawImGuiLogWindow();
+
+        // --- 例：デバッグ設定ウィンドウ ---
         if (DebugSettings::Get().imguiEnabled)
         {
             ImGui::Begin("Debug Settings");
@@ -107,6 +112,11 @@ namespace ImGuiLayer
             ImGui::Checkbox("God Mode", &DebugSettings::Get().godMode);
             ImGui::SliderFloat("Player Speed", &DebugSettings::Get().playerSpeed, 0.0f, 3.0f, "%.2f");
             ImGui::Checkbox("Show Collision (F2)", &DebugSettings::Get().showCollision);
+            ImGui::Checkbox("Show FPS", &DebugSettings::Get().fpsEnabled);
+            if (DebugSettings::Get().fpsEnabled)
+            {
+                ImGui::Text("FPS: %.1f", DebugSettings::Get().fpsValue);
+            }
             ImGui::End();
         }
 #endif

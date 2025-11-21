@@ -253,6 +253,7 @@
     <ClCompile Include="Source\System\AssetCatalog.cpp" />
     <ClCompile Include="Source\System\AssetManager.cpp" />
     <ClCompile Include="Source\System\CameraMath.cpp" />
+    <ClCompile Include="Source\System\Debug.cpp" />
     <ClCompile Include="Source\System\DirectX\DirectX.cpp" />
     <ClCompile Include="Source\System\DirectX\MeshBuffer.cpp" />
     <ClCompile Include="Source\System\DirectX\Shader.cpp" />
@@ -263,6 +264,7 @@
     <ClCompile Include="Source\System\Input.cpp" />
     <ClCompile Include="Source\System\Model.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
+    <ClCompile Include="Source\System\StageLoader.cpp" />
     <ClCompile Include="Source\System\Work\_geometory.cpp" />
     <ClCompile Include="Source\System\Work\_model.cpp" />
   </ItemGroup>
@@ -275,6 +277,7 @@
     <ClInclude Include="..\libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\libs\imgui\imstb_textedit.h" />
     <ClInclude Include="..\libs\imgui\imstb_truetype.h" />
+    <ClInclude Include="libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
@@ -338,6 +341,7 @@
     <ClInclude Include="Source\System\AssetManager.h" />
     <ClInclude Include="Source\System\CameraHelper.h" />
     <ClInclude Include="Source\System\CameraMath.h" />
+    <ClInclude Include="Source\System\Debug.h" />
     <ClInclude Include="Source\System\DebugSettings.h" />
     <ClInclude Include="Source\System\Defines.h" />
     <ClInclude Include="Source\System\DirectX\DirectX.h" />
@@ -350,6 +354,10 @@
     <ClInclude Include="Source\System\Input.h" />
     <ClInclude Include="Source\System\Model.h" />
     <ClInclude Include="Source\System\Sprite.h" />
+    <ClInclude Include="Source\System\StageLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Stages\test_stage.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

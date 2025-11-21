@@ -1,0 +1,128 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "StageMake2.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "すべてのファイル (*)",
+    "fileStates": {
+        "Block.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 5.5
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/Stage1.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 277,
+                "y": 146.25
+            }
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/Stage1.tmx#props": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/tileset.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/title.tmx": {
+            "scale": 0.22636718749999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 256.22088006902504,
+                "y": 753.2010353753235
+            }
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/title.tmx#Background": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx": {
+            "scale": 0.33955078125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 512.4417601380501,
+                "y": -181.12165660051767
+            }
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Back_0": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Back_1": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Back_1_2": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Background_0": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Background_1": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Background_3": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Background_31": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#Tiles": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#background_2": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#baner": {
+            "scaleInDock": 1
+        },
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx#tree": {
+            "scaleInDock": 1
+        },
+        "StageMake.tmx": {
+            "scale": 0.8253125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 119.95456266565694,
+                "y": 400.4543733434305
+            }
+        },
+        "StageMake2.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 202,
+                "y": 1125
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/HAL_MyProduct/2025_HEW/HEW_2025/Assets/Stages",
+    "last.imagePath": "C:/HAL_MyProduct/2025_HEW/Tool/Tiled",
+    "map.height": 100,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": "1",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 29,
+    "openFiles": [
+        "Block.tsx",
+        "StageMake.tmx",
+        "StageMake2.tmx"
+    ],
+    "project": "StageMake.tiled-project",
+    "property.type": "string",
+    "recentFiles": [
+        "Block.tsx",
+        "StageMake.tmx",
+        "StageMake2.tmx",
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx",
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/Stage1.tmx",
+        "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/title.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

@@ -142,6 +142,12 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Debug">
       <UniqueIdentifier>{b989191f-3d96-4184-aef8-155cc51f1a5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\libs">
+      <UniqueIdentifier>{5811ae35-0628-48dc-b8dd-6fd7bdd484a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\libs\nlohmann">
+      <UniqueIdentifier>{241a3a98-7736-4361-8616-5e3d334647c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -307,6 +313,12 @@
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\ImGuiLayer.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\StageLoader.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Debug.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -506,9 +518,6 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\DebugSettings.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="..\libs\imgui\imconfig.h">
       <Filter>libs\imgui</Filter>
     </ClInclude>
@@ -560,5 +569,20 @@
     <ClInclude Include="Source\System\ImGuiLayer.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
+    <ClInclude Include="libs\nlohmann\json.hpp">
+      <Filter>Source\ヘッダー ファイル\libs\nlohmann</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\DebugSettings.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\StageLoader.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\Debug.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Stages\test_stage.json" />
   </ItemGroup>
 </Project>

@@ -37,6 +37,11 @@ struct DebugSettings
     /** @brief 当たり判定の可視化を表示する（F2と連動） */
     bool showCollision = true;
 
+    /** @brief FPS表示ON/OFF */
+    bool fpsEnabled = true;
+    /** @brief 最新のFPS値 */
+    float fpsValue = 0.0f;
+
     /**
      * @brief シングルトン取得
      * @return DebugSettings の唯一のインスタンス参照

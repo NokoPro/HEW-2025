@@ -1,7 +1,7 @@
 /*****************************************************************//**
  * @file   Main.cpp
  * @brief  ECSを用いた3Dベースプログラム
- * 
+ *
  * @author 浅野勇生
  * @date   2025/10/20 - 制作開始、ECSの組み込み
  * @date   2025/10/21 - Player移動、カメラ追従、かんたんな物理挙動作成
@@ -43,7 +43,7 @@
 #include "System/DebugSettings.h"
 #include "System/DirectX/DirectX.h"
 
- // 追加：ゲーム本体
+// 追加：ゲーム本体
 #include "Game.h"
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -127,6 +127,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
         const DWORD now = timeGetTime();
         const double elapsed = static_cast<double>(now - lastTick);
+
+        // FPS計測: 経過時間がtargetMs以上なら 1フレーム進行とみなしFPS値更新
+        DebugSettings::Get().fpsValue = (elapsed > 0.0) ? static_cast<float>(1000.0 / elapsed) : 0.0f;
 
         if (elapsed >= targetMs)
         {

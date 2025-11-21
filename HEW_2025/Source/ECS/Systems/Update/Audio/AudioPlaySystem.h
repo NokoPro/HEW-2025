@@ -7,6 +7,6 @@ class AudioPlaySystem final : public IUpdateSystem
 public:
     void Update(World& world, float dt) override;
 private:
-    bool onSE1;
-    bool onSE2;
-};
+    bool onSE1 = false;
+    bool onSE2 = false;
+};  

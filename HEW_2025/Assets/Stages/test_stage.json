@@ -1,0 +1,83 @@
+{
+  "height": 50,
+  "tileheight": 1,
+  "tilewidth": 1,
+  "layers": [
+    {
+      "type": "objectgroup",
+      "name": "StageObjects",
+      "objects": [
+        {
+          "id": 1,
+          "name": "FloorMain",
+          "type": "Floor",
+          "x": 0.0,
+          "y": 11.0,
+          "width": 35.0,
+          "height": 6.0,
+          "properties": []
+        },
+        {
+          "id": 2,
+          "name": "WallLeft",
+          "type": "Wall",
+          "x": -26.5,
+          "y": 0.0,
+          "width": 1.0,
+          "height": 50.0,
+          "properties": []
+        },
+        {
+          "id": 3,
+          "name": "WallRight",
+          "type": "Wall",
+          "x": 25.5,
+          "y": 0.0,
+          "width": 1.0,
+          "height": 50.0,
+          "properties": []
+        },
+        {
+          "id": 4,
+          "name": "Block1",
+          "type": "StaticBlock",
+          "x": -23.0,
+          "y": 47.0,
+          "width": 2.0,
+          "height": 0.5,
+          "properties": [
+            {"name": "modelAlias", "type": "string", "value": "mdl_ground"}
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Block2",
+          "type": "StaticBlock",
+          "x": -10.0,
+          "y": 39.5,
+          "width": 1.0,
+          "height": 0.5,
+          "properties": [
+            {"name": "modelAlias", "type": "string", "value": "mdl_ground"}
+          ]
+        },
+        {
+          "id": 6,
+          "name": "MovingPlatformA",
+          "type": "MovingPlatform",
+          "x": -10.0,
+          "y": 50.0,
+          "width": 1.0,
+          "height": 1.0,
+          "properties": [
+            {"name": "startX", "type": "float", "value": -10.0},
+            {"name": "startY", "type": "float", "value": 50.0},
+            {"name": "endX", "type": "float", "value": -5.0},
+            {"name": "endY", "type": "float", "value": 50.0},
+            {"name": "speed", "type": "float", "value": 2.0}
+          ]
+        }
+      ]
+    }
+  ]
+}
