@@ -69,8 +69,6 @@ TestStageScene::TestStageScene()
     RegisterGoalPrefab(m_prefabs);              // ゴールプレハブ登録
     RegisterDeathZonePrefab(m_prefabs);         // Deathゾーンプレハブ登録
     RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
-    // 重複していた登録を整理
-    RegisterFollowerPrefab(m_prefabs);          // 旧汎用フォロワー
     RegisterFollowerJumpPrefab(m_prefabs);      // ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs);     // ブリンクUI専用フォロワー
 
@@ -155,10 +153,38 @@ TestStageScene::TestStageScene()
 
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 40.0f, 1.0f, 0.0f };
-        sp.scale = { 40.0f, 1.0f, 1.0f };   // 横長の床
+        sp.position = { 35.0f, -5.0f, 0.0f };
+        sp.scale = { 40.0f, 7.0f, 1.0f };   // 横長の床
         sp.rotationDeg = { 0.f,0.f,0.f };
         m_prefabs.Spawn("Floor", m_world, sp);
+    }
+
+    // Deathゾーン生成（画面下部に設置）
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 35.0f, -30.0f, 0.0f }; // ステージ下部
+        sp.scale = { 60.0f, kDeathZoneHalfHeight, 1.0f };     // 横幅広め
+        m_prefabs.Spawn("DeathZone", m_world, sp);
+    }
+
+    // 左右の壁
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.0f, 25.0f, 0.0f };
+        sp.scale = { 2.0f, 50.0f, 1.0f };
+        m_prefabs.Spawn("Wall", m_world, sp);
+    }
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 35.0f, 25.0f, 0.0f };
+        sp.scale = { 1.0f, 50.0f, 1.0f };
+        m_prefabs.Spawn("Wall", m_world, sp);
+    }
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 70.0f, 25.0f, 0.0f };
+        sp.scale = { 2.0f, 50.0f, 1.0f };
+        m_prefabs.Spawn("Wall", m_world, sp);
     }
 
     //
@@ -197,7 +223,7 @@ TestStageScene::TestStageScene()
     // プレイヤー2 + UI
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 30.0f, 2.0f, 0.0f };
+        sp.position = { 60.0f, 2.0f, 0.0f };
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
         sp.scale = { 1.f, 1.f, 1.f };
         sp.padIndex = 1;                         // 2P
@@ -235,7 +261,7 @@ TestStageScene::TestStageScene()
         // 位置
         auto& tr = m_world.Add<TransformComponent>(
             camEnt,
-            DirectX::XMFLOAT3{ 15.0f, 0.f, 0.0f },
+            DirectX::XMFLOAT3{ 15.0f, 8.f, 0.0f },
             DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f },
             DirectX::XMFLOAT3{ 1.0f, 1.0f, 1.0f }
         );
@@ -256,11 +282,11 @@ TestStageScene::TestStageScene()
         cam.followOffsetY = 1.5f;
         cam.followMarginY = 0.5f;
         cam.sideFixedZ = -185.0f;
-        cam.orthoHeight = 40.0f; // 表示高さ
+        cam.orthoHeight = 39.5f; // 表示高さ
         // 左端を X=0 に合わせる: 正射影幅 = orthoHeight * aspect → 中心X = 幅/2
         cam.sideFixedX = (cam.orthoHeight * cam.aspect) * 0.5f; // これで左端が0
         cam.sideLookAtX = 0.0f; // 中央を見る
-        cam.lookAtOffset = DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f };
+        cam.lookAtOffset = DirectX::XMFLOAT3{ 0.0f, 8.0f, 0.0f };
     }
 
     //

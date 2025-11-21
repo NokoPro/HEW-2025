@@ -239,13 +239,6 @@ TestScene::TestScene()
     RegisterGoalPrefab(m_prefabs);              // ゴールプレハブ登録
     RegisterDeathZonePrefab(m_prefabs);         // Deathゾーンプレハブ登録
 	RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
-    RegisterPlayerPrefab(m_prefabs);
-    RegisterFloorPrefab(m_prefabs);
-    RegisterWallPrefab(m_prefabs);
-    RegisterStaticBlockPrefab(m_prefabs);
-    RegisterGoalPrefab(m_prefabs); // ゴールプレハブ登録
-    RegisterDeathZonePrefab(m_prefabs); // Deathゾーンプレハブ登録
-    RegisterFollowerPrefab(m_prefabs); // 旧汎用フォロワープレハブ(後方互換)
     RegisterFollowerJumpPrefab(m_prefabs);  // 新: ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs); // 新: ブリンクUI専用フォロワー
 

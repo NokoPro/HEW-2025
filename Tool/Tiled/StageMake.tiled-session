@@ -3,14 +3,14 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "StageMake2.tmx",
+    "activeFile": "StageMake3.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "すべてのファイル (*)",
     "fileStates": {
         "Block.tsx": {
-            "scaleInDock": 2,
+            "scaleInDock": 3,
             "scaleInEditor": 5.5
         },
         "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/Stage1.tmx": {
@@ -91,24 +91,33 @@
             "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 202,
-                "y": 1125
+                "x": 188,
+                "y": 1225
+            }
+        },
+        "StageMake3.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 239.99999999999997,
+                "y": 4906
             }
         }
     },
     "last.exportedFilePath": "C:/HAL_MyProduct/2025_HEW/HEW_2025/Assets/Stages",
     "last.imagePath": "C:/HAL_MyProduct/2025_HEW/Tool/Tiled",
-    "map.height": 100,
+    "map.height": 300,
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
     "map.renderOrder": "1",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 29,
+    "map.width": 40,
     "openFiles": [
         "Block.tsx",
         "StageMake.tmx",
-        "StageMake2.tmx"
+        "StageMake2.tmx",
+        "StageMake3.tmx"
     ],
     "project": "StageMake.tiled-project",
     "property.type": "string",
@@ -116,6 +125,7 @@
         "Block.tsx",
         "StageMake.tmx",
         "StageMake2.tmx",
+        "StageMake3.tmx",
         "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/無題.tmx",
         "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/Stage1.tmx",
         "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/title.tmx"
