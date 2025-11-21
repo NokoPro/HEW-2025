@@ -62,7 +62,7 @@ void AudioPlaySystem::Update(World& world, float dt)
         {
             onSE1 = false;
            
-            AudioManager::PlaySE("JumpP1", 0.8f);
+            AudioManager::PlaySE("JumpP1", 0.1f);
         }
     }
    if (onSE2)
@@ -71,14 +71,8 @@ void AudioPlaySystem::Update(World& world, float dt)
        {
            onSE2 = false;
            
-           AudioManager::PlaySE("JumpP2", 0.8f);
+           AudioManager::PlaySE("JumpP2", 0.1f);
        }
     }
-   
-    
-   
-   
-
-
    
 }
