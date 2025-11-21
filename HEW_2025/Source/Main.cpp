@@ -12,33 +12,9 @@
  * @date   2025/10/28 - 二人プレイ機能作成
  * 
  * 
- * @update 2025/10/29
- *
- *作業内容： - 確認：既存コードでプロジェクト準備、プレイヤー表示、ゲームパッド移動処理が実装済みと判断
- *
- *　　　 　- 変更：計画を変更。タイミングゲージ実装を保留し、Bボタン入力によるプレイヤー移動を優先
- *
- *　　　 　- 追加：2P（パッド1番）の入力処理に対応 (PlayerInputSystem)
- *
- *　　　 tex- 追加：プレイヤー識別用 PlayerComponent を作成
- *
- *　　　 　- 追加：「ハイ！」アクションの状態管理用 HiActionComponent を作成
- *
- *　　　 　- 追加：Bボタン入力で HiActionComponent を Calling に変更する処理を実装 (PlayerInputSystem)
- *
- *　　　 　- 追加：「ハイ！」アクションの呼び出しと応答移動を実行する HiActionSystem を作成・登録
- *
- *　　　 　- 修正：PlayerInputSystem が Input.h を使用するように変更
- *
- *　　　 　- 削除：ジャンプ関連の処理を PlayerInputSystem, SceneGame, PlayerPrefab から削除
- *
- *　　　 　- 修正：HiActionSystem を物理演算後に実行し、Y軸速度を維持するように修正
- *
- *　　　 　- 修正：HiActionSystem の仕様を変更。片方が「待ち受け(Waiting)」、もう片方が「応答(Responding)」するロジックに変更。
- *
- *　　　 　- 追加：HiActionComponent に actionPressed フラグを追加。
- *
- *　　　 　- 修正：PlayerInputSystem が actionPressed フラグを立てるだけの役割に変更。
+ * @update 2025/10/29 - Git共有
+ * 
+ * @update 2025/11/20 - a版制作開始！
  *
  * @author 浅野勇生
  * @author 奥田修也
