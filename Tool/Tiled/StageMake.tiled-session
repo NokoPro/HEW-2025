@@ -10,7 +10,7 @@
     "file.lastUsedOpenFilter": "すべてのファイル (*)",
     "fileStates": {
         "Block.tsx": {
-            "scaleInDock": 3,
+            "scaleInDock": 5.5,
             "scaleInEditor": 5.5
         },
         "C:/Users/yukur/source/repos/NintendoC++/NintendoC++/rom/Tiled/Stage1.tmx": {
@@ -83,7 +83,7 @@
             "scale": 0.8253125,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 119.95456266565694,
+                "x": 119.95456266565697,
                 "y": 400.4543733434305
             }
         },
@@ -91,16 +91,16 @@
             "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 188,
-                "y": 1225
+                "x": 232,
+                "y": 801
             }
         },
         "StageMake3.tmx": {
             "scale": 0.75,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 239.99999999999997,
-                "y": 4906
+                "x": 230.66666666666669,
+                "y": 4503.333333333333
             }
         }
     },
@@ -120,7 +120,7 @@
         "StageMake3.tmx"
     ],
     "project": "StageMake.tiled-project",
-    "property.type": "string",
+    "property.type": "float",
     "recentFiles": [
         "Block.tsx",
         "StageMake.tmx",

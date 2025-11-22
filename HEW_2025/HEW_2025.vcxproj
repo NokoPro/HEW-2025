@@ -265,6 +265,7 @@
     <ClCompile Include="Source\System\Model.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
     <ClCompile Include="Source\System\StageLoader.cpp" />
+    <ClCompile Include="Source\System\TimeAttackManager.cpp" />
     <ClCompile Include="Source\System\Work\_geometory.cpp" />
     <ClCompile Include="Source\System\Work\_model.cpp" />
   </ItemGroup>
@@ -355,6 +356,7 @@
     <ClInclude Include="Source\System\Model.h" />
     <ClInclude Include="Source\System\Sprite.h" />
     <ClInclude Include="Source\System\StageLoader.h" />
+    <ClInclude Include="Source\System\TimeAttackManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Stages\test_stage.json" />

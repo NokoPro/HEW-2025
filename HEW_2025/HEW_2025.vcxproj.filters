@@ -321,6 +321,9 @@
     <ClCompile Include="Source\System\Debug.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\System\TimeAttackManager.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Main.h">
@@ -579,6 +582,9 @@
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Debug.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\TimeAttackManager.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>

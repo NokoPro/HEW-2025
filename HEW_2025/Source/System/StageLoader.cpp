@@ -24,6 +24,24 @@ T GetPropertyValue(const json& properties, const std::string& name, T defaultVal
     return defaultValue;
 }
 
+// Add helper after existing GetPropertyValue template
+// 追加: 異なる型(数値/文字列)両対応のfloat取得用ヘルパ
+static float GetFloatProperty(const json& properties, const std::string& name, float defaultValue)
+{
+    for (const auto& prop : properties)
+    {
+        if (prop.contains("name") && prop["name"] == name && prop.contains("value"))
+        {
+            const auto& v = prop["value"];
+            try {
+                if (v.is_number_float() || v.is_number_integer()) return v.get<float>();
+                if (v.is_string()) return std::stof(v.get<std::string>());
+            } catch (...) { return defaultValue; }
+        }
+    }
+    return defaultValue;
+}
+
 bool StageLoader::Load(const std::string& filePath, World& world, PrefabRegistry& prefabs)
 {
     std::ifstream file(filePath);
@@ -83,6 +101,13 @@ bool StageLoader::Load(const std::string& filePath, World& world, PrefabRegistry
             for (const auto& object : sortedObjects)
             {
                 std::string type = object.value("type", "");
+                const bool hasProps = object.contains("properties");
+                const auto& properties = hasProps ? object["properties"] : json::array();
+                if (type.empty() && hasProps)
+                {
+                    // Tiled側でobject.typeが空でproperties内に"type"を持つケース(Goalなど)
+                    type = GetPropertyValue<std::string>(properties, "type", "");
+                }
                 if (type.empty()) continue;
 
                 PrefabRegistry::SpawnParams sp;
@@ -108,12 +133,19 @@ bool StageLoader::Load(const std::string& filePath, World& world, PrefabRegistry
                 }
                 sp.scale.z = 1.0f;
 
-                // オブジェクト中心: Tiledは左上原点。Yは反転して上方向が+になるよう mapHeightWorld - (...)
+                // propertiesでscale.x/scale.yが指定されていれば上書き (Point objectでも適用されるよう配置計算前)
+                if (hasProps)
+                {
+                    sp.scale.x = GetFloatProperty(properties, "scale.x", sp.scale.x);
+                    sp.scale.y = GetFloatProperty(properties, "scale.y", sp.scale.y);
+                }
+
+                // オブジェクト中心計算 (Point object考慮)
                 float centerXWorld;
                 float centerYWorld;
                 if (objPixW == 0.0f && objPixH == 0.0f)
                 {
-                    // Point object: その地点をタイル中心扱い
+                    // Point object: その地点を中心扱い (Tiled座標は左上が原点で下向き+)
                     centerXWorld = tiledPX * pxToWorldX + sp.scale.x * 0.5f;
                     centerYWorld = mapHeightWorld - (tiledPY * pxToWorldY) - sp.scale.y * 0.5f;
                 }
@@ -127,27 +159,23 @@ bool StageLoader::Load(const std::string& filePath, World& world, PrefabRegistry
                 sp.position.y = centerYWorld;
                 sp.position.z = 0.0f;
 
-                if (object.contains("properties"))
+                if (hasProps)
                 {
-                    const auto& properties = object["properties"];
                     sp.padIndex = GetPropertyValue<int>(properties, "padIndex", 0);
                     sp.modelAlias = GetPropertyValue<std::string>(properties, "modelAlias", "");
                 }
 
                 EntityId entity = prefabs.Spawn(type, world, sp);
 
-                // MovingPlatform: start/end座標も同じ変換
-                if (entity != kInvalidEntity && type == "MovingPlatform" && world.Has<MovingPlatformComponent>(entity) && object.contains("properties"))
+                // MovingPlatform: start/end座標
+                if (entity != kInvalidEntity && type == "MovingPlatform" && world.Has<MovingPlatformComponent>(entity) && hasProps)
                 {
-                    const auto& properties = object["properties"];
                     auto& mc = world.Get<MovingPlatformComponent>(entity);
-
                     float rawStartX = GetPropertyValue<float>(properties, "startX", sp.position.x / pxToWorldX) * pxToWorldX;
                     float rawStartY = GetPropertyValue<float>(properties, "startY", (mapHeightWorld - sp.position.y) / pxToWorldY) * pxToWorldY;
                     float rawEndX   = GetPropertyValue<float>(properties, "endX", sp.position.x / pxToWorldX) * pxToWorldX;
                     float rawEndY   = GetPropertyValue<float>(properties, "endY", (mapHeightWorld - sp.position.y) / pxToWorldY) * pxToWorldY;
-
-                    mc.start.x = rawStartX * pxToWorldX; // 再度pxToWorldX掛けて確定
+                    mc.start.x = rawStartX * pxToWorldX;
                     mc.start.y = mapHeightWorld - (rawStartY * pxToWorldY);
                     mc.end.x   = rawEndX * pxToWorldX;
                     mc.end.y   = mapHeightWorld - (rawEndY * pxToWorldY);

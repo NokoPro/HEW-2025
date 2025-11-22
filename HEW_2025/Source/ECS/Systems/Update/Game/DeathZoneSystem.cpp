@@ -14,6 +14,7 @@
 
 #include "System/Defines.h"
 #include "System/DebugSettings.h"
+#include "System/TimeAttackManager.h"
 
 #include <Windows.h> // MessageBox
 
@@ -55,16 +56,14 @@ void DeathZoneSystem::Update(World& world, float dt)
     {
         if ((ev.self == player1 || ev.self == player2) && ev.trigger) 
         {
- 			/// 相手のコライダを取得
             auto* colOther = world.TryGet<Collider2DComponent>(ev.other);
             if (colOther && colOther->layer == Physics::LAYER_DESU_ZONE) 
             {
-                if (god)
-                {
-                    // ゴッドモード中は無視
-                    continue;
-                }
+                if (god) { continue; }
                 m_triggered = true;
+                DebugSettings::Get().gameDead = true;
+                DebugSettings::Get().gameTimerRunning = false; // 停止
+                TimeAttackManager::Get().NotifyDeath();
                 MessageBoxA(nullptr, "Deathゾーンに接触しました!", "Game Over", MB_OK | MB_ICONEXCLAMATION);
                 break;
             }

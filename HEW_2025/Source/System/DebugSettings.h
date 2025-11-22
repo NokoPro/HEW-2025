@@ -42,6 +42,12 @@ struct DebugSettings
     /** @brief 最新のFPS値 */
     float fpsValue = 0.0f;
 
+    // --- Game Timer ---
+    bool  gameTimerRunning = false;   // 計測中か
+    bool  gameCleared      = false;   // クリア済みか
+    bool  gameDead         = false;   // 死亡(ゲームオーバー)か
+    float gameElapsedSeconds = 0.0f;  // 経過秒
+
     /**
      * @brief シングルトン取得
      * @return DebugSettings の唯一のインスタンス参照

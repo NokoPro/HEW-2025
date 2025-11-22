@@ -14,6 +14,7 @@
 #include "ImGuiLayer.h"
 #include "DirectX/DirectX.h"
 #include "DebugSettings.h"
+#include "TimeAttackManager.h" // 追加: タイムアタック管理
 
 // ImGui 有効化オプション
 #ifdef IMGUI_ENABLED
@@ -98,24 +99,74 @@ namespace ImGuiLayer
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // ここにデバッグウィンドウの描画処理を追加
         Debug::DrawImGuiLogWindow();
 
-        // --- 例：デバッグ設定ウィンドウ ---
-        if (DebugSettings::Get().imguiEnabled)
+        auto& ds = DebugSettings::Get();
+        if (ds.imguiEnabled)
         {
             ImGui::Begin("Debug Settings");
-            ImGui::Checkbox("Magma Enabled (F3)", &DebugSettings::Get().magmaEnabled);
-            ImGui::SliderFloat("Magma Speed Scale", &DebugSettings::Get().magmaSpeedScale, 0.0f, 3.0f, "%.2f");
-            ImGui::Checkbox("Infinite Jump (F4)", &DebugSettings::Get().infiniteJump);
+            ImGui::Checkbox("Magma Enabled (F3)", &ds.magmaEnabled);
+            ImGui::SliderFloat("Magma Speed Scale", &ds.magmaSpeedScale, 0.0f, 3.0f, "%.2f");
+            ImGui::Checkbox("Infinite Jump (F4)", &ds.infiniteJump);
             ImGui::Separator();
-            ImGui::Checkbox("God Mode", &DebugSettings::Get().godMode);
-            ImGui::SliderFloat("Player Speed", &DebugSettings::Get().playerSpeed, 0.0f, 3.0f, "%.2f");
-            ImGui::Checkbox("Show Collision (F2)", &DebugSettings::Get().showCollision);
-            ImGui::Checkbox("Show FPS", &DebugSettings::Get().fpsEnabled);
-            if (DebugSettings::Get().fpsEnabled)
+            ImGui::Checkbox("God Mode", &ds.godMode);
+            ImGui::SliderFloat("Player Speed", &ds.playerSpeed, 0.0f, 3.0f, "%.2f");
+            ImGui::Checkbox("Show Collision (F2)", &ds.showCollision);
+            ImGui::Checkbox("Show FPS", &ds.fpsEnabled);
+            if (ds.fpsEnabled) ImGui::Text("FPS: %.1f", ds.fpsValue);
+            ImGui::Separator();
+            // Game Timer (legacy)
+            ImGui::Text("Legacy Time: %.2f s", ds.gameElapsedSeconds);
+            // Time Attack
+            auto& ta = TimeAttackManager::Get();
+            ImGui::Separator();
+            ImGui::Text("Time Attack");
+            switch (ta.GetState())
             {
-                ImGui::Text("FPS: %.1f", DebugSettings::Get().fpsValue);
+            case TimeAttackManager::State::Ready: ImGui::TextColored(ImVec4(0.7f,0.7f,0.7f,1), "State: READY"); break;
+            case TimeAttackManager::State::Countdown: ImGui::TextColored(ImVec4(1,1,0,1), "State: COUNTDOWN"); break;
+            case TimeAttackManager::State::Running: ImGui::TextColored(ImVec4(0,1,0,1), "State: RUNNING"); break;
+            case TimeAttackManager::State::Cleared: ImGui::TextColored(ImVec4(0,0.6f,1,1), "State: CLEARED"); break;
+            case TimeAttackManager::State::Dead: ImGui::TextColored(ImVec4(1,0,0,1), "State: DEAD"); break;
+            }
+            if (ta.GetState() == TimeAttackManager::State::Countdown)
+            {
+                ImGui::Text("Countdown: %.2f", ta.GetCountdownRemaining());
+            }
+            ImGui::Text("Current: %s", TimeAttackManager::FormatTime(ta.GetElapsed()).c_str());
+            if (ta.HasBestTime())
+                ImGui::Text("Best: %s", TimeAttackManager::FormatTime(ta.GetBestTime()).c_str());
+            else
+                ImGui::Text("Best: --:--.--");
+            if (ImGui::Button("Restart Run")) { ta.Reset(); ta.StartCountdown(3.0f); ds.gameCleared=false; ds.gameDead=false; ds.gameTimerRunning=false; ds.gameElapsedSeconds=0.0f; }
+            ImGui::Separator();
+            ImGui::Text("Cheats");
+            if (ImGui::Button("Cheat: Force Clear"))
+            {
+                // 強制クリア
+                ds.gameDead = false;
+                ds.gameCleared = true;
+                ds.gameTimerRunning = false;
+                // タイムアタック側
+                if (ta.GetState() == TimeAttackManager::State::Countdown)
+                {
+                    ta.StartRun();
+                }
+                ta.NotifyClear();
+            }
+            if (ImGui::Button("Cheat: Force Game Over"))
+            {
+                ds.gameCleared = false;
+                ds.gameDead = true;
+                ds.gameTimerRunning = false;
+                if (ta.GetState() == TimeAttackManager::State::Countdown)
+                {
+                    ta.NotifyDeath(); // countdown中でも死亡扱い
+                }
+                else if (ta.GetState() == TimeAttackManager::State::Running)
+                {
+                    ta.NotifyDeath();
+                }
             }
             ImGui::End();
         }
