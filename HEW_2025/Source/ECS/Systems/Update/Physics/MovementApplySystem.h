@@ -42,4 +42,6 @@ private:
     const float m_jumpSpeed = 15.5f;
     // 重力（ここで足してもいいし、専用のGravitySystemを作ってもよい）
     const float m_gravity = -25.0f;
+    // ブリンク時に少し上方向へ与えるインパルス
+    const float m_blinkUpImpulse = 2.5f; // 調整可能
 };

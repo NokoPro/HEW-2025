@@ -98,7 +98,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
         {
             intent2->blinkRequested = true;
-            // ?P???????????????Aconsume??"); MovementApplySystem???s
+            
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
             pic1->isBlinkRequested = true;
         }
@@ -107,7 +107,6 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     {
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
-            // consume??u?????N?????????????????? MovementApplySystem ?‘¤
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
             pic2->isBlinkRequested = true;
         }

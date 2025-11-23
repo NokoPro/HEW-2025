@@ -74,7 +74,7 @@ void MovementApplySystem::Update(World& world, float dt)
             {
                 rb.velocity.y = m_jumpSpeed;
                 intent.forceJumpRequested = false;
-                intent.forceJumpConsumed = true; // ★ジャンプ消費済みにする
+                intent.forceJumpConsumed = true; // ジャンプ消費済みにする
             }
             // --- 通常ジャンプ ---
             else if (intent.jump && (onGround || DebugSettings::Get().infiniteJump))
@@ -101,12 +101,17 @@ void MovementApplySystem::Update(World& world, float dt)
             // 6. 計算した横速度を戻す
             rb.velocity.x = vx;
 
-            // --- ブリンク処理（空中限定＆未消費のみ） ---
+            // --- ブリンク処理（地上でも可能に & 少し上方向へ） ---
             if (intent.blinkRequested)
             {
-                if (!rb.onGround && !intent.blinkConsumed)
+                if (!intent.blinkConsumed)
                 {
-                    rb.velocity.x = intent.blinkSpeed;
+                    rb.velocity.x = intent.blinkSpeed;      // 水平速度をブリンク速度へ
+                    // 少し上向きへ（現在の上向き速度が閾値より低ければインパルスを与える）
+                    if (rb.velocity.y < m_blinkUpImpulse)
+                    {
+                        rb.velocity.y = m_blinkUpImpulse;
+                    }
                     intent.isBlinking = true;    // ブリンク開始
                     intent.blinkConsumed = true; // 今回分を消費
                 }
