@@ -351,6 +351,7 @@
     <ClInclude Include="Source\System\DirectX\Shader.h" />
     <ClInclude Include="Source\System\DirectX\ShaderList.h" />
     <ClInclude Include="Source\System\DirectX\Texture.h" />
+    <ClInclude Include="Source\System\GameplayConfig.h" />
     <ClInclude Include="Source\System\Geometory.h" />
     <ClInclude Include="Source\System\ImGuiLayer.h" />
     <ClInclude Include="Source\System\Input.h" />
@@ -358,6 +359,9 @@
     <ClInclude Include="Source\System\Sprite.h" />
     <ClInclude Include="Source\System\StageLoader.h" />
     <ClInclude Include="Source\System\TimeAttackManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Config\gameplay.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

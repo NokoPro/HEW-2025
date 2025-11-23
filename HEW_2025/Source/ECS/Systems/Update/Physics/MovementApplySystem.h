@@ -15,6 +15,7 @@
 #include "../../../Components/Input/MovementIntentComponent.h"
 #include "../../../Components/Physics/Rigidbody2DComponent.h"
 #include "../../../Components/Physics/Collider2DComponent.h"
+#include "System/GameplayConfig.h" // 追加: 外部設定
 
 /**
  * @brief 入力(Intent)を実際の物理ボディ(Rigidbody)に反映するSystem
@@ -32,16 +33,13 @@ public:
     void Update(World& world, float dt) override;
 
 private:
-    // 地上にいるときの加速の強さ
-    const float m_groundAccel = 40.0f;
-    // 空中での加速（空中制御）少し弱め
-    const float m_airAccel = 10.0f;
-    // 地上での最大速度
-    const float m_maxSpeedX = 6.0f;
-    // ジャンプ速度
-    const float m_jumpSpeed = 15.5f;
-    // 重力（ここで足してもいいし、専用のGravitySystemを作ってもよい）
-    const float m_gravity = -25.0f;
-    // ブリンク時に少し上方向へ与えるインパルス
-    const float m_blinkUpImpulse = 2.5f; // 調整可能
+    // 外部CSVから読み取るプレイヤー調整値 (初期デフォルトは従来値)
+    float m_groundAccel     = 40.0f;
+    float m_airAccel        = 10.0f;
+    float m_maxSpeedX       = 6.0f;
+    float m_jumpSpeed       = 15.5f;
+    float m_blinkUpImpulse  = 2.5f;
+
+    // 毎フレーム最初に最新CSV値を反映（ホットリロード想定）
+    void SyncConfig();
 };

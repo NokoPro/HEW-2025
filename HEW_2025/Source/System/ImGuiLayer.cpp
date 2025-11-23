@@ -14,7 +14,8 @@
 #include "ImGuiLayer.h"
 #include "DirectX/DirectX.h"
 #include "DebugSettings.h"
-#include "TimeAttackManager.h" // 追加: タイムアタック管理
+#include "TimeAttackManager.h"
+#include "GameplayConfig.h" // 追加: 外部調整値
 
 // ImGui 有効化オプション
 #ifdef IMGUI_ENABLED
@@ -105,19 +106,52 @@ namespace ImGuiLayer
         if (ds.imguiEnabled)
         {
             ImGui::Begin("Debug Settings");
-            ImGui::Checkbox("Magma Enabled (F3)", &ds.magmaEnabled);
-            ImGui::SliderFloat("Magma Speed Scale", &ds.magmaSpeedScale, 0.0f, 3.0f, "%.2f");
-            ImGui::Checkbox("Infinite Jump (F4)", &ds.infiniteJump);
+
+            if (ImGui::CollapsingHeader("Debug Config"))
+            {
+                ImGui::Checkbox("Magma Enabled", &ds.magmaEnabled);
+                ImGui::SliderFloat("Magma Speed Scale", &ds.magmaSpeedScale, 0.0f, 3.0f, "%.2f");
+                ImGui::Checkbox("Infinite Jump", &ds.infiniteJump);
+                ImGui::Separator();
+                ImGui::Checkbox("God Mode", &ds.godMode);
+                ImGui::SliderFloat("Player Speed", &ds.playerSpeed, 0.0f, 3.0f, "%.2f");
+                ImGui::Checkbox("Show Collision (F2)", &ds.showCollision);
+                ImGui::Checkbox("Show FPS", &ds.fpsEnabled);
+                if (ds.fpsEnabled) ImGui::Text("FPS: %.1f", ds.fpsValue);
+                ImGui::Separator();
+            }
+
+
+            // Gameplay tunables (CSV連携)
+            auto& gcfg = GlobalGameplayConfig::Instance().GetMutable();
+            float groundAccel = gcfg.Get("groundAccel", 40.0f);
+            float airAccel = gcfg.Get("airAccel", 10.0f);
+            float maxSpeedX = gcfg.Get("maxSpeedX", 6.0f);
+            float jumpSpeed = gcfg.Get("jumpSpeed", 15.5f);
+            float blinkUpImpulse = gcfg.Get("blinkUpImpulse", 2.5f);
+
+            if (ImGui::CollapsingHeader("Gameplay Config"))
+            {
+                ImGui::Text("(Editable, saved to CSV)");
+                if (ImGui::SliderFloat("Ground Accel", &groundAccel, 0.0f, 120.0f, "%.2f")) gcfg.Set("groundAccel", groundAccel);
+                if (ImGui::SliderFloat("Air Accel", &airAccel, 0.0f, 60.0f, "%.2f")) gcfg.Set("airAccel", airAccel);
+                if (ImGui::SliderFloat("Max Speed X", &maxSpeedX, 0.0f, 20.0f, "%.2f")) gcfg.Set("maxSpeedX", maxSpeedX);
+                if (ImGui::SliderFloat("Jump Speed", &jumpSpeed, 0.0f, 50.0f, "%.2f")) gcfg.Set("jumpSpeed", jumpSpeed);
+                if (ImGui::SliderFloat("Blink Up Impulse", &blinkUpImpulse, 0.0f, 20.0f, "%.2f")) gcfg.Set("blinkUpImpulse", blinkUpImpulse);
+                if (ImGui::Button("Save Gameplay CSV"))
+                {
+                    GlobalGameplayConfig::Instance().Save();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Reload Gameplay CSV"))
+                {
+                    GlobalGameplayConfig::Instance().Reload("Assets/Config/gameplay.csv");
+                }
+            }
             ImGui::Separator();
-            ImGui::Checkbox("God Mode", &ds.godMode);
-            ImGui::SliderFloat("Player Speed", &ds.playerSpeed, 0.0f, 3.0f, "%.2f");
-            ImGui::Checkbox("Show Collision (F2)", &ds.showCollision);
-            ImGui::Checkbox("Show FPS", &ds.fpsEnabled);
-            if (ds.fpsEnabled) ImGui::Text("FPS: %.1f", ds.fpsValue);
-            ImGui::Separator();
+
             // Game Timer (legacy)
             ImGui::Text("Legacy Time: %.2f s", ds.gameElapsedSeconds);
-            // Time Attack
             auto& ta = TimeAttackManager::Get();
             ImGui::Separator();
             ImGui::Text("Time Attack");
@@ -130,43 +164,24 @@ namespace ImGuiLayer
             case TimeAttackManager::State::Dead: ImGui::TextColored(ImVec4(1,0,0,1), "State: DEAD"); break;
             }
             if (ta.GetState() == TimeAttackManager::State::Countdown)
-            {
                 ImGui::Text("Countdown: %.2f", ta.GetCountdownRemaining());
-            }
             ImGui::Text("Current: %s", TimeAttackManager::FormatTime(ta.GetElapsed()).c_str());
-            if (ta.HasBestTime())
-                ImGui::Text("Best: %s", TimeAttackManager::FormatTime(ta.GetBestTime()).c_str());
-            else
-                ImGui::Text("Best: --:--.--");
+            if (ta.HasBestTime()) ImGui::Text("Best: %s", TimeAttackManager::FormatTime(ta.GetBestTime()).c_str());
+            else ImGui::Text("Best: --:--.--");
             if (ImGui::Button("Restart Run")) { ta.Reset(); ta.StartCountdown(3.0f); ds.gameCleared=false; ds.gameDead=false; ds.gameTimerRunning=false; ds.gameElapsedSeconds=0.0f; }
             ImGui::Separator();
             ImGui::Text("Cheats");
             if (ImGui::Button("Cheat: Force Clear"))
             {
-                // 強制クリア
-                ds.gameDead = false;
-                ds.gameCleared = true;
-                ds.gameTimerRunning = false;
-                // タイムアタック側
-                if (ta.GetState() == TimeAttackManager::State::Countdown)
-                {
-                    ta.StartRun();
-                }
+                ds.gameDead = false; ds.gameCleared = true; ds.gameTimerRunning = false;
+                if (ta.GetState() == TimeAttackManager::State::Countdown) { ta.StartRun(); }
                 ta.NotifyClear();
             }
             if (ImGui::Button("Cheat: Force Game Over"))
             {
-                ds.gameCleared = false;
-                ds.gameDead = true;
-                ds.gameTimerRunning = false;
-                if (ta.GetState() == TimeAttackManager::State::Countdown)
-                {
-                    ta.NotifyDeath(); // countdown中でも死亡扱い
-                }
-                else if (ta.GetState() == TimeAttackManager::State::Running)
-                {
-                    ta.NotifyDeath();
-                }
+                ds.gameCleared = false; ds.gameDead = true; ds.gameTimerRunning = false;
+                if (ta.GetState() == TimeAttackManager::State::Countdown) { ta.NotifyDeath(); }
+                else if (ta.GetState() == TimeAttackManager::State::Running) { ta.NotifyDeath(); }
             }
             ImGui::End();
         }

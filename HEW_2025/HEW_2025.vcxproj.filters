@@ -326,9 +326,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Main.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\System\AssetCatalog.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -590,5 +587,14 @@
     <ClInclude Include="Source\Scene\SceneAPI.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Main.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\GameplayConfig.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Config\gameplay.csv" />
   </ItemGroup>
 </Project>

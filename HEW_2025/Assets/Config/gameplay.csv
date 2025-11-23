@@ -1,0 +1,6 @@
+# key,value
+airAccel,10
+blinkUpImpulse,2.5
+groundAccel,40
+jumpSpeed,15.5
+maxSpeedX,6
