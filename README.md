@@ -84,7 +84,7 @@ world.View<TransformComponent, Rigidbody2DComponent>([&](EntityId e, TransformCo
 コンポーネントは Plain な `struct` として定義します。World 側は型ごとに自動ストレージを持つため、集中登録は不要です。
 
 例（抜粋）:
-```
+```cpp
 // Components/Physics/TransformComponent.h
 struct TransformComponent
 {
@@ -130,7 +130,7 @@ struct ModelRendererComponent
 ```
 
 使い方:
-```
+```cpp
 EntityId e = world.Create();
 auto& tr = world.Add<TransformComponent>(e, pos, rot, scl);
 auto& mr = world.Add<ModelRendererComponent>(e);
@@ -151,7 +151,7 @@ mr.visible = true;
 - 実行順・生存期間は `SystemRegistry` が管理（`ECS/Systems/SystemRegistry.h`）
 
 Update 実装例（移動適用、`Update/Physics/MovementApplySystem.cpp` 抜粋）:
-```
+```cpp
 void MovementApplySystem::Update(World& world, float dt)
 {
     world.View<MovementIntentComponent, Rigidbody2DComponent>(
@@ -191,7 +191,7 @@ public:
 ```
 
 System の登録と実行（`Scene/TestScene.cpp`）:
-```
+```cpp
 // 2. System 登録
 m_sys.AddUpdate<PlayerInputSystem>();
 m_sys.AddUpdate<MovementApplySystem>();
@@ -226,7 +226,7 @@ Prefab は「エンティティ生成関数」を名前（文字列）に紐付�
 - パラメータ: `SpawnParams`（位置・回転・スケール・パッドインデックス・モデルエイリアス）
 
 代表例（プレイヤー、`Prefabs/PrefabPlayer.cpp`）:
-```
+```cpp
 void RegisterPlayerPrefab(PrefabRegistry& registry)
 {
     registry.Register("Player",
@@ -264,7 +264,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 ```
 
 Prefab の登録と生成（`Scene/TestScene.cpp`）：
-```
+```cpp
 // 登録（Scene のコンストラクタ）
 RegisterPlayerPrefab(m_prefabs);
 RegisterFloorPrefab(m_prefabs);
@@ -296,7 +296,7 @@ EntityId player = m_prefabs.Spawn("Player", m_world, sp);
 - Update で `m_sys.Tick`、Draw で `m_sys.Render` 実行
 
 カメラエンティティの生成（抜粋、`Scene/TestScene.cpp`）：
-```
+```cpp
 EntityId camEnt = m_world.Create();
 m_world.Add<ActiveCameraTag>(camEnt);
 auto& tr = m_world.Add<TransformComponent>(camEnt, {0,0,-16}, {0,0,0}, {1,1,1});
