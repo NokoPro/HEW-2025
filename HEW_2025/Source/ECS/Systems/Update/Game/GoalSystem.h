@@ -1,9 +1,26 @@
+/**********************************************************************************************
+ * @file      GoalSystem.h
+ * @brief     ゴール到達判定システム
+ *
+ * @author    浅野勇生
+ * @date      2025/11/23
+ *
+ * =============================================================================================
+ *  Progress Log  - 進捗ログ
+ * ---------------------------------------------------------------------------------------------
+ *  [ @date 2025/11/23 ]
+ * 
+ *    - [◎] チートを実装
+ *    - [] 
+ *
+ **********************************************************************************************/
 #pragma once
 #include "ECS/Systems/IUpdateSystem.h"
 #include "ECS/World.h"
 #include "ECS/Systems/Update/Physics/Collision2DSystem.h"
 
-class GoalSystem : public IUpdateSystem {
+class GoalSystem : public IUpdateSystem
+{
 public:
     GoalSystem(Collision2DSystem* colSys) : m_colSys(colSys) {}
     void Update(World& world, float dt) override;
