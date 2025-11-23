@@ -18,7 +18,8 @@
 bool Game_Init(HWND hWnd, unsigned int width, unsigned int height);
 
 /**
- * @brief 毎フレームの更新処理
+ * @brief 毎フレーム更新処理 (固定タイムステップを想定)
+ * @details メインループ側で kFixedDt に従い呼び出される。
  */
 void Game_Update();
 

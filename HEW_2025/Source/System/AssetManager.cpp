@@ -1,33 +1,35 @@
 /*****************************************************************//**
  * @file   AssetManager.cpp
- * @brief  AssetManager の実装
+ * @brief  AssetManager 実装
  *
- * モデルとテクスチャを、エイリアス名→実パスに解決して読み込み、
- * キャッシュに置くところまでを担当します。
- * 同じアセットを何度も読み込まないようになっています。
+ * - AssetCatalog からパス・スケール等を解決
+ * - Model / Texture は shared_ptr キャッシュ
+ * - Audio / Effect はパス情報を含む小さい構造体を返すだけ
  *
- * @author 浅野勇生
- * @date   2025/11/8
+ * @author  浅野勇生
+ * @date    2025/11/24
  *********************************************************************/
 #include "AssetManager.h"
 #include "AssetCatalog.h"
 #include "Model.h"
 #include "DirectX/Texture.h"
 
+#include <cassert>
+
+ // 静的メンバ定義
 std::unordered_map<std::string, std::weak_ptr<Model>>   AssetManager::s_modelCache;
 std::unordered_map<std::string, std::weak_ptr<Texture>> AssetManager::s_texCache;
-std::mutex AssetManager::s_mtxModel;
-std::mutex AssetManager::s_mtxTex;
+std::mutex                                               AssetManager::s_mtxModel;
+std::mutex                                               AssetManager::s_mtxTex;
 
 void AssetManager::Init()
 {
-    // 今は特にやることなし。
-    // 将来的に AssetCatalog のリロードや監視スレッドを起動するならここ。
+    // 現状特になし
+    // 将来的に AssetCatalog::LoadCsv() をここから叩く案もあり
 }
 
 void AssetManager::Shutdown()
 {
-    // 2つのキャッシュをそれぞれロックしてからクリアする
     std::lock_guard<std::mutex> lk1(s_mtxModel);
     std::lock_guard<std::mutex> lk2(s_mtxTex);
 
@@ -37,70 +39,101 @@ void AssetManager::Shutdown()
 
 AssetManager::Resolved AssetManager::ResolveModel(const std::string& aliasOrPath)
 {
-    // まず台帳を引いてみる
+    // まず CSV 台帳を引く
     if (auto d = AssetCatalog::Find(aliasOrPath))
     {
-        AssetManager::Resolved r;
+        Resolved r;
         r.path = d->path;
         r.scale = d->scale;
         r.flip = d->flip;
         return r;
     }
 
-    // 台帳に無ければそのままパス扱い
-    return { aliasOrPath, 1.0f, 0 };
+    // 登録がない場合：そのままパス扱い
+    Resolved r;
+    r.path = aliasOrPath;
+    r.scale = 1.0f;
+    r.flip = 0;
+    return r;
 }
 
 std::string AssetManager::ResolveTexturePath(const std::string& aliasOrPath)
 {
     if (auto d = AssetCatalog::Find(aliasOrPath))
     {
-        return d->path;
+        // type が空 or "texture" のものを優先
+        if (d->type.empty() || d->type == "texture")
+        {
+            return d->path;
+        }
     }
 
-    // 登録されていなければ引数をそのままパスと見なす
+    // 登録がない / 種別違い：そのままパス扱い
+    return aliasOrPath;
+}
+
+std::string AssetManager::ResolveAudioPath(const std::string& aliasOrPath)
+{
+    if (auto d = AssetCatalog::Find(aliasOrPath))
+    {
+        if (d->type == "audio")
+        {
+            return d->path;
+        }
+    }
+    return aliasOrPath;
+}
+
+std::string AssetManager::ResolveEffectPath(const std::string& aliasOrPath)
+{
+    if (auto d = AssetCatalog::Find(aliasOrPath))
+    {
+        if (d->type == "effect")
+        {
+            return d->path;
+        }
+    }
     return aliasOrPath;
 }
 
 AssetHandle<Model> AssetManager::GetModel(const std::string& aliasOrPath)
 {
-    // エイリアスを実パスに変換
+    // 1. CSV から path / scale / flip を解決
     const auto resolved = ResolveModel(aliasOrPath);
 
-    // 1. まずキャッシュを確認
+    // 2. まずキャッシュを確認
     {
         std::lock_guard<std::mutex> lock(s_mtxModel);
 
         auto it = s_modelCache.find(resolved.path);
         if (it != s_modelCache.end())
         {
-            // weak_ptr → shared_ptr に戻す
             if (auto sp = it->second.lock())
             {
-                return { sp };
+                return AssetHandle<Model>(sp);
             }
         }
     }
 
-    // 2. キャッシュに無いのでロードする
+    // 3. キャッシュに無ければロード
     auto sp = LoadModelByPath(resolved.path, resolved.scale, resolved.flip);
 
-    // 3. 成功したらキャッシュに保存
+    // 4. ロード成功時のみキャッシュに登録
     if (sp)
     {
         std::lock_guard<std::mutex> lock(s_mtxModel);
         s_modelCache[resolved.path] = sp;
     }
 
-    return { sp };
+    return AssetHandle<Model>(sp);
 }
 
 AssetHandle<Texture> AssetManager::GetTexture(const std::string& aliasOrPath)
 {
-    // エイリアスを実パスに変換
+    // 1. パス解決
     const std::string path = ResolveTexturePath(aliasOrPath);
 
-    // 1. キャッシュを先に見る
+    // 2. キャッシュ確認
     {
         std::lock_guard<std::mutex> lock(s_mtxTex);
 
@@ -109,29 +142,78 @@ AssetHandle<Texture> AssetManager::GetTexture(const std::string& aliasOrPath)
         {
             if (auto sp = it->second.lock())
             {
-                return { sp };
+                return AssetHandle<Texture>(sp);
             }
         }
     }
 
-    // 2. 実際にロード
+    // 3. ロード
     auto sp = LoadTextureByPath(path);
 
-    // 3. 読めたらキャッシュに記録
+    // 4. キャッシュ登録
     if (sp)
     {
         std::lock_guard<std::mutex> lock(s_mtxTex);
         s_texCache[path] = sp;
     }
 
-    return { sp };
+    return AssetHandle<Texture>(sp);
+}
+
+AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
+{
+    AudioClip clip{};
+
+    if (auto d = AssetCatalog::Find(aliasOrPath))
+    {
+        if (d->type == "audio")
+        {
+            clip.path = d->path;
+            clip.group = d->group;
+            clip.tags = d->tags;
+            clip.param1 = d->param1;
+            clip.param2 = d->param2;
+        }
+    }
+
+    // 台帳に無い場合は aliasOrPath をそのままパス扱い
+    if (clip.path.empty())
+    {
+        clip.path = aliasOrPath;
+    }
+
+    return AssetHandle<AudioClip>(std::make_shared<AudioClip>(std::move(clip)));
+}
+
+AssetHandle<EffectRef> AssetManager::GetEffect(const std::string& aliasOrPath)
+{
+    EffectRef ef{};
+
+    if (auto d = AssetCatalog::Find(aliasOrPath))
+    {
+        if (d->type == "effect")
+        {
+            ef.path = d->path;
+            ef.group = d->group;
+            ef.tags = d->tags;
+            ef.param1 = d->param1;
+            ef.param2 = d->param2;
+        }
+    }
+
+    if (ef.path.empty())
+    {
+        ef.path = aliasOrPath;
+    }
+
+    return AssetHandle<EffectRef>(std::make_shared<EffectRef>(std::move(ef)));
 }
 
 std::shared_ptr<Model> AssetManager::LoadModelByPath(const std::string& path, float scale, int flip)
 {
     auto m = std::make_shared<Model>();
 
-    // flip はプロジェクト側の Model::Flip に合わせてキャストする
+    // flip は enum Model::Flip にキャストして渡す
     if (!m->Load(path.c_str(), scale, static_cast<Model::Flip>(flip)))
     {
         return nullptr;
@@ -146,7 +228,7 @@ std::shared_ptr<Texture> AssetManager::LoadTextureByPath(const std::string& path
 
     if (FAILED(tex->Create(path.c_str())))
     {
-        // 読み込みに失敗したらnullptrにしておくと後でわかりやすい
+        // 読み込み失敗時は nullptr を返す
         return nullptr;
     }
 
@@ -155,5 +237,6 @@ std::shared_ptr<Texture> AssetManager::LoadTextureByPath(const std::string& path
 
 void AssetManager::UpdateHotReload(float /*dt*/)
 {
-    // TODO: 将来的にファイルの更新時刻を見て再ロードする処理を書けるようにしておく
+    // TODO:
+    //   将来的にファイル更新時の自動リロードをここから実装する
 }

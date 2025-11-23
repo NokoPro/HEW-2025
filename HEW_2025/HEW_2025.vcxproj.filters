@@ -587,8 +587,8 @@
     <ClInclude Include="Source\System\TimeAttackManager.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Stages\test_stage.json" />
+    <ClInclude Include="Source\Scene\SceneAPI.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

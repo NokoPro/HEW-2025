@@ -335,6 +335,7 @@
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\Main.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
+    <ClInclude Include="Source\Scene\SceneAPI.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\TestScene.h" />
     <ClInclude Include="Source\Scene\TestStageScene.h" />
@@ -357,9 +358,6 @@
     <ClInclude Include="Source\System\Sprite.h" />
     <ClInclude Include="Source\System\StageLoader.h" />
     <ClInclude Include="Source\System\TimeAttackManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Stages\test_stage.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

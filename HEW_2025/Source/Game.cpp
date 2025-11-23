@@ -1,6 +1,6 @@
 /*****************************************************************//**
  * @file   Game.cpp
- * @brief  SceneManagerを使ったゲーム全体の入口
+ * @brief  SceneManagerを使ったゲーム全体の制御
  *
  * @author 浅野勇生
  * @date   2025/11/11
@@ -14,26 +14,32 @@
 
 namespace
 {
-    SceneManager g_SceneManager;
+    SceneManager g_SceneManager; // ゲーム全体で 1 つ
+}
+
+// 他所からアクセスするためのアクセサ関数 (SceneAPI.h が利用)
+SceneManager& GetSceneManager()
+{
+    return g_SceneManager;
 }
 
 bool Game_Init(HWND /*hWnd*/, unsigned int /*width*/, unsigned int /*height*/)
 {
-    // 最初にテストシーンを起動
+    // 最初にテストステージへ遷移
     g_SceneManager.Change<TestStageScene>();
-    // レコード読み込み (固定パス仮)
+    // レコード読み込み (タイムアタック用)
     TimeAttackManager::Get().LoadRecord("time_record.dat");
-    // カウントダウン開始 (将来設定値から) 現状3秒
+    // カウントダウン開始 (初期設定値から) 長さ3秒
     TimeAttackManager::Get().StartCountdown(3.0f);
     return true;
 }
 
 void Game_Update()
 {
-    // 新タイムアタック更新
+    // タイムアタック更新
     TimeAttackManager::Get().Update();
 
-    // 旧デバッグ用簡易タイマー維持 (互換性) - 今後削除予定
+    // デバッグ用タイマー操作 (暫定) - 後日削除予定
     auto& dbg = DebugSettings::Get();
     if (!dbg.gameTimerRunning && !dbg.gameCleared && !dbg.gameDead)
     {
@@ -41,7 +47,7 @@ void Game_Update()
     }
     if (dbg.gameTimerRunning && TimeAttackManager::Get().GetState() == TimeAttackManager::State::Running)
     {
-        dbg.gameElapsedSeconds += (1.0f / 60.0f); // 仮: 固定タイムステップ
+        dbg.gameElapsedSeconds += (1.0f / 60.0f); // 固定タイムステップ
     }
     g_SceneManager.Update();
 }
@@ -54,5 +60,5 @@ void Game_Draw()
 void Game_Uninit()
 {
     TimeAttackManager::Get().SaveRecord("time_record.dat");
-    // SceneManagerが勝手に片付ける想定ならここは空でOK
+    // SceneManagerは終了時に自動的に破棄されるため追加処理不要
 }
