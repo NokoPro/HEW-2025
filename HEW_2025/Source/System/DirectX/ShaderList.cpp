@@ -136,38 +136,50 @@ void ShaderList::SetFog(DirectX::XMFLOAT4 color, float start, float range)
 	m_pPS[PS_FOG]->WriteBuffer(3, param);
 }
 
-void ShaderList::SetL(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj)
+void ShaderList::SetL(DirectX::XMFLOAT4X4 viewT, DirectX::XMFLOAT4X4 projT)
 {
-	DirectX::XMMATRIX V = XMLoadFloat4x4(&view);
-	DirectX::XMMATRIX Vinv = XMMatrixInverse(nullptr, V);
+	using namespace DirectX;
 
-	// カメラ前方（ワールド）
-	DirectX::XMVECTOR f = DirectX::XMVector3Normalize(
-		XMVector3TransformNormal(DirectX::XMVectorSet(0, 0, 1, 0), Vinv)
+	// 1. 転置済みビュー行列を元に戻す（LH 系）
+	XMMATRIX Vt = XMLoadFloat4x4(&viewT);
+	XMMATRIX V = XMMatrixTranspose(Vt);
+
+	// 2. ビュー行列の逆行列からカメラ位置と前方を取得
+	XMMATRIX Vinv = XMMatrixInverse(nullptr, V);
+
+	// カメラ位置（ワールド）
+	XMVECTOR camPosW = XMVector3TransformCoord(XMVectorZero(), Vinv);
+
+	// カメラ前方（ワールド） : ローカル (0,0,1) を逆ビューで変換
+	XMVECTOR forwardW = XMVector3TransformNormal(
+		XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f),
+		Vinv
+	);
+	forwardW = XMVector3Normalize(forwardW);
+
+	// 3. 「前方＋少し下向き」の方向を作る（斜め下にライト）
+	//    ここを調整することで「どれくらい下から当てるか」を変えられる
+	const float downBias = 0.35f; // 下向き寄せ量（0.0～0.8くらいで調整）
+
+	XMFLOAT3 fwd;
+	XMStoreFloat3(&fwd, forwardW);
+
+	XMVECTOR lightDirW = XMVector3Normalize(
+		XMVectorSet(fwd.x, fwd.y - downBias, fwd.z, 0.0f)
 	);
 
-	// --- ここがポイント：XZはそのまま、Yだけ“下向き”に矯正する ---
-	float fx = DirectX::XMVectorGetX(f);
-	float fy = DirectX::XMVectorGetY(f);
-	float fz = DirectX::XMVectorGetZ(f);
+	XMFLOAT3 lightDir;
+	XMStoreFloat3(&lightDir, lightDirW);
 
-	// 少しだけ下向きに寄せるバイアス（好みで 0.2-0.5）
-	const float downBias = 0.1f;
-
-	// L（“光の向き”＝シーンへ向かう方向）は、XZはカメラ前方を維持、Yは必ず負方向へ
-	DirectX::XMVECTOR L = DirectX::XMVector3Normalize(
-		DirectX::XMVectorSet(fx, fabsf(fy) - downBias, -fz, 0.0f)
+	// 4. シェーダ側に「ライトからシーンへの向き」とカメラ位置を設定
+	//    PS では L = normalize(-lightDir); なので、ここではそのまま「光が飛んでくる向き」を渡す
+	ShaderList::SetLight(
+		XMFLOAT4(1.5f, 1.5f, 1.5f, 1.0f),  // 色（とりあえず白）
+		lightDir
 	);
 
-	// シェーダは L = normalize(-lightDir) を使うので、渡すのは -L
-	DirectX::XMFLOAT3 lightDir;
-	DirectX::XMStoreFloat3(&lightDir, DirectX::XMVectorNegate(L));
-
-	ShaderList::SetLight({ 1,1,1,1 }, lightDir);
-
-	// （Specular/Toon/Fog を使うなら同フレームでカメラ位置も）
-	DirectX::XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, XMVector3TransformCoord(DirectX::XMVectorZero(), Vinv));
+	XMFLOAT3 camPos;
+	XMStoreFloat3(&camPos, camPosW);
 	ShaderList::SetCameraPos(camPos);
 }
 

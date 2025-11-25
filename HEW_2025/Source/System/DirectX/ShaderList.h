@@ -46,7 +46,13 @@ public:
 	static void SetLight(DirectX::XMFLOAT4 color, DirectX::XMFLOAT3 dir);
 	static void SetCameraPos(const DirectX::XMFLOAT3 pos);
 	static void SetFog(DirectX::XMFLOAT4 color, float start, float range);
-	static void SetL(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 proj);
+	
+	/**
+	* @brief 3D カメラ行列からライト方向とカメラ位置を設定するヘルパ
+	* @param viewT 転置済みビュー行列 (FollowCameraSystem::GetView() をそのまま渡す想定)
+	* @param projT 転置済みプロジェクション行列 (今は未使用だが将来用に残す)
+	*/
+	static void SetL(DirectX::XMFLOAT4X4 viewT, DirectX::XMFLOAT4X4 projT);
 
 private:
 	static void MakeWorldVS();

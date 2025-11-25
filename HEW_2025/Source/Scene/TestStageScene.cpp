@@ -264,7 +264,7 @@ TestStageScene::TestStageScene()
         // 位置
         auto& tr = m_world.Add<TransformComponent>(
             camEnt,
-            DirectX::XMFLOAT3{ 15.0f, 8.f, 0.0f },
+            DirectX::XMFLOAT3{ 0.0f, 8.f, -10.0f },
             DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f },
             DirectX::XMFLOAT3{ 1.0f, 1.0f, 1.0f }
         );
@@ -292,11 +292,6 @@ TestStageScene::TestStageScene()
         cam.sideLookAtX = 0.0f; // 中央を見る
         cam.lookAtOffset = DirectX::XMFLOAT3{ 0.0f, 8.0f, 0.0f };
     }
-
-    //
-    // 6. ライト初期化 (ヘッドライト用に初期呼び出し)
-    //
-    ModelRenderSystem::ApplyDefaultLighting(2.75f, 6.0f);
 }
 
 TestStageScene::~TestStageScene()
@@ -326,16 +321,7 @@ void TestStageScene::Draw()
         if (m_debugCollision)
             m_debugCollision->SetViewProj(V, P);
 
-        // カメラ位置をシェーダーへ反映 (ヘッドライト化)
-        // ActiveCameraTag + TransformComponent を検索
-        m_world.View<ActiveCameraTag, TransformComponent>([&](EntityId, const ActiveCameraTag&, const TransformComponent& tr)
-        {
-            ShaderList::SetCameraPos(DirectX::XMFLOAT3{ tr.position.x, tr.position.y, tr.position.z - 30 });
-            ShaderList::SetLight(
-                DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),   // 光の色（RGBA）
-                DirectX::XMFLOAT3(-0.5f, 1.0f, -1.0f)        // 光の方向ベクトル (ここを変更)
-            );
-        });
+		ShaderList::SetL(V, P);
     }
 
     // モデル描画

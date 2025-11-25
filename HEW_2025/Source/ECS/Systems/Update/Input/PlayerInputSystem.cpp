@@ -70,7 +70,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             else if (intent.moveX < -0.01f) intent.facing = -1;
 
             // --- ‰ñ“] ---
-            float targetY = (intent.facing == 1) ? 120.0f : -120.0f;
+            float targetY = (intent.facing == 1) ? 130.0f : -130.0f;
             float lerpSpeed = 0.2f; // 0.0`1.0: ’l‚ð‘å‚«‚­‚·‚é‚Æ‘¬‚­‰ñ“]
             tr.rotationDeg.y = LerpAngle(tr.rotationDeg.y, targetY, lerpSpeed);
         }

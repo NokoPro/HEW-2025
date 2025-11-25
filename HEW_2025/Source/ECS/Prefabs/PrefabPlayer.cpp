@@ -89,8 +89,8 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             mr.model = AssetManager::GetModel(modelName ? modelName : kFallbackModel);
 
             mr.visible = true;
-			mr.localScale = { 1.5f, 0.7f, 1.5f }; // 適当な大きさに調整
-			mr.localOffset = { 0.f, 0.5f, 0.f }; // 足元を原点に合わせる
+			mr.localScale = { 1.5f, 0.75f, 1.5f }; // 適当な大きさに調整
+			mr.localOffset = { 0.f, 0.4, 0.f }; // 足元を原点に合わせる
 
             // レイヤー
             mr.layer = 15; // プレイヤーの基準は「0」

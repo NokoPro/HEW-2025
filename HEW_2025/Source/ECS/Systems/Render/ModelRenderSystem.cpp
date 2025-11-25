@@ -135,7 +135,5 @@ void ModelRenderSystem::Render(const World& world)
 //--------------------------------------------------------------
 void ModelRenderSystem::ApplyDefaultLighting(float camY, float camRadius)
 {
-    XMFLOAT3 camPos = { 0.0f, -1.0f, 1.0f };
-    ShaderList::SetLight({ 1.0f, 1.0f, 1.0f, 1.0f }, camPos);
-    ShaderList::SetCameraPos(camPos);
+    // ‚à‚¤Žg‚í‚È‚¢
 }

@@ -1,6 +1,6 @@
 model,assets/model/slime.fbx,mdl_slime,0.2,1,1,,,,,
 model,assets/model/kaykit_platformer_pack_1.0_free/assets/fbx/blue/platform_1x1x1_blue.fbx,mdl_ground,2,0,1,,,,,
-model,Assets/Model/Player/pinkusagikari.fbx,mdl_player,0.5,1,1,,,,,
+model,Assets/Model/Player/pinkusagikari.fbx,mdl_player,0.5,0,1,,,,,
 texture,assets/texture/mato.png,ui_gauge_cursor,2,0,1,,,,,
 texture,assets/texture/ugoku.png,ui_gauge_frame,2,0,1,,,,,
 texture,assets/texture/circle.png,ui_gauge_target,2,0,1,,,,,
