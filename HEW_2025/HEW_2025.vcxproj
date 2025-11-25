@@ -278,6 +278,7 @@
     <ClInclude Include="..\libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\libs\imgui\imstb_textedit.h" />
     <ClInclude Include="..\libs\imgui\imstb_truetype.h" />
+    <ClInclude Include="DigitUIComponent.h" />
     <ClInclude Include="libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
@@ -359,6 +360,7 @@
     <ClInclude Include="Source\System\Sprite.h" />
     <ClInclude Include="Source\System\StageLoader.h" />
     <ClInclude Include="Source\System\TimeAttackManager.h" />
+    <ClInclude Include="TimerComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Config\gameplay.csv" />
