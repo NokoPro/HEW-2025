@@ -238,6 +238,8 @@ void Model::Draw(int meshNo)
 	m_pVS->Bind();
 	m_pPS->Bind();
 
+	SetDepthTest(true);
+
 	// •`‰æ”ÍˆÍŒˆ’è
 	size_t begin = 0;
 	size_t end = m_meshes.size();
@@ -256,6 +258,8 @@ void Model::Draw(int meshNo)
 
 		m_meshes[i].pMesh->Draw();
 	}
+
+	SetDepthTest(false);
 }
 
 /*

@@ -75,7 +75,7 @@ TestStageScene::TestStageScene()
     //
     // 1. アセット取得
     //
-    m_playerModel = AssetManager::GetModel("mdl_slime");
+    m_playerModel = AssetManager::GetModel("mdl_player");
     if (m_playerModel)
     {
         m_playerModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
@@ -199,7 +199,7 @@ TestStageScene::TestStageScene()
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 0;                         // 1P
-        sp.modelAlias = "mdl_slime";
+        sp.modelAlias = "mdl_player";
 
         m_playerEntity1 = m_prefabs.Spawn("Player", m_world, sp);
 
@@ -230,7 +230,7 @@ TestStageScene::TestStageScene()
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 1;                         // 2P
-        sp.modelAlias = "mdl_slime";           // ← 2P用モデル
+        sp.modelAlias = "mdl_Player";           // ← 2P用モデル
 
         m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
 
@@ -277,7 +277,8 @@ TestStageScene::TestStageScene()
         // 基本パラメータ
         cam.aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
         cam.nearZ = 0.1f;
-        cam.farZ = 10.0f;
+        // 185 離れたオブジェクトが入るよう十分大きくする
+        cam.farZ = 300.0f;    // 200～500 くらいで OK。とりあえず 300 くらいに
         cam.fovY = 20.0f;
 
         // サイドビュー用の固定値
@@ -293,7 +294,7 @@ TestStageScene::TestStageScene()
     }
 
     //
-    // 6. ライト
+    // 6. ライト初期化 (ヘッドライト用に初期呼び出し)
     //
     ModelRenderSystem::ApplyDefaultLighting(2.75f, 6.0f);
 }
@@ -324,6 +325,17 @@ void TestStageScene::Draw()
             m_drawSprite->SetViewProj(V, P);
         if (m_debugCollision)
             m_debugCollision->SetViewProj(V, P);
+
+        // カメラ位置をシェーダーへ反映 (ヘッドライト化)
+        // ActiveCameraTag + TransformComponent を検索
+        m_world.View<ActiveCameraTag, TransformComponent>([&](EntityId, const ActiveCameraTag&, const TransformComponent& tr)
+        {
+            ShaderList::SetCameraPos(DirectX::XMFLOAT3{ tr.position.x, tr.position.y, tr.position.z - 30 });
+            ShaderList::SetLight(
+                DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),   // 光の色（RGBA）
+                DirectX::XMFLOAT3(-0.5f, 1.0f, -1.0f)        // 光の方向ベクトル (ここを変更)
+            );
+        });
     }
 
     // モデル描画
