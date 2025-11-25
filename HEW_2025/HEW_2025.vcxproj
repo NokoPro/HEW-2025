@@ -263,6 +263,7 @@
     <ClCompile Include="Source\System\ImGuiLayer.cpp" />
     <ClCompile Include="Source\System\Input.cpp" />
     <ClCompile Include="Source\System\Model.cpp" />
+    <ClCompile Include="Source\System\RankingManager.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
     <ClCompile Include="Source\System\StageLoader.cpp" />
     <ClCompile Include="Source\System\TimeAttackManager.cpp" />
@@ -356,6 +357,7 @@
     <ClInclude Include="Source\System\ImGuiLayer.h" />
     <ClInclude Include="Source\System\Input.h" />
     <ClInclude Include="Source\System\Model.h" />
+    <ClInclude Include="Source\System\RankingManager.h" />
     <ClInclude Include="Source\System\Sprite.h" />
     <ClInclude Include="Source\System\StageLoader.h" />
     <ClInclude Include="Source\System\TimeAttackManager.h" />
