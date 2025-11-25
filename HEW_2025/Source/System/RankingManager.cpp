@@ -30,7 +30,7 @@ int RankingManager::GetRank(float time) const
 
 size_t RankingManager::GetCount() const
 {
-	m_entries.size();
+	return m_entries.size();
 }
 
 float RankingManager::GetEntry(size_t i) const
@@ -43,8 +43,9 @@ void RankingManager::Load(const std::string& path)
 	m_filePath = path;
 	Reset();
 	std::ifstream ifs(path);
-	if (!ifs) return;
-
+	if (!ifs) {
+		return;
+	}
 	float value;
 
 	while (ifs >> value)

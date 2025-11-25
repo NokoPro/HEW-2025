@@ -56,6 +56,10 @@
 #include "ECS/Prefabs/PrefabFollowerJump.h"
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
 
+
+//’Ç@ÂŒ´ƒ
+#include "System/RankingManager.h"
+
 #include <cstdio>
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
@@ -121,7 +125,8 @@ TestStageScene::TestStageScene()
 
     //’Ç‰Á
     m_sys.AddUpdate<AudioPlaySystem>();
-
+    //’Ç‰Á11/25
+    RankingManager::Get().Load("Assets/Ranking.csv");
 
     // 2-5 •`‰æ
     // ”wŒi—p•`‰æƒVƒXƒeƒ€
