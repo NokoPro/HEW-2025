@@ -107,6 +107,7 @@ void TimeAttackManager::NotifyClear()
 
         }
         RankingManager::Get().Save("Assets/Ranking.csv");
+        RankingManager::Get().ShowRankingMessege();
     }
 }
 

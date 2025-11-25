@@ -49,6 +49,7 @@ public:
 
 	void Reset(); 
 
+	void ShowRankingMessege()const;
 private:
 	RankingManager(){}
 	~RankingManager(){}

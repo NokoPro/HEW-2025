@@ -1,5 +1,6 @@
 #include "RankingManager.h"
 #include "System/TimeAttackManager.h"
+#include<Windows.h>
 
 int RankingManager::AddRecord(float time)
 {
@@ -73,4 +74,21 @@ void RankingManager::Save(const std::string& path)
 void RankingManager::Reset()
 {
 	m_entries.clear();
+}
+
+void RankingManager::ShowRankingMessege() const
+{
+	if (m_entries.empty())
+	{
+		MessageBoxA(NULL,"ランキングデータがありません", "Ranking", MB_OK);
+		return;
+	}
+	std::string msg = "===Ranking===\n";
+	for (size_t i = 0; i < m_entries.size(); i++)
+	{
+		char buf[64];
+		sprintf_s(buf, "%2zu 位 :%.3f 秒\n", i + 1, m_entries[i]);
+		msg += buf;
+	}
+	MessageBoxA(NULL,msg.c_str(), "Ranking", MB_OK);
 }
