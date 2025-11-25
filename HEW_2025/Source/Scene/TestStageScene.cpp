@@ -177,12 +177,12 @@ TestStageScene::TestStageScene()
         sp.scale = { 2.0f, 50.0f, 1.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
-    {
-        PrefabRegistry::SpawnParams sp;
-        sp.position = { 35.0f, 25.0f, 0.0f };
-        sp.scale = { 1.0f, 50.0f, 1.0f };
-        m_prefabs.Spawn("Wall", m_world, sp);
-    }
+    //{
+    //    PrefabRegistry::SpawnParams sp;
+    //    sp.position = { 35.0f, 25.0f, 0.0f };
+    //    sp.scale = { 1.0f, 50.0f, 1.0f };
+    //    m_prefabs.Spawn("Wall", m_world, sp);
+    //}
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 70.0f, 25.0f, 0.0f };
@@ -197,7 +197,7 @@ TestStageScene::TestStageScene()
         PrefabRegistry::SpawnParams sp;
         sp.position = { 10.0f, 2.0f, 0.0f };
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
-        sp.scale = { 1.f, 1.f, 1.f };
+        sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 0;                         // 1P
         sp.modelAlias = "mdl_slime";
 
@@ -228,7 +228,7 @@ TestStageScene::TestStageScene()
         PrefabRegistry::SpawnParams sp;
         sp.position = { 60.0f, 2.0f, 0.0f };
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
-        sp.scale = { 1.f, 1.f, 1.f };
+        sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 1;                         // 2P
         sp.modelAlias = "mdl_slime";           // Å© 2PópÉÇÉfÉã
 

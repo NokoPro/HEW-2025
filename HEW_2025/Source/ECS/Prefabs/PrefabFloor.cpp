@@ -37,7 +37,7 @@ void RegisterFloorPrefab(PrefabRegistry& registry)
             mr.visible = true;
 
             // ƒŒƒCƒ„[
-            //mr.layer = -10;
+            mr.layer = 18;
 
             if (mr.model)
             {
