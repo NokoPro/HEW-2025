@@ -27,6 +27,9 @@ void RegisterStaticBlockPrefab(PrefabRegistry& registry)
 
 			/// Transform（scale はそのまま使えるようにしておく）
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
+			tr.rotationDeg = { 0.0f, 180.0f, 0.0f }; // 回転は無し固定
+            tr.scale = { 1.f,1.f,1.f };
+			tr.position.z = 0.0f; // Z位置は0固定
 
 			/// 見た目
             auto& mr = w.Add<ModelRendererComponent>(e);

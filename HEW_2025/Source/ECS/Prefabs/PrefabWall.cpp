@@ -29,6 +29,7 @@ void RegisterWallPrefab(PrefabRegistry& registry)
 
 			/// Transformiscale ‚Í‚»‚Ì‚Ü‚Üg‚¦‚é‚æ‚¤‚É‚µ‚Ä‚¨‚­j
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
+            tr.rotationDeg = { 0.0f, 180.0f, 0.0f };
 
 			/// Œ©‚½–Ú
             auto& mr = w.Add<ModelRendererComponent>(e);

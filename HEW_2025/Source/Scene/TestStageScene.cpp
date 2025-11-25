@@ -156,8 +156,8 @@ TestStageScene::TestStageScene()
 
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 35.0f, -5.0f, 0.0f };
-        sp.scale = { 40.0f, 7.0f, 1.0f };   // 横長の床
+        sp.position = { 35.0f, -5.0f, -3.0f };
+        sp.scale = { 40.0f, 7.0f, 6.0f };   // 横長の床
         sp.rotationDeg = { 0.f,0.f,0.f };
         m_prefabs.Spawn("Floor", m_world, sp);
     }
@@ -166,7 +166,8 @@ TestStageScene::TestStageScene()
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 35.0f, -30.0f, 0.0f }; // ステージ下部
-        sp.scale = { 60.0f, kDeathZoneHalfHeight, 1.0f };     // 横幅広め
+        sp.scale = { 60.0f, kDeathZoneHalfHeight, 4.0f };     // 横幅広め
+		sp.rotationDeg = { 0.f,180.f,0.f };
         m_prefabs.Spawn("DeathZone", m_world, sp);
     }
 
@@ -174,7 +175,7 @@ TestStageScene::TestStageScene()
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 0.0f, 25.0f, 0.0f };
-        sp.scale = { 2.0f, 50.0f, 1.0f };
+        sp.scale = { 2.0f, 50.0f, 4.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
     //{
@@ -186,7 +187,7 @@ TestStageScene::TestStageScene()
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 70.0f, 25.0f, 0.0f };
-        sp.scale = { 2.0f, 50.0f, 1.0f };
+        sp.scale = { 2.0f, 50.0f, 4.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
 
