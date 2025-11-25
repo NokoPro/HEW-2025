@@ -249,6 +249,7 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\ResultScene.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
+    <ClCompile Include="Source\Scene\StageSelectScene.cpp" />
     <ClCompile Include="Source\Scene\TestScene.cpp" />
     <ClCompile Include="Source\Scene\TestStageScene.cpp" />
     <ClCompile Include="Source\Scene\TitleScene.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Scene\SceneAPI.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
+    <ClInclude Include="Source\Scene\StageSelectScene.h" />
     <ClInclude Include="Source\Scene\TestScene.h" />
     <ClInclude Include="Source\Scene\TestStageScene.h" />
     <ClInclude Include="Source\Scene\TitleScene.h" />

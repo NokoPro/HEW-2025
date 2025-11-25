@@ -1,6 +1,6 @@
 /**********************************************************************************************
-/* @file      ResultScene.cpp
-/* @brief	  タイトルシーン
+/* @file      StageSelectScene.cpp
+/* @brief	  ステージセレクトシーン
 /*
 /* @author    堤翔
 /* @author	  奥田修也
@@ -12,36 +12,35 @@
 /* ---------------------------------------------------------------------------------------------
 /*  [ @date 2025/11/25 ]
 /*
-/*    - [◎]シーンからの遷移
-/*    - [] UIの表示
-/*	  - [] ランキングの表示
+/*    - [◎]ゲームステージシーンへの遷移
+/*	  - []	タイトルＵＩ表示
 /*
 /**********************************************************************************************/
 
-#include "ResultScene.h"
+#include "StageSelectScene.h"
 #include "Scene/TestStageScene.h"
 
 
-ResultScene::ResultScene()
+StageSelectScene::StageSelectScene()
 {
 
 }
 
-ResultScene::~ResultScene()
+StageSelectScene::~StageSelectScene()
 {
 
 }
 
-void ResultScene::Update()
+void StageSelectScene::Update()
 {
 	// シーン変更
 	if (IsKeyPress(VK_SPACE))
 	{
-		ChangeScene<TestStageScene>();
+//		ChangeScene<>();
 	}
 }
 
-void ResultScene::Draw()
+void StageSelectScene::Draw()
 {
 
 }

@@ -330,6 +330,9 @@
     <ClCompile Include="Source\Scene\TitleScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\StageSelectScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -604,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\TitleScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\StageSelectScene.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
