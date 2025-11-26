@@ -7,28 +7,16 @@
  *********************************************************************/
 #pragma once
 #include <Windows.h>
+#include "Scene/SceneManager.h" // SceneManager 型参照用追加
 
- /**
-  * @brief ゲーム全体の初期化を行う
-  * @param hWnd   作成済みのウィンドウハンドル
-  * @param width  画面横幅
-  * @param height 画面縦幅
-  * @return 初期化に成功したかどうか
-  */
+// ゲーム初期化
 bool Game_Init(HWND hWnd, unsigned int width, unsigned int height);
-
-/**
- * @brief 毎フレーム更新処理 (固定タイムステップを想定)
- * @details メインループ側で kFixedDt に従い呼び出される。
- */
+// フレーム更新
 void Game_Update();
-
-/**
- * @brief 毎フレームの描画処理
- */
+// 描画
 void Game_Draw();
-
-/**
- * @brief 終了処理
- */
+// 終了処理
 void Game_Uninit();
+
+// グローバル SceneManager アクセサ (Game.cpp で定義)
+SceneManager& GetSceneManager();

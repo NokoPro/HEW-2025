@@ -1,4 +1,4 @@
-/*****************************************************************//**
+/*
  * @file   ImGuiLayer.cpp
  * @brief  ImGui レイヤー実装
  * 
@@ -16,6 +16,17 @@
 #include "DebugSettings.h"
 #include "TimeAttackManager.h"
 #include "GameplayConfig.h" // 追加: 外部調整値
+#include "Game.h" // GetSceneManager() 宣言取得
+#include "Scene/SceneManager.h"
+#include "Scene/TestStageScene.h"
+#include "ECS/World.h"
+#include "ECS/Components/Physics/TransformComponent.h"
+#include "ECS/Components/Input/PlayerInputComponent.h"
+#include "ECS/Components/Input/MovementIntentComponent.h"
+#include "ECS/Components/Physics/Rigidbody2DComponent.h"
+#include "ECS/Components/Physics/Collider2DComponent.h"
+#include "ECS/Components/Render/ModelComponent.h"
+#include "ECS/Tag/Tag.h"
 
 // ImGui 有効化オプション
 #ifdef IMGUI_ENABLED
@@ -45,23 +56,11 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARA
 
 #include "Debug.h" // Debug.hをインクルード
 
-/**
- * @brief ImGui の初期化
- * @details IMGUI_ENABLED かつ backends がインクルードされている時のみ処理を実行
- */
+// Forward declare global accessor if header didn’t provide (avoid unresolved symbol in some TU order)
+class SceneManager; SceneManager& GetSceneManager();
+
 namespace ImGuiLayer
 {
-    /**
-     * @brief ImGui を初期化します。
-     * @param hWnd アプリケーションの Win32 ウィンドウハンドル。
-     * @details 次の条件が満たされている場合のみ初期化処理を行います:
-     *          IMGUI_ENABLED, IMGUI_HAS_CORE, IMGUI_HAS_WIN32, IMGUI_HAS_DX11。
-     *          ImGui コンテキストの作成、キーボードナビの有効化、
-     *          `ImGui_ImplWin32_Init` と `ImGui_ImplDX11_Init` によるバックエンド初期化を行います。
-     *          DX11 のデバイス/コンテキストは `DirectX/DirectX.h` の `GetDevice()` および `GetContext()` から取得します。
-     * @note 対応する `Shutdown()` を必ず呼び出してリソースを解放してください。
-     * @warning 複数回呼び出す再初期化は想定していません。
-     */
     void Init(HWND hWnd)
     {
 #if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_WIN32) && defined(IMGUI_HAS_DX11)
@@ -76,7 +75,6 @@ namespace ImGuiLayer
 #endif
     }
 
-    /** @brief ImGui の終了処理 */
     void Shutdown()
     {
 #if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_WIN32) && defined(IMGUI_HAS_DX11)
@@ -86,22 +84,109 @@ namespace ImGuiLayer
 #endif
     }
 
-    /**
-     * @brief 1フレームの開始
-     * @details ここにデバッグウィンドウ項目を追加することで表示ステータスを増やせます。
-     * 例:
-     *  - Checkbox("God Mode", &DebugSettings::Get().godMode);
-     *  - SliderFloat("Player Speed", &DebugSettings::Get().playerSpeed, 0, 20);
-     */
+    // --- Entity 情報表示ヘルパ ---
+    static void DrawPlayerList(TestStageScene* scene)
+    {
+        if (!scene) { ImGui::TextDisabled("Scene not available"); return; }
+        World& w = scene->GetWorld();
+
+        int count = 0;
+        // Player タグ付きのみ列挙
+        w.View<TagPlayer, TransformComponent>([&](EntityId e, const TagPlayer&, TransformComponent& tr)
+        {
+            ++count;
+            ImGui::PushID((int)e);
+            char label[64];
+            snprintf(label, sizeof(label), "Player Entity %d", (int)e);
+            if (ImGui::TreeNode(label))
+            {
+                ImGui::Text("Position: (%.2f, %.2f, %.2f)", tr.position.x, tr.position.y, tr.position.z);
+                ImGui::Text("Rotation: (%.1f, %.1f, %.1f)", tr.rotationDeg.x, tr.rotationDeg.y, tr.rotationDeg.z);
+                ImGui::Text("Scale: (%.2f, %.2f, %.2f)", tr.scale.x, tr.scale.y, tr.scale.z);
+
+                if (w.Has<PlayerInputComponent>(e))
+                {
+                    const auto& inp = w.Get<PlayerInputComponent>(e);
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(0.7f,0.9f,1,1), "PlayerInputComponent");
+                    ImGui::Text("playerIndex: %d", inp.playerIndex);
+                    ImGui::Text("jumpReq: %d blinkReq: %d", inp.isJumpRequested?1:0, inp.isBlinkRequested?1:0);
+                }
+                if (w.Has<MovementIntentComponent>(e))
+                {
+                    const auto& mv = w.Get<MovementIntentComponent>(e);
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(0.7f,0.9f,1,1), "MovementIntentComponent");
+                    ImGui::Text("moveX: %.2f facing: %d", mv.moveX, mv.facing);
+                    ImGui::Text("jump:%d force:%d consumed:%d", mv.jump?1:0, mv.forceJumpRequested?1:0, mv.forceJumpConsumed?1:0);
+                    ImGui::Text("blinkReq:%d speed:%.2f isBlink:%d", mv.blinkRequested?1:0, mv.blinkSpeed, mv.isBlinking?1:0);
+                }
+                if (w.Has<Rigidbody2DComponent>(e))
+                {
+                    const auto& rb = w.Get<Rigidbody2DComponent>(e);
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(0.7f,0.9f,1,1), "Rigidbody2DComponent");
+                    ImGui::Text("vel:(%.2f, %.2f) onGround:%d", rb.velocity.x, rb.velocity.y, rb.onGround?1:0);
+                }
+                if (w.Has<Collider2DComponent>(e))
+                {
+                    const auto& col = w.Get<Collider2DComponent>(e);
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(0.7f,0.9f,1,1), "Collider2DComponent");
+                    ImGui::Text("layer:%d hitMask:%d", col.layer, col.hitMask);
+                    ImGui::Text("half:(%.2f, %.2f) offset:(%.2f, %.2f)", col.aabb.halfX, col.aabb.halfY, col.offset.x, col.offset.y);
+                }
+                if (w.Has<ModelRendererComponent>(e))
+                {
+                    const auto& mr = w.Get<ModelRendererComponent>(e);
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(1,0.85f,0.4f,1), "ModelRendererComponent");
+                    ImGui::Text("visible:%d layer:%d", mr.visible?1:0, mr.layer);
+                    ImGui::Text("localOffset:(%.2f,%.2f,%.2f)", mr.localOffset.x, mr.localOffset.y, mr.localOffset.z);
+                    ImGui::Text("localScale:(%.2f,%.2f,%.2f)", mr.localScale.x, mr.localScale.y, mr.localScale.z);
+                }
+                if (w.Has<ModelAnimationComponent>(e))
+                {
+                    const auto& anim = w.Get<ModelAnimationComponent>(e);
+                    ImGui::TextColored(ImVec4(1,0.85f,0.4f,1), "ModelAnimationComponent");
+                    ImGui::Text("animeNo:%d loop:%d speed:%.2f playReq:%d", anim.animeNo, anim.loop?1:0, anim.speed, anim.playRequested?1:0);
+                }
+                if (w.Has<ModelAnimationStateComponent>(e))
+                {
+                    const auto& st = w.Get<ModelAnimationStateComponent>(e);
+                    ImGui::TextColored(ImVec4(1,0.85f,0.4f,1), "ModelAnimationStateComponent");
+                    ImGui::Text("current:%d requested:%d", (int)st.current, (int)st.requested);
+                }
+                if (w.Has<ModelAnimationTableComponent>(e))
+                {
+                    const auto& tbl = w.Get<ModelAnimationTableComponent>(e);
+                    if (ImGui::TreeNode("AnimationTable"))
+                    {
+                        for (size_t i=0;i<tbl.table.size();++i)
+                        {
+                            const auto& d = tbl.table[i];
+                            ImGui::Text("[%zu] animeNo:%d loop:%d speed:%.2f", i, d.animeNo, d.loop?1:0, d.speed);
+                        }
+                        ImGui::TreePop();
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::PopID();
+        });
+        if (count == 0)
+        {
+            ImGui::TextDisabled("No player entities");
+        }
+    }
+
     void BeginFrame()
     {
 #if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_WIN32) && defined(IMGUI_HAS_DX11)
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
-
         Debug::DrawImGuiLogWindow();
-
         auto& ds = DebugSettings::Get();
         if (ds.imguiEnabled)
         {
@@ -120,7 +205,6 @@ namespace ImGuiLayer
                 if (ds.fpsEnabled) ImGui::Text("FPS: %.1f", ds.fpsValue);
                 ImGui::Separator();
             }
-
 
             // Gameplay tunables (CSV連携)
             auto& gcfg = GlobalGameplayConfig::Instance().GetMutable();
@@ -183,12 +267,24 @@ namespace ImGuiLayer
                 if (ta.GetState() == TimeAttackManager::State::Countdown) { ta.NotifyDeath(); }
                 else if (ta.GetState() == TimeAttackManager::State::Running) { ta.NotifyDeath(); }
             }
+
+            // =====================
+            // Entity Header (新規)
+            // =====================
+            if (ImGui::CollapsingHeader("Entities"))
+            {
+                ImGui::TextDisabled("Player entities only");
+                SceneManager& sm = GetSceneManager();
+                auto* current = sm.Current();
+                TestStageScene* testScene = dynamic_cast<TestStageScene*>(current);
+                DrawPlayerList(testScene);
+            }
+
             ImGui::End();
         }
 #endif
     }
 
-    /** @brief ImGui の描画と発行 */
     void EndFrameAndRender()
     {
 #if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_DX11)
@@ -199,7 +295,6 @@ namespace ImGuiLayer
 #endif
     }
 
-    /** @brief Win32 メッセージを ImGui へ転送 */
     bool WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
 #if defined(IMGUI_ENABLED)

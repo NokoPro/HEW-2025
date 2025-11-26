@@ -60,6 +60,10 @@ public:
     void Update() override;
     void Draw() override;
 
+    // ImGui 等の外部デバッグ表示向け: World 参照取得
+    World& GetWorld() { return m_world; }
+    const World& GetWorld() const { return m_world; }
+
 private:
     World          m_world;
     SystemRegistry m_sys;
