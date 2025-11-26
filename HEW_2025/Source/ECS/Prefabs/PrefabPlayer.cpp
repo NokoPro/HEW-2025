@@ -23,20 +23,11 @@
 #include "System/DirectX/ShaderList.h"
 #include "System/Model.h"
 
-static const char* kDefaultPlayerModel1P = "mdl_player_1p";
-static const char* kDefaultPlayerModel2P = "mdl_player_2p";
-static const char* kFallbackModel = "mdl_slime";
-
 using AnimeNo = Model::AnimeNo;
-// モデルごとに共有したいアニメ番号を static でキャッシュ
-static AnimeNo s_playerIdleAnime = Model::ANIME_NONE;
-static AnimeNo s_playerRunAnime = Model::ANIME_NONE;
-static AnimeNo s_playerJumpAnime = Model::ANIME_NONE;
-static AnimeNo s_playerFallAnime = Model::ANIME_NONE;
 
 // Data.csv 側の aliases と対応
 static const char* kAnimIdleAlias = "anim_player_idle";
-static const char* kAnimRunAlias = "anim_player_run";
+static const char* kAnimRunAlias  = "anim_player_run";
 static const char* kAnimJumpAlias = "anim_player_jump";
 static const char* kAnimFallAlias = "anim_player_fall";
 
@@ -69,36 +60,39 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             rb.useGravity = true;
 
             auto& mr = w.Add<ModelRendererComponent>(e);
-            mr.model = AssetManager::GetModel("mdl_player");   // Data.csv 側で登録済みの想定
+            // 共有キャッシュを使わず、毎回独立インスタンスを生成してアニメ状態の共有を防ぐ
+            const std::string modelAlias = sp.modelAlias.empty() ? std::string("mdl_player") : sp.modelAlias;
+            mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { 1.25f, 0.5f, 1.25f }; // スケール調整
             mr.localOffset = { 0.f, -0.5f, 0.f }; // 足元を原点に合わせる
+            
+            // このモデルインスタンスに対して個別にアニメを追加
+            AnimeNo idleNo = Model::ANIME_NONE;
+            AnimeNo runNo  = Model::ANIME_NONE;
+            AnimeNo jumpNo = Model::ANIME_NONE;
+            AnimeNo fallNo = Model::ANIME_NONE;
+
             if (mr.model)
             {
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-                // 初回だけアニメを追加して AnimeNo をキャッシュ
-                if (s_playerIdleAnime == Model::ANIME_NONE)
-                {
-                    auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
-                    s_playerIdleAnime = mr.model->AddAnimation(idlePath.c_str());
+                const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
+                idleNo = mr.model->AddAnimation(idlePath.c_str());
 
-                    auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
-                    s_playerRunAnime = mr.model->AddAnimation(runPath.c_str());
+                const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
+                runNo = mr.model->AddAnimation(runPath.c_str());
 
-                    auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
-                    s_playerJumpAnime = mr.model->AddAnimation(jumpPath.c_str());
+                const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
+                jumpNo = mr.model->AddAnimation(jumpPath.c_str());
 
-                    auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
-                    s_playerFallAnime = mr.model->AddAnimation(fallPath.c_str());
-                }
+                const auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
+                fallNo = mr.model->AddAnimation(fallPath.c_str());
             }
 
             // アニメ制御コンポーネント
             auto& anim = w.Add<ModelAnimationComponent>(e);
-            anim.animeNo = (s_playerIdleAnime != Model::ANIME_NONE)
-                ? static_cast<int>(s_playerIdleAnime)
-                : -1;
+            anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
             anim.loop = true;
             anim.speed = 1.0f;
             anim.playRequested = (anim.animeNo >= 0);
@@ -113,31 +107,31 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 d.speed = 1.0f;
             }
 
-            if (s_playerIdleAnime != Model::ANIME_NONE)
+            if (idleNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Idle)];
-                d.animeNo = static_cast<int>(s_playerIdleAnime);
+                d.animeNo = static_cast<int>(idleNo);
                 d.loop = true;
                 d.speed = 1.0f;
             }
-            if (s_playerRunAnime != Model::ANIME_NONE)
+            if (runNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
-                d.animeNo = static_cast<int>(s_playerRunAnime);
+                d.animeNo = static_cast<int>(runNo);
                 d.loop = true;
-                d.speed = 1.2f;
+                d.speed = 0.01f;
             }
-            if (s_playerJumpAnime != Model::ANIME_NONE)
+            if (jumpNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
-                d.animeNo = static_cast<int>(s_playerJumpAnime);
+                d.animeNo = static_cast<int>(jumpNo);
                 d.loop = false;   // ジャンプ開始を1回再生とか
                 d.speed = 0.05f;
             }
-            if (s_playerFallAnime != Model::ANIME_NONE)
+            if (fallNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
-                d.animeNo = static_cast<int>(s_playerFallAnime);
+                d.animeNo = static_cast<int>(fallNo);
                 d.loop = false;
                 d.speed = 0.05f;
             }

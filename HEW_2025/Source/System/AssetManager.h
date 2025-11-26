@@ -23,11 +23,11 @@ class Texture;
 struct AssetDesc;
 
 /**
- * @brief アセット共通ハンドル
+ * @brief アセット用ハンドル
  *
- * - shared_ptr を包んだだけの軽量ラッパ
- * - `if (handle) { ... }` で存在チェック可能
- * - `handle->メンバ` で中身にアクセス
+ * - shared_ptr を包む軽量ラッパ
+ * - `if (handle) { ... }` で有効チェック可能
+ * - `handle->メンバ` で直接アクセス
  */
 template <class T>
 class AssetHandle
@@ -49,7 +49,7 @@ public:
         return *m_ptr;
     }
 
-    // 既存コード互換: get()/ref() を提供
+    // 低レベルコード用: get()/ref() など
     T* get() const
     {
         return m_ptr.get();
@@ -74,10 +74,10 @@ private:
 };
 
 /**
- * @brief オーディオクリップ情報
+ * @brief オーディオクリップ型
  *
- * 実ファイルパスと、CSV から取れるメタ情報をまとめておく。
- * AudioManagerSystem 側は path さえ分かれば WAV を読める想定。
+ * 実ファイルパスと、CSV 由来のメタ情報を持つ。
+ * AudioManagerSystem では path から実際の WAV を読む想定。
  */
 struct AudioClip
 {
@@ -89,7 +89,7 @@ struct AudioClip
 };
 
 /**
- * @brief エフェクト参照情報（Effekseer など）
+ * @brief エフェクト参照（Effekseer など）
  */
 struct EffectRef
 {
@@ -115,34 +115,38 @@ public:
     static void Init();
     static void Shutdown();
 
-    /// ホットリロード用（現状はダミー）
+    /// ホットリロード用（現在はダミー）
     static void UpdateHotReload(float dt);
 
-    /// モデル用：エイリアス or パス → 実パス + scale + flip の解決
+    /// モデル用: エイリアス or パス -> 実パス + scale + flip の解決
     static Resolved ResolveModel(const std::string& aliasOrPath);
 
-    /// テクスチャ用：エイリアス or パス → 実パス
+    /// テクスチャ用: エイリアス or パス -> 実パス
     static std::string ResolveTexturePath(const std::string& aliasOrPath);
 
-    /// オーディオ用：エイリアス or パス → 実パス（type=="audio" を優先）
+    /// オーディオ用: エイリアス or パス -> 実パス（type=="audio" のみ）
     static std::string ResolveAudioPath(const std::string& aliasOrPath);
 
-    /// エフェクト用：エイリアス or パス → 実パス（type=="effect" を優先）
+    /// エフェクト用: エイリアス or パス -> 実パス（type=="effect" のみ）
     static std::string ResolveEffectPath(const std::string& aliasOrPath);
 
-	/// アニメーション用：エイリアス or パス → 実パス（type=="animation" を優先）
+    /// アニメーション用: エイリアス or パス -> 実パス（type=="animation" のみ）
     static std::string ResolveAnimationPath(const std::string& aliasOrPath);
 
-    /// モデル取得（キャッシュ付き）
+    /// 共有モデル取得（キャッシュ経由・同一パスは同じインスタンスを返す）
     static AssetHandle<Model> GetModel(const std::string& aliasOrPath);
 
-    /// テクスチャ取得（キャッシュ付き）
+    /// 非共有モデル取得（毎回新規に読み込み、独立インスタンスを返す）
+    /// - アニメーション状態をエンティティごとに独立させたい場合に使用
+    static AssetHandle<Model> CreateModelInstance(const std::string& aliasOrPath);
+
+    /// テクスチャ取得（キャッシュ）
     static AssetHandle<Texture> GetTexture(const std::string& aliasOrPath);
 
-    /// オーディオ取得（軽量な AudioClip 構造体を返す）
+    /// オーディオ取得（擬似的にメモリ内に生成・キャッシュ）
     static AssetHandle<AudioClip> GetAudio(const std::string& aliasOrPath);
 
-    /// エフェクト取得（軽量な EffectRef 構造体を返す）
+    /// エフェクト取得（擬似的にメモリ内に生成）
     static AssetHandle<EffectRef> GetEffect(const std::string& aliasOrPath);
 
 private:

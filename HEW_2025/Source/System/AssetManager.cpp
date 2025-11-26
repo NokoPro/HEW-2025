@@ -22,14 +22,14 @@ std::unordered_map<std::string, std::weak_ptr<Texture>> AssetManager::s_texCache
 std::mutex                                               AssetManager::s_mtxModel;
 std::mutex                                               AssetManager::s_mtxTex;
 
-// ==== Audio 用キャッシュ ====
+// ==== Audio キャッシュ ====
 std::unordered_map<std::string, std::shared_ptr<AudioClip>> AssetManager::s_audioCache;
 std::mutex                                                   AssetManager::s_mtxAudio;
 
 void AssetManager::Init()
 {
-    // 現状特になし
-    // 将来的に AssetCatalog::LoadCsv() をここから叩く案もあり
+    // 何もしない
+    // 将来的に AssetCatalog::LoadCsv() を呼ぶかも
 }
 
 void AssetManager::Shutdown()
@@ -43,7 +43,7 @@ void AssetManager::Shutdown()
 
 AssetManager::Resolved AssetManager::ResolveModel(const std::string& aliasOrPath)
 {
-    // まず CSV 台帳を引く
+    // まず CSV 参照から
     if (auto d = AssetCatalog::Find(aliasOrPath))
     {
         Resolved r;
@@ -53,7 +53,7 @@ AssetManager::Resolved AssetManager::ResolveModel(const std::string& aliasOrPath
         return r;
     }
 
-    // 登録がない場合：そのままパス扱い
+    // 未登録の場合: そのままパス扱い
     Resolved r;
     r.path = aliasOrPath;
     r.scale = 1.0f;
@@ -65,14 +65,14 @@ std::string AssetManager::ResolveTexturePath(const std::string& aliasOrPath)
 {
     if (auto d = AssetCatalog::Find(aliasOrPath))
     {
-        // type が空 or "texture" のものを優先
+        // type 未設定 or "texture" のもののみOK
         if (d->type.empty() || d->type == "texture")
         {
             return d->path;
         }
     }
 
-    // 登録がない / 種別違い：そのままパス扱い
+    // 未登録 / 種別違い: そのままパス扱い
     return aliasOrPath;
 }
 
@@ -104,23 +104,23 @@ std::string AssetManager::ResolveAnimationPath(const std::string& aliasOrPath)
 {
     if (auto d = AssetCatalog::Find(aliasOrPath))
     {
-        // Data.csv 側で type=anim or animation としておく想定
+        // Data.csv 側で type=anim or animation としている想定
         if (d->type == "anim" || d->type == "animation")
         {
             return d->path;
         }
     }
 
-    // 台帳に無ければ、そのままパスとして扱う
+    // 参照に失敗したら、そのままパスとして扱う
     return aliasOrPath;
 }
 
 AssetHandle<Model> AssetManager::GetModel(const std::string& aliasOrPath)
 {
-    // 1. CSV から path / scale / flip を解決
+    // 1. CSV から path / scale / flip 解決
     const auto resolved = ResolveModel(aliasOrPath);
 
-    // 2. まずキャッシュを確認
+    // 2. まずキャッシュ確認
     {
         std::lock_guard<std::mutex> lock(s_mtxModel);
 
@@ -137,13 +137,21 @@ AssetHandle<Model> AssetManager::GetModel(const std::string& aliasOrPath)
     // 3. キャッシュに無ければロード
     auto sp = LoadModelByPath(resolved.path, resolved.scale, resolved.flip);
 
-    // 4. ロード成功時のみキャッシュに登録
+    // 4. ロードしたものだけキャッシュに登録
     if (sp)
     {
         std::lock_guard<std::mutex> lock(s_mtxModel);
         s_modelCache[resolved.path] = sp;
     }
 
+    return AssetHandle<Model>(sp);
+}
+
+AssetHandle<Model> AssetManager::CreateModelInstance(const std::string& aliasOrPath)
+{
+    // GetModel と違い、キャッシュを使わず毎回新規インスタンスを作る
+    const auto resolved = ResolveModel(aliasOrPath);
+    auto sp = LoadModelByPath(resolved.path, resolved.scale, resolved.flip);
     return AssetHandle<Model>(sp);
 }
 
@@ -190,7 +198,7 @@ AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
         }
     }
 
-    // まだキャッシュされていないので、新規に AudioClip を組み立てる
+    // まだキャッシュされていないので、新規に AudioClip を構築して
     AudioClip clip{};
 
     if (auto d = AssetCatalog::Find(aliasOrPath))
@@ -206,7 +214,7 @@ AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
         else
         {
 #if defined(_DEBUG)
-            // type ミスマッチの警告（CSV 側の type 設定ミスに気づけるように）
+            // type ミスマッチの警告（CSV 側の type 設定ミスに気付けるように）
             std::string msg = "[AssetManager::GetAudio] alias '" + aliasOrPath +
                 "' is not type 'audio' (type='" + d->type + "')\n";
             OutputDebugStringA(msg.c_str());
@@ -214,18 +222,18 @@ AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
         }
     }
 
-    // CSV に存在しない / type 不一致などで path が取れなかった場合は
+    // CSV に存在しない / type 不一致などで path が入らなかった場合は
     // aliasOrPath をそのままパスとして扱う
     if (clip.path.empty())
     {
         clip.path = aliasOrPath;
     }
 
-    // ここで shared_ptr に包み、キャッシュに登録
+    // 生成物を shared_ptr に包み、キャッシュに登録
     auto sp = std::make_shared<AudioClip>(std::move(clip));
     {
         std::lock_guard<std::mutex> lock(s_mtxAudio);
-        // 同時アクセスで別スレッドが先に登録している可能性もあるので二重チェック
+        // 他スレッドで先にスレッドセーフに登録されていないかチェック
         auto it = s_audioCache.find(aliasOrPath);
         if (it == s_audioCache.end())
         {
@@ -233,7 +241,7 @@ AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
         }
         else
         {
-            // すでに存在していたらそちらを返す
+            // 既に存在していた場合はそれを返す
             sp = it->second;
         }
     }
@@ -294,5 +302,5 @@ std::shared_ptr<Texture> AssetManager::LoadTextureByPath(const std::string& path
 void AssetManager::UpdateHotReload(float /*dt*/)
 {
     // TODO:
-    //   将来的にファイル更新時の自動リロードをここから実装する
+    //   実装次第でファイル更新の検出→再ロード等を行う
 }
