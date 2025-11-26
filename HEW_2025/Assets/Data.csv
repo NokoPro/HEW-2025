@@ -1,6 +1,6 @@
 model,assets/model/slime.fbx,mdl_slime,0.2,1,1,,,,,
-model,assets/model/kaykit_platformer_pack_1.0_free/assets/fbx/blue/platform_1x1x1_blue.fbx,mdl_ground,2,0,1,,,,,
-model,Assets/Model/Player/pinkusagikari.fbx,mdl_player,0.5,0,1,,,,,
+model,assets/model/kaykit_platformer_pack_1.0_free/assets/fbx/blue/platform_1x1x1_blue.fbx,mdl_ground,2,1,1,,,,,
+model,Assets/Model/Player/Bot.fbx,mdl_player,0.025,0,1,,,,,
 texture,assets/texture/mato.png,ui_gauge_cursor,2,0,1,,,,,
 texture,assets/texture/ugoku.png,ui_gauge_frame,2,0,1,,,,,
 texture,assets/texture/circle.png,ui_gauge_target,2,0,1,,,,,
@@ -11,3 +11,8 @@ texture,assets/texture/ui/ui_flip.png,ui_blink,2,0,1,,,,,
 audio,Assets/Audio/BGM.wav,bgm_main,,,1,,,,,テストシーンのBGM
 audio,Assets/Audio/jump.wav,se_jump_p1,,,1,,,,,1PのジャンプSE
 audio,Assets/Audio/jump1.wav,se_jump_p2,,,1,,,,,2PのジャンプSE
+texture,Assets/Model/KayKit_Platformer_Pack_1.0_FREE/Textures/platformer_texture.png,tex_block,,,1,,,,,
+anim,Assets/Model/Player/Idle.fbx,anim_player_idle,,,1,,,,,
+anim,Assets/Model/Player/SlowRun.fbx,anim_player_run,,,1,,,,,
+anim,Assets/Model/Player/Jump.fbx,anim_player_jump,,,1,,,,,
+anim,Assets/Model/Player/Fall.fbx,anim_player_fall,,,1,,,,,

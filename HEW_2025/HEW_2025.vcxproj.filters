@@ -148,6 +148,12 @@
     <Filter Include="Source\ヘッダー ファイル\libs\nlohmann">
       <UniqueIdentifier>{241a3a98-7736-4361-8616-5e3d334647c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Anim">
+      <UniqueIdentifier>{ea8ae3aa-d335-4ecf-95a9-2777963413a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Anim">
+      <UniqueIdentifier>{7f4939d6-221c-4f21-9dbe-fefaa7fb4d48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -323,6 +329,15 @@
     </ClCompile>
     <ClCompile Include="Source\System\TimeAttackManager.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +607,15 @@
     </ClInclude>
     <ClInclude Include="Source\System\GameplayConfig.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

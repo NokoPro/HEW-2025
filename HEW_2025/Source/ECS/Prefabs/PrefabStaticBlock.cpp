@@ -40,10 +40,11 @@ void RegisterStaticBlockPrefab(PrefabRegistry& registry)
 			mr.layer = 10;
             if (mr.model)
             {
-                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
-
+			mr.overrideTexture = AssetManager::GetTexture("tex_block");
+            
 			/// “–‚½‚èFÃ“I‚È°
             auto& col = w.Add<Collider2DComponent>(e);
             col.shape = ColliderShapeType::AABB2D;

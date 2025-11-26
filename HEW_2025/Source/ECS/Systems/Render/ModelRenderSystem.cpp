@@ -32,6 +32,7 @@ void ModelRenderSystem::Render(const World& world)
 {
     // 描画リストをクリア
     m_modelList.clear();
+    SetDepthTest(true);
 
     // =====================
     // 1. カメラ可視領域算出
@@ -45,10 +46,10 @@ void ModelRenderSystem::Render(const World& world)
             {
                 const float orthoHeight = cam.orthoHeight;
                 const float orthoWidth = orthoHeight * cam.aspect;
-                viewLeft   = tr.position.x - orthoWidth * 0.5f;
-                viewRight  = tr.position.x + orthoWidth * 0.5f;
+                viewLeft = tr.position.x - orthoWidth * 0.5f;
+                viewRight = tr.position.x + orthoWidth * 0.5f;
                 viewBottom = tr.position.y - orthoHeight * 0.5f;
-                viewTop    = tr.position.y + orthoHeight * 0.5f;
+                viewTop = tr.position.y + orthoHeight * 0.5f;
                 hasSideCam = true; // 最初のサイドスクロールカメラのみ使用
             }
         }
@@ -60,20 +61,19 @@ void ModelRenderSystem::Render(const World& world)
     world.View<TransformComponent, ModelRendererComponent>(
         [&](EntityId /*e*/, const TransformComponent& tr, const ModelRendererComponent& mr)
         {
-            // .get()でポインタを取得
-            Model* modelPtr = mr.model.get();
-
             if (!mr.visible || !mr.model)
+            {
                 return;
+            }
 
             // サイドスクロールカメラがある場合のみカリング
             if (hasSideCam)
             {
-                // Transform scale は半径(半幅/半高)として扱われている前提 (Collider登録参照)
-                float minX = tr.position.x - tr.scale.x;
-                float maxX = tr.position.x + tr.scale.x;
-                float minY = tr.position.y - tr.scale.y;
-                float maxY = tr.position.y + tr.scale.y;
+                // Transform scale は半径(半幅/半高)として扱われている前提
+                const float minX = tr.position.x - tr.scale.x;
+                const float maxX = tr.position.x + tr.scale.x;
+                const float minY = tr.position.y - tr.scale.y;
+                const float maxY = tr.position.y + tr.scale.y;
 
                 // 画面矩形と交差しなければ除外
                 if (maxX < viewLeft || minX > viewRight || maxY < viewBottom || minY > viewTop)
@@ -100,23 +100,35 @@ void ModelRenderSystem::Render(const World& world)
 
             // ---------- 最終ワールド行列 ----------
             const XMMATRIX W = L * Wentity;
-            XMFLOAT4X4 wvp0_transposed;
-            XMStoreFloat4x4(&wvp0_transposed, XMMatrixTranspose(W));
+            XMFLOAT4X4 worldT;
+            XMStoreFloat4x4(&worldT, XMMatrixTranspose(W));
+
+            // ---------- オーバーライドテクスチャ ----------
+            Texture* overrideTexPtr = nullptr;
+            if (mr.overrideTexture)
+            {
+                overrideTexPtr = mr.overrideTexture.get();
+            }
 
             // ---------- リストへの追加 ----------
-            // ※元コードの描画処理はここでは行わない
             m_modelList.push_back(SortableModel{
                 mr.layer,
-                wvp0_transposed,
-                modelPtr
+                worldT,
+                mr.model.get(),
+                overrideTexPtr
                 });
         });
 
     // =====================
     // 3. ソート & 描画
     // =====================
-    std::sort(m_modelList.begin(), m_modelList.end(),
-        [](const SortableModel& a, const SortableModel& b) { return a.layer < b.layer; });
+    std::sort(
+        m_modelList.begin(),
+        m_modelList.end(),
+        [](const SortableModel& a, const SortableModel& b)
+        {
+            return a.layer < b.layer;
+        });
 
     XMFLOAT4X4 wvp[3];
     wvp[1] = m_V; // 転置済みView
@@ -124,10 +136,20 @@ void ModelRenderSystem::Render(const World& world)
 
     for (const auto& s : m_modelList)
     {
+        if (!s.model) { continue; }
+
         wvp[0] = s.world;
         ShaderList::SetWVP(wvp);
-        s.model->Draw();
+
+        // オーバーライドテクスチャ付きで描画
+        s.model->Draw(-1, s.overrideTexture);
+
+#ifdef _DEBUG
+        s.model->DrawBone();
+#endif
     }
+
+    SetDepthTest(false);
 }
 
 //--------------------------------------------------------------

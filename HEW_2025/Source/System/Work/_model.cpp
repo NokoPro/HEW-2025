@@ -1,7 +1,10 @@
 #include "../Model.h"
+#include "../DirectXTex/DirectXTex.h"
+#include "../DirectXTex/TextureLoad.h" 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <cstring> 
 
 
 void Model::MakeMesh(const void* ptr, float scale, Flip flip)
@@ -78,80 +81,282 @@ void Model::MakeMesh(const void* ptr, float scale, Flip flip)
 		m_meshes[i].pMesh->Create(desc);
 	}
 }
+
 void Model::MakeMaterial(const void* ptr, std::string directory)
 {
-	// 事前準備
-	aiColor3D color(0.0f, 0.0f, 0.0f);
-	float shininess = 0.0f;
-	const aiScene* pScene = reinterpret_cast<const aiScene*>(ptr);
+    const aiScene* pScene = reinterpret_cast<const aiScene*>(ptr);
+    if (!pScene) { return; }
 
-	// マテリアルの作成
-	m_materials.resize(pScene->mNumMaterials);
-	for (unsigned int i = 0; i < m_materials.size(); ++i)
-	{
-		//--- 各種マテリアルパラメーターの読み取り
-		// ☆拡散光の読み取り
-		if (pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
-			m_materials[i].diffuse = DirectX::XMFLOAT4(color.r, color.g, color.b, 1.0f);
-		else
-			m_materials[i].diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		// ☆環境光の読み取り
-		if (pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_AMBIENT, color) == AI_SUCCESS)
-			m_materials[i].ambient = DirectX::XMFLOAT4(color.r, color.g, color.b, 1.0f);
-		else
-			m_materials[i].ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-		// ☆反射光の読み取り
-		if (pScene->mMaterials[i]->Get(AI_MATKEY_COLOR_SPECULAR, color) == AI_SUCCESS)
-			m_materials[i].specular = DirectX::XMFLOAT4(color.r, color.g, color.b, 0.0f);
-		else
-			m_materials[i].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-		// ☆反射光の強さを読み取り
-		if (pScene->mMaterials[i]->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
-			m_materials[i].specular.w = shininess;
+    // 既存マテリアルのテクスチャ解放
+    for (auto& mat : m_materials)
+    {
+        if (mat.pTexture)
+        {
+            delete mat.pTexture;
+            mat.pTexture = nullptr;
+        }
+    }
+    m_materials.clear();
 
-		// テクスチャ読み込み処理
-		HRESULT hr;
-		aiString path;
+    m_materials.resize(pScene->mNumMaterials);
 
-		// テクスチャのパス情報を読み込み
-		m_materials[i].pTexture = nullptr;
-		if (pScene->mMaterials[i]->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), path) != AI_SUCCESS) {
-			continue;
-		}
+    for (unsigned int i = 0; i < pScene->mNumMaterials; ++i)
+    {
+        Material material{};
+        material.diffuse = DirectX::XMFLOAT4(1, 1, 1, 1);
+        material.ambient = DirectX::XMFLOAT4(0, 0, 0, 1);
+        material.specular = DirectX::XMFLOAT4(0, 0, 0, 1);
+        material.pTexture = nullptr;
 
-		// テクスチャ領域確保
-		m_materials[i].pTexture = new Texture;
+        aiMaterial* aiMat = pScene->mMaterials[i];
 
-		// そのまま読み込み
-		hr = m_materials[i].pTexture->Create(path.C_Str());
-		if (SUCCEEDED(hr)) { continue; }
-
-		// ディレクトリと連結して探索
-		hr = m_materials[i].pTexture->Create((directory + path.C_Str()).c_str());
-		if (SUCCEEDED(hr)) { continue; }
-
-		// モデルと同じ階層を探索
-		// パスからファイル名のみ取得
-		std::string fullPath = path.C_Str();
-		std::string::iterator strIt = fullPath.begin();
-		while (strIt != fullPath.end()) {
-			if (*strIt == '/')
-				*strIt = '\\';
-			++strIt;
-		}
-		size_t find = fullPath.find_last_of("\\");
-		std::string fileName = fullPath;
-		if (find != std::string::npos)
-			fileName = fileName.substr(find + 1);
-		// テクスチャの読込
-		hr = m_materials[i].pTexture->Create((directory + fileName).c_str());
-		if (SUCCEEDED(hr)) { continue; }
-
-		// テクスチャが見つからなかった
-		delete m_materials[i].pTexture;
-		m_materials[i].pTexture = nullptr;
 #ifdef _DEBUG
-		m_errorStr += path.C_Str();
+        {
+            aiString name;
+            aiMat->Get(AI_MATKEY_NAME, name);
+            int texCount = aiMat->GetTextureCount(aiTextureType_DIFFUSE);
+
+            std::string msg = "[MakeMaterial] material[" + std::to_string(i) + "] name=" +
+                name.C_Str() + " diffuseTexCount=" + std::to_string(texCount) + "\n";
+            OutputDebugStringA(msg.c_str());
+
+            for (int t = 0; t < texCount; ++t)
+            {
+                aiString texPath;
+                if (AI_SUCCESS == aiMat->GetTexture(aiTextureType_DIFFUSE, t, &texPath))
+                {
+                    std::string p = texPath.C_Str();
+                    std::string kind = (!p.empty() && p[0] == '*') ? " (embedded)" : " (external)";
+                    std::string msg2 = "  tex[" + std::to_string(t) + "] = " + p + kind + "\n";
+                    OutputDebugStringA(msg2.c_str());
+                }
+            }
+        }
 #endif
-	}
+
+        // ---- 色 ----
+        aiColor4D col;
+        if (AI_SUCCESS == aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_DIFFUSE, &col))
+        {
+            material.diffuse = DirectX::XMFLOAT4(col.r, col.g, col.b, col.a);
+        }
+        if (AI_SUCCESS == aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_AMBIENT, &col))
+        {
+            material.ambient = DirectX::XMFLOAT4(col.r, col.g, col.b, col.a);
+        }
+        if (AI_SUCCESS == aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_SPECULAR, &col))
+        {
+            material.specular = DirectX::XMFLOAT4(col.r, col.g, col.b, col.a);
+        }
+
+        // ---- ディフューズテクスチャ ----
+        if (aiMat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+        {
+            aiString texPath;
+            if (AI_SUCCESS == aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath))
+            {
+                std::string texFile = texPath.C_Str();
+
+                if (!texFile.empty() && texFile[0] == '*')
+                {
+                    // ★ 埋め込みテクスチャ
+                    int texIndex = std::atoi(texFile.c_str() + 1);
+                    if (texIndex >= 0 && texIndex < static_cast<int>(pScene->mNumTextures))
+                    {
+                        const aiTexture* aiTex = pScene->mTextures[texIndex];
+
+                        Texture* tex = new Texture();
+
+                        if (aiTex->mHeight != 0)
+                        {
+                            // 非圧縮 (mWidth x mHeight / aiTexel)
+                            const unsigned int width = aiTex->mWidth;
+                            const unsigned int height = aiTex->mHeight;
+
+                            std::vector<uint32_t> pixels(width * height);
+                            for (unsigned int y = 0; y < height; ++y)
+                            {
+                                for (unsigned int x = 0; x < width; ++x)
+                                {
+                                    const aiTexel& t = aiTex->pcData[y * width + x];
+                                    // aiTexel は BGRA っぽい並びなので RGBA に詰め替える
+                                    uint8_t r = t.r;
+                                    uint8_t g = t.g;
+                                    uint8_t b = t.b;
+                                    uint8_t a = t.a;
+                                    pixels[y * width + x] =
+                                        (uint32_t(a) << 24) |
+                                        (uint32_t(r) << 16) |
+                                        (uint32_t(g) << 8) |
+                                        (uint32_t(b));
+                                }
+                            }
+
+                            if (SUCCEEDED(tex->Create(DXGI_FORMAT_R8G8B8A8_UNORM, width, height, pixels.data())))
+                            {
+                                material.pTexture = tex;
+                            }
+                            else
+                            {
+                                delete tex;
+                            }
+                        }
+                        else
+                        {
+                            // 圧縮テクスチャ（PNG/JPG など）
+                            // aiTex->pcData: 圧縮データ
+                            // aiTex->mWidth: データサイズ(bytes)、mHeight==0
+                            using namespace DirectX;
+
+                            const size_t dataSize = static_cast<size_t>(aiTex->mWidth);
+
+                            TexMetadata metadata{};
+                            ScratchImage scratch;
+
+                            // WIC 経由でメモリからデコード
+                            HRESULT hr = LoadFromWICMemory(
+                                aiTex->pcData,
+                                dataSize,
+                                WIC_FLAGS_IGNORE_SRGB,
+                                &metadata,
+                                scratch);
+
+                            if (FAILED(hr))
+                            {
+                                delete tex;
+                                tex = nullptr;
+                            }
+                            else
+                            {
+                                const Image* img = scratch.GetImage(0, 0, 0);
+                                if (!img)
+                                {
+                                    delete tex;
+                                    tex = nullptr;
+                                }
+                                else
+                                {
+                                    // 必ず R8G8B8A8 に揃えて、Texture::Create で扱いやすくする
+                                    ScratchImage converted;
+                                    const Image* src = img;
+
+                                    if (img->format != DXGI_FORMAT_R8G8B8A8_UNORM)
+                                    {
+                                        hr = Convert(
+                                            *img,
+                                            DXGI_FORMAT_R8G8B8A8_UNORM,
+                                            TEX_FILTER_DEFAULT,
+                                            TEX_THRESHOLD_DEFAULT,
+                                            converted);
+                                        if (FAILED(hr))
+                                        {
+                                            delete tex;
+                                            tex = nullptr;
+                                        }
+                                        else
+                                        {
+                                            src = converted.GetImage(0, 0, 0);
+                                        }
+                                    }
+
+                                    if (src)
+                                    {
+                                        const uint32_t width = static_cast<uint32_t>(src->width);
+                                        const uint32_t height = static_cast<uint32_t>(src->height);
+
+                                        // rowPitch が width * 4 と違う可能性を考慮してコピー
+                                        std::vector<uint8_t> pixels(width * height * 4);
+
+                                        const uint8_t* srcPixels = src->pixels;
+                                        for (uint32_t y = 0; y < height; ++y)
+                                        {
+                                            std::memcpy(
+                                                pixels.data() + y * width * 4,
+                                                srcPixels + y * src->rowPitch,
+                                                width * 4);
+                                        }
+
+                                        if (SUCCEEDED(tex->Create(
+                                            DXGI_FORMAT_R8G8B8A8_UNORM,
+                                            width,
+                                            height,
+                                            pixels.data())))
+                                        {
+                                            material.pTexture = tex;
+                                        }
+                                        else
+                                        {
+                                            delete tex;
+                                            tex = nullptr;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        delete tex;
+                                        tex = nullptr;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                if (!texFile.empty() && texFile[0] != '*')
+                {
+                    // スラッシュを統一
+                    for (auto& ch : texFile)
+                    {
+                        if (ch == '/')
+                        {
+                            ch = '\\';
+                        }
+                    }
+
+                    // ★ ディレクトリ部分を切り落としてファイル名だけにする
+                    std::string fileName;
+                    {
+                        size_t pos = texFile.find_last_of("\\/");
+                        if (pos != std::string::npos)
+                        {
+                            fileName = texFile.substr(pos + 1);
+                        }
+                        else
+                        {
+                            fileName = texFile;
+                        }
+                    }
+
+                    // Model::Load で作った directory は「末尾に \ が付いてる」想定
+                    std::string fullPath = directory + fileName;
+
+                    Texture* tex = new Texture();
+                    if (SUCCEEDED(tex->Create(fullPath.c_str())))
+                    {
+                        material.pTexture = tex;
+                    }
+                    else
+                    {
+#ifdef _DEBUG
+                        OutputDebugStringA(("Model::MakeMaterial : failed to load texture : " + fullPath + "\n").c_str());
+#endif
+                        delete tex;
+
+                        // ★おまけ：どうしても読みたい場合、元の texFile でも一応トライ
+                        // （プロジェクト側で texFile をそのままの相対パスで配置したとき用）
+                        tex = new Texture();
+                        if (SUCCEEDED(tex->Create(texFile.c_str())))
+                        {
+                            material.pTexture = tex;
+                        }
+                        else
+                        {
+                            delete tex;
+                        }
+                    }
+                }
+            }
+        }
+
+        m_materials[i] = material;
+    }
 }

@@ -45,6 +45,7 @@ void RegisterMovingPlatformPrefab(PrefabRegistry& registry)
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
+            mr.overrideTexture = AssetManager::GetTexture("tex_block");
 
             // 動作パラメータ（デフォルトは水平方向に4ユニット往復）
             auto& mp = w.Add<MovingPlatformComponent>(e);

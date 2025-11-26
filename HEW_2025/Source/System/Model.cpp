@@ -1,14 +1,15 @@
 #include "Model.h"
-#include "../../DirectXTex/TextureLoad.h"
+#include "DirectXTex/TextureLoad.h"
+#include "DirectX/ShaderList.h"
 #include <algorithm>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/material.h> 
 
 #ifdef _DEBUG
 #include "Geometory.h"
 #endif
-#include "DirectX/ShaderList.h"
 
 #if _MSC_VER >= 1930
 #ifdef _DEBUG
@@ -31,11 +32,11 @@
 #endif
 
 // staticメンバ変数定義
-VertexShader*	Model::m_pDefVS		= nullptr;
-PixelShader*	Model::m_pDefPS		= nullptr;
-unsigned int	Model::m_shaderRef	= 0;
+VertexShader* Model::m_pDefVS = nullptr;
+PixelShader* Model::m_pDefPS = nullptr;
+unsigned int	Model::m_shaderRef = 0;
 #ifdef _DEBUG
-std::string		Model::m_errorStr	= "";
+std::string		Model::m_errorStr = "";
 #endif
 
 /*
@@ -108,7 +109,7 @@ Model::Model()
 	, m_loadFlip(None)
 	, m_playNo(ANIME_NONE)
 	, m_blendNo(ANIME_NONE)
-	, m_parametric{ANIME_NONE, ANIME_NONE}
+	, m_parametric{ ANIME_NONE, ANIME_NONE }
 	, m_blendTime(0.0f)
 	, m_blendTotalTime(0.0f)
 	, m_parametricBlend(0.0f)
@@ -142,6 +143,7 @@ Model::~Model()
 */
 void Model::Reset()
 {
+	// MeshBuffer は Model が所有している → ここで delete
 	auto meshIt = m_meshes.begin();
 	while (meshIt != m_meshes.end())
 	{
@@ -149,6 +151,7 @@ void Model::Reset()
 		++meshIt;
 	}
 
+	// Material::pTexture も Model が所有 → ここで delete
 	auto matIt = m_materials.begin();
 	while (matIt != m_materials.end())
 	{
@@ -230,36 +233,103 @@ bool Model::Load(const char* file, float scale, Flip flip)
 /*
 * @brief 描画
 * @param[in] meshNo 描画するメッシュ、-1は全部表示
-* @param[in] func メッシュ描画コールバック
+* @param[in] overrideTex ECS 側から指定された上書きテクスチャ
+*
+* 仕様：
+*   - モデル内蔵の Material::pTexture を「デフォルトテクスチャ」として使う
+*   - overrideTex が non-null のときだけ、それを優先して上書きする
 */
-void Model::Draw(int meshNo)
+void Model::Draw(int meshNo, Texture* overrideTex)
 {
-	// シェーダをバインド
+	// シェーダー設定
 	m_pVS->Bind();
 	m_pPS->Bind();
 
-	SetDepthTest(true);
+	const bool isAllMesh = (meshNo == -1);
 
-	// 描画範囲決定
-	size_t begin = 0;
-	size_t end = m_meshes.size();
-	if (meshNo != -1) { begin = meshNo; end = meshNo + 1; }
-
-	// 各メッシュごとに “必ず” マテリアル（定数＋テクスチャ）を反映してから描画
-	for (size_t i = begin; i < end; ++i)
+	size_t drawStart = 0;
+	size_t drawEnd = m_meshes.size();
+	if (!isAllMesh)
 	{
-		const unsigned matId = m_meshes[i].materialID;
-		// ここがポイント：objAmbient.w に 1/0 を詰め、PS が tex.Sample を行うようにする
-		ShaderList::SetMaterial(m_materials[matId]);
-
-		// SetMaterial 内で t0 に SRV をセットしているため、本来は不要だが、
-		// 明示的に上書きしたい場合は下行を残してもOK（重複しても害なし）
-		// m_pPS->SetTexture(0, m_materials[matId].pTexture);
-
-		m_meshes[i].pMesh->Draw();
+		drawStart = static_cast<size_t>(meshNo);
+		drawEnd = meshNo + 1;
 	}
 
-	SetDepthTest(false);
+	for (size_t i = drawStart; i < drawEnd; ++i)
+	{
+		Mesh& mesh = m_meshes[i];
+
+		// -----------------------------
+		// 1. マテリアル決定
+		// -----------------------------
+		Material matToUse{};
+		if (mesh.materialID < m_materials.size())
+		{
+			// モデル側に埋め込まれた / 読み込まれたマテリアルをコピー
+			matToUse = m_materials[mesh.materialID];
+		}
+		else
+		{
+			// 紐付くマテリアルがない場合のデフォルト
+			matToUse.diffuse = DirectX::XMFLOAT4(1, 1, 1, 1);
+			matToUse.ambient = DirectX::XMFLOAT4(0, 0, 0, 1);
+			matToUse.specular = DirectX::XMFLOAT4(0, 0, 0, 1);
+			matToUse.pTexture = nullptr;
+		}
+
+		// -----------------------------
+		// 2. テクスチャ決定
+		// -----------------------------
+		// overrideTex が non-null なら、それを最優先で使用
+		if (overrideTex != nullptr)
+		{
+			matToUse.pTexture = overrideTex;
+		}
+		// overrideTex == nullptr の場合は、
+		// matToUse.pTexture に残っている「モデル内蔵テクスチャ」（埋め込み or 外部）がそのまま使われる
+
+		// Lambert 等の PS 用にマテリアル＆テクスチャを設定
+		ShaderList::SetMaterial(matToUse);
+
+		// -----------------------------
+		// 3. スキニング用 Bone 配列作成
+		// -----------------------------
+		DirectX::XMFLOAT4X4 boneMats[MAX_BONE];
+
+		const UINT boneCount =
+			static_cast<UINT>(std::min(mesh.bones.size(), static_cast<size_t>(MAX_BONE)));
+
+		for (UINT b = 0; b < boneCount; ++b)
+		{
+			const Bone& bone = mesh.bones[b];
+
+			DirectX::XMMATRIX m = DirectX::XMMatrixIdentity();
+			if (bone.index != INDEX_NONE)
+			{
+				// 最終スキニング行列 = offset * 現在のボーン姿勢
+				m = bone.invOffset * m_nodes[bone.index].mat;
+			}
+
+			DirectX::XMStoreFloat4x4(&boneMats[b], DirectX::XMMatrixTranspose(m));
+		}
+
+		// 余りは Identity で埋める
+		for (UINT b = boneCount; b < MAX_BONE; ++b)
+		{
+			DirectX::XMStoreFloat4x4(&boneMats[b], DirectX::XMMatrixIdentity());
+		}
+
+		// HLSL の cbuffer Bone に書き込み
+		ShaderList::SetBones(boneMats);
+
+		// -----------------------------
+		// 4. メッシュ描画
+		// -----------------------------
+		if (mesh.pMesh)
+		{
+			mesh.pMesh->Draw();
+		}
+	}
 }
 
 /*
@@ -379,7 +449,7 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 
 	// アニメーション設定
 	float animeFrame = static_cast<float>(assimpAnime->mTicksPerSecond);
-	anime.totalTime = static_cast<float>(assimpAnime->mDuration )/ animeFrame;
+	anime.totalTime = static_cast<float>(assimpAnime->mDuration) / animeFrame;
 	anime.channels.resize(assimpAnime->mNumChannels);
 	Channels::iterator channelIt = anime.channels.begin();
 	while (channelIt != anime.channels.end())
@@ -394,7 +464,7 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 		if (nodeIt == m_nodes.end())
 		{
 			channelIt->index = INDEX_NONE;
-			++ channelIt;
+			++channelIt;
 			continue;
 		}
 
@@ -411,7 +481,7 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 		{
 			aiVectorKey& key = assimpChannel->mPositionKeys[i];
 			keys[0].insert(XMVectorKey(static_cast<float>(key.mTime) / animeFrame,
-					DirectX::XMVectorSet(key.mValue.x, key.mValue.y, key.mValue.z, 0.0f)
+				DirectX::XMVectorSet(key.mValue.x, key.mValue.y, key.mValue.z, 0.0f)
 			));
 		}
 		// 回転
@@ -430,12 +500,12 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 		}
 
 		// 各タイムラインの先頭の参照を設定
-		XMVectorKeys::iterator it[] = {keys[0].begin(), keys[1].begin(), keys[2].begin()};
+		XMVectorKeys::iterator it[] = { keys[0].begin(), keys[1].begin(), keys[2].begin() };
 		for (int i = 0; i < 3; ++i)
 		{
 			// キーが一つしかない場合は、参照終了
 			if (keys[i].size() == 1)
-				++ it[i];
+				++it[i];
 		}
 
 		// 各要素ごとのタイムラインではなく、すべての変換を含めたタイムラインの作成
@@ -491,7 +561,7 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 			timeline.insert(Key(time, transform));
 		}
 
-		++ channelIt;
+		++channelIt;
 	}
 
 	// アニメ番号を返す
@@ -745,20 +815,20 @@ void Model::DrawBone()
 	// 再帰処理
 	std::function<void(int, DirectX::XMFLOAT3)> FuncDrawBone =
 		[&FuncDrawBone, this](int idx, DirectX::XMFLOAT3 parent)
-	{
-		// 親ノードから現在位置まで描画
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMStoreFloat3(&pos, DirectX::XMVector3TransformCoord(DirectX::XMVectorZero(), m_nodes[idx].mat));
-		Geometory::AddLine(parent, pos, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
-
-		// 子ノードの描画
-		auto it = m_nodes[idx].children.begin();
-		while (it != m_nodes[idx].children.end())
 		{
-			FuncDrawBone(*it, pos);
-			++it;
-		}
-	};
+			// 親ノードから現在位置まで描画
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMStoreFloat3(&pos, DirectX::XMVector3TransformCoord(DirectX::XMVectorZero(), m_nodes[idx].mat));
+			Geometory::AddLine(parent, pos, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
+
+			// 子ノードの描画
+			auto it = m_nodes[idx].children.begin();
+			while (it != m_nodes[idx].children.end())
+			{
+				FuncDrawBone(*it, pos);
+				++it;
+			}
+		};
 
 	// 描画実行
 	FuncDrawBone(0, DirectX::XMFLOAT3());
@@ -770,48 +840,53 @@ void Model::DrawBone()
 
 void Model::MakeBoneNodes(const void* ptr)
 {
+	const aiScene* pScene = reinterpret_cast<const aiScene*>(ptr);
+
 	// 再帰処理でAssimpのノード情報を読み取り
-	std::function<NodeIndex(aiNode*, NodeIndex, DirectX::XMMATRIX mat)> FuncAssimpNodeConvert =
-		[&FuncAssimpNodeConvert, this](aiNode* assimpNode, NodeIndex parent, DirectX::XMMATRIX mat)
-	{
-		DirectX::XMMATRIX transform = GetMatrixFromAssimpMatrix(assimpNode->mTransformation);
-		std::string name = assimpNode->mName.data;
-		if (name.find("$AssimpFbx") != std::string::npos)
+	std::function<NodeIndex(aiNode*, NodeIndex, DirectX::XMMATRIX)> FuncAssimpNodeConvert =
+		[&FuncAssimpNodeConvert, this](aiNode* assimpNode, NodeIndex parent, DirectX::XMMATRIX parentMat)
 		{
-			mat = transform * mat;
-			return FuncAssimpNodeConvert(assimpNode->mChildren[0], parent, mat);
-		}
-		else
-		{
-			// Assimpのノード情報をモデルクラスへ格納
+			DirectX::XMMATRIX local = GetMatrixFromAssimpMatrix(assimpNode->mTransformation);
+			DirectX::XMMATRIX combined = local * parentMat;
+			std::string name = assimpNode->mName.data;
+
+			// Assimp が勝手に挿入する中間ノードはスキップして、その子に変換を引き継ぐ
+			if (name.find("$AssimpFbx") != std::string::npos)
+			{
+				if (assimpNode->mNumChildren == 0)
+				{
+					return INDEX_NONE;
+				}
+				return FuncAssimpNodeConvert(assimpNode->mChildren[0], parent, combined);
+			}
+
+			// ノード作成
 			Node node;
-			node.name = assimpNode->mName.data;
+			node.name = name;
 			node.parent = parent;
 			node.children.resize(assimpNode->mNumChildren);
-			node.mat = mat;
+			node.mat = combined;  // ★ 自分までの累積行列をちゃんと入れる
 
-			// ノードリストに追加
 			m_nodes.push_back(node);
 			NodeIndex nodeIndex = static_cast<NodeIndex>(m_nodes.size() - 1);
 
-			// 子要素も同様に変換
+			// 子要素
 			for (UINT i = 0; i < assimpNode->mNumChildren; ++i)
 			{
 				m_nodes[nodeIndex].children[i] = FuncAssimpNodeConvert(
-					assimpNode->mChildren[i], nodeIndex, DirectX::XMMatrixIdentity());
+					assimpNode->mChildren[i], nodeIndex, combined); // ★ parentMat ではなく combined を渡す
 			}
 			return nodeIndex;
-		}
-	};
+		};
 
 	// ノード作成
 	m_nodes.clear();
-	FuncAssimpNodeConvert(reinterpret_cast<const aiScene*>(ptr)->mRootNode, INDEX_NONE, DirectX::XMMatrixIdentity());
+	FuncAssimpNodeConvert(pScene->mRootNode, INDEX_NONE, DirectX::XMMatrixIdentity());
 
 	// アニメーション計算領域に、ノード数分の初期データを作成
 	Transform init = {
 		DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
-		DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f),
+		DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), // ← ここは既に直ってるはず
 		DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f)
 	};
 	for (int i = 0; i < MAX_TRANSFORM; ++i)
@@ -849,8 +924,8 @@ void Model::MakeWeight(const void* ptr, int meshIdx)
 			std::string boneName = assimpBone->mName.data;
 			auto nodeIt = std::find_if(m_nodes.begin(), m_nodes.end(),
 				[boneName](const Node& val) {
-				return val.name == boneName;
-			});
+					return val.name == boneName;
+				});
 			// メッシュに割り当てられているボーンが、ノードに存在しない
 			if (nodeIt == m_nodes.end())
 			{
@@ -866,7 +941,7 @@ void Model::MakeWeight(const void* ptr, int meshIdx)
 			boneIt->invOffset.r[3].m128_f32[2] *= m_loadScale;
 			boneIt->invOffset =
 				DirectX::XMMatrixScaling(m_loadFlip == ZFlipUseAnime ? -1.0f : 1.0f, 1.0f, 1.0f) *
-				boneIt->invOffset * 
+				boneIt->invOffset *
 				DirectX::XMMatrixScaling(1.f / m_loadScale, 1.f / m_loadScale, 1.f / m_loadScale);
 
 			// ウェイトの設定
@@ -874,7 +949,7 @@ void Model::MakeWeight(const void* ptr, int meshIdx)
 			for (UINT i = 0; i < weightNum; ++i)
 			{
 				aiVertexWeight weight = assimpBone->mWeights[i];
-				weights[weight.mVertexId].push_back({boneIdx, weight.mWeight});
+				weights[weight.mVertexId].push_back({ boneIdx, weight.mWeight });
 			}
 		}
 
@@ -885,7 +960,7 @@ void Model::MakeWeight(const void* ptr, int meshIdx)
 			{
 				std::sort(weights[i].begin(), weights[i].end(), [](WeightPair& a, WeightPair& b) {
 					return a.weight > b.weight;
-				});
+					});
 				// ウェイト数4に合わせて正規化
 				float total = 0.0f;
 				for (int j = 0; j < 4; ++j)
@@ -916,17 +991,17 @@ void Model::MakeWeight(const void* ptr, int meshIdx)
 		// メッシュでない親ノードを再帰探索
 		std::function<int(int)> FuncFindNode =
 			[&FuncFindNode, this, pScene](NodeIndex parent)
-		{
-			std::string name = m_nodes[parent].name;
-			for (UINT i = 0; i < pScene->mNumMeshes; ++i)
 			{
-				if (name == pScene->mMeshes[i]->mName.data)
+				std::string name = m_nodes[parent].name;
+				for (UINT i = 0; i < pScene->mNumMeshes; ++i)
 				{
-					return FuncFindNode(m_nodes[parent].parent);
+					if (name == pScene->mMeshes[i]->mName.data)
+					{
+						return FuncFindNode(m_nodes[parent].parent);
+					}
 				}
-			}
-			return parent;
-		};
+				return parent;
+			};
 
 		Bone bone;
 		bone.index = FuncFindNode(nodeIt->parent);

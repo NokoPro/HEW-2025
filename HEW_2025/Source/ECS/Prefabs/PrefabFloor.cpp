@@ -45,6 +45,8 @@ void RegisterFloorPrefab(PrefabRegistry& registry)
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
 
+            mr.overrideTexture = AssetManager::GetTexture("tex_block");
+
             // “–‚½‚èFÃ“I‚È°
             auto& col = w.Add<Collider2DComponent>(e);
             col.shape = ColliderShapeType::AABB2D;

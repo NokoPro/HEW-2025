@@ -37,6 +37,7 @@
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Render/FollowerSystem.h"
 #include "ECS/Systems/Render/PlayerUISystem.h"
+#include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -59,6 +60,8 @@
 #include <cstdio>
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
+#include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
+#include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
 
 TestStageScene::TestStageScene()
 {
@@ -99,6 +102,8 @@ TestStageScene::TestStageScene()
     m_sys.AddUpdate<PlayerInputSystem>();
     m_sys.AddUpdate<PlayerUISystem>();
 
+    m_sys.AddUpdate<ModelAnimationSystem>();
+
     // 2-2 Intent → Rigidbody（加速・ジャンプ・重力）
     m_sys.AddUpdate<MovementApplySystem>();
     // 2-2.5 Rigidbody の速度を位置に反映する物理ステップ（重力で変化した速度を位置へ適用）
@@ -111,6 +116,15 @@ TestStageScene::TestStageScene()
 
     // 2-3.3 Deathゾーン判定システム追加
     m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
+
+    // 3. Rigidbody の状態からアニメステート決定（Idle / Run / Jump / Fall）
+    m_sys.AddUpdate<PlayerLocomotionAnimSystem>();
+
+    // 4. ステート → クリップ情報 (AnimeNo / Loop / Speed)
+    m_sys.AddUpdate<ModelAnimationStateSystem>();
+
+    // 5. 実際の再生と時間進行（既存）
+    m_sys.AddUpdate<ModelAnimationSystem>();
 
     // 追加：追従システム
     // 物理演算が終わった後の座標をもとに追従させる

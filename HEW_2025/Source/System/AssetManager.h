@@ -130,6 +130,9 @@ public:
     /// エフェクト用：エイリアス or パス → 実パス（type=="effect" を優先）
     static std::string ResolveEffectPath(const std::string& aliasOrPath);
 
+	/// アニメーション用：エイリアス or パス → 実パス（type=="animation" を優先）
+    static std::string ResolveAnimationPath(const std::string& aliasOrPath);
+
     /// モデル取得（キャッシュ付き）
     static AssetHandle<Model> GetModel(const std::string& aliasOrPath);
 

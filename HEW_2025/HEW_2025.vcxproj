@@ -234,6 +234,9 @@
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
@@ -319,6 +322,9 @@
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />

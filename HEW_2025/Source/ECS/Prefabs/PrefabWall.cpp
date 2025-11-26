@@ -37,7 +37,7 @@ void RegisterWallPrefab(PrefabRegistry& registry)
                 (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
-
+            mr.overrideTexture = AssetManager::GetTexture("tex_block");
             // ƒŒƒCƒ„[
             mr.layer = 20;
 

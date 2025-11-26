@@ -49,6 +49,7 @@ void RegisterGoalPrefab(PrefabRegistry& registry)
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
+            mr.overrideTexture = AssetManager::GetTexture("tex_block");
 
             return e;
         }

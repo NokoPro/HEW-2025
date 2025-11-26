@@ -21,10 +21,24 @@
 
 #include "System/AssetManager.h"
 #include "System/DirectX/ShaderList.h"
+#include "System/Model.h"
 
 static const char* kDefaultPlayerModel1P = "mdl_player_1p";
 static const char* kDefaultPlayerModel2P = "mdl_player_2p";
 static const char* kFallbackModel = "mdl_slime";
+
+using AnimeNo = Model::AnimeNo;
+// モデルごとに共有したいアニメ番号を static でキャッシュ
+static AnimeNo s_playerIdleAnime = Model::ANIME_NONE;
+static AnimeNo s_playerRunAnime = Model::ANIME_NONE;
+static AnimeNo s_playerJumpAnime = Model::ANIME_NONE;
+static AnimeNo s_playerFallAnime = Model::ANIME_NONE;
+
+// Data.csv 側の aliases と対応
+static const char* kAnimIdleAlias = "anim_player_idle";
+static const char* kAnimRunAlias = "anim_player_run";
+static const char* kAnimJumpAlias = "anim_player_jump";
+static const char* kAnimFallAlias = "anim_player_fall";
 
 void RegisterPlayerPrefab(PrefabRegistry& registry)
 {
@@ -54,52 +68,84 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             auto& rb = w.Add<Rigidbody2DComponent>(e);
             rb.useGravity = true;
 
-            // モデル描画
             auto& mr = w.Add<ModelRendererComponent>(e);
-
-            // ───────────────────────────
-            // モデルの選び方
-            // 1) SpawnParamsがモデル名を持っていたらそれを使う
-            // 2) なければ padIndex で分ける
-            // ───────────────────────────
-            const char* modelName = nullptr;
-
-            if (!sp.modelAlias.empty())
-            {
-                // 呼び出し側が「これ使って！」と指定したパターン
-                modelName = sp.modelAlias.c_str();
-            }
-            else
-            {
-                // 指定が無いときはプレイヤー番号で分ける
-                if (inp.playerIndex == 0)
-                {
-                    modelName = kDefaultPlayerModel1P;
-                }
-                else if (inp.playerIndex == 1)
-                {
-                    modelName = kDefaultPlayerModel2P;
-                }
-                else
-                {
-                    modelName = kFallbackModel;
-                }
-            }
-
-            mr.model = AssetManager::GetModel(modelName ? modelName : kFallbackModel);
-
-            mr.visible = true;
-			mr.localScale = { 1.5f, 0.75f, 1.5f }; // 適当な大きさに調整
-			mr.localOffset = { 0.f, 0.4, 0.f }; // 足元を原点に合わせる
-
-            // レイヤー
-            mr.layer = 15; // プレイヤーの基準は「0」
-
+            mr.model = AssetManager::GetModel("mdl_player");   // Data.csv 側で登録済みの想定
+            mr.localScale = { 1.25f, 0.5f, 1.25f }; // スケール調整
+            mr.localOffset = { 0.f, -0.5f, 0.f }; // 足元を原点に合わせる
             if (mr.model)
             {
-                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+
+                // 初回だけアニメを追加して AnimeNo をキャッシュ
+                if (s_playerIdleAnime == Model::ANIME_NONE)
+                {
+                    auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
+                    s_playerIdleAnime = mr.model->AddAnimation(idlePath.c_str());
+
+                    auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
+                    s_playerRunAnime = mr.model->AddAnimation(runPath.c_str());
+
+                    auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
+                    s_playerJumpAnime = mr.model->AddAnimation(jumpPath.c_str());
+
+                    auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
+                    s_playerFallAnime = mr.model->AddAnimation(fallPath.c_str());
+                }
             }
+
+            // アニメ制御コンポーネント
+            auto& anim = w.Add<ModelAnimationComponent>(e);
+            anim.animeNo = (s_playerIdleAnime != Model::ANIME_NONE)
+                ? static_cast<int>(s_playerIdleAnime)
+                : -1;
+            anim.loop = true;
+            anim.speed = 1.0f;
+            anim.playRequested = (anim.animeNo >= 0);
+
+            // ステートテーブル
+            auto& table = w.Add<ModelAnimationTableComponent>(e);
+            // まず全クリップ無効化
+            for (auto& d : table.table)
+            {
+                d.animeNo = -1;
+                d.loop = true;
+                d.speed = 1.0f;
+            }
+
+            if (s_playerIdleAnime != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Idle)];
+                d.animeNo = static_cast<int>(s_playerIdleAnime);
+                d.loop = true;
+                d.speed = 1.0f;
+            }
+            if (s_playerRunAnime != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
+                d.animeNo = static_cast<int>(s_playerRunAnime);
+                d.loop = true;
+                d.speed = 1.2f;
+            }
+            if (s_playerJumpAnime != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
+                d.animeNo = static_cast<int>(s_playerJumpAnime);
+                d.loop = false;   // ジャンプ開始を1回再生とか
+                d.speed = 0.05f;
+            }
+            if (s_playerFallAnime != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
+                d.animeNo = static_cast<int>(s_playerFallAnime);
+                d.loop = false;
+                d.speed = 0.05f;
+            }
+
+            // ステート現在値
+            auto& state = w.Add<ModelAnimationStateComponent>(e);
+            state.current = ModelAnimState::Idle;
+            state.requested = ModelAnimState::Idle;
 
             // 当たり判定は前回と同じ例
             auto& col = w.Add<Collider2DComponent>(e);

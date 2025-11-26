@@ -100,6 +100,21 @@ std::string AssetManager::ResolveEffectPath(const std::string& aliasOrPath)
     return aliasOrPath;
 }
 
+std::string AssetManager::ResolveAnimationPath(const std::string& aliasOrPath)
+{
+    if (auto d = AssetCatalog::Find(aliasOrPath))
+    {
+        // Data.csv 側で type=anim or animation としておく想定
+        if (d->type == "anim" || d->type == "animation")
+        {
+            return d->path;
+        }
+    }
+
+    // 台帳に無ければ、そのままパスとして扱う
+    return aliasOrPath;
+}
+
 AssetHandle<Model> AssetManager::GetModel(const std::string& aliasOrPath)
 {
     // 1. CSV から path / scale / flip を解決
