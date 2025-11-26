@@ -149,6 +149,9 @@ private:
 private:
     static std::unordered_map<std::string, std::weak_ptr<Model>>   s_modelCache;
     static std::unordered_map<std::string, std::weak_ptr<Texture>> s_texCache;
+    static std::unordered_map<std::string, std::shared_ptr<AudioClip>> s_audioCache;
     static std::mutex                                               s_mtxModel;
     static std::mutex                                               s_mtxTex;
+    static std::mutex                                               s_mtxAudio;
+
 };

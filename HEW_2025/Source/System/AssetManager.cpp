@@ -22,6 +22,10 @@ std::unordered_map<std::string, std::weak_ptr<Texture>> AssetManager::s_texCache
 std::mutex                                               AssetManager::s_mtxModel;
 std::mutex                                               AssetManager::s_mtxTex;
 
+// ==== Audio 用キャッシュ ====
+std::unordered_map<std::string, std::shared_ptr<AudioClip>> AssetManager::s_audioCache;
+std::mutex                                                   AssetManager::s_mtxAudio;
+
 void AssetManager::Init()
 {
     // 現状特になし
@@ -162,6 +166,16 @@ AssetHandle<Texture> AssetManager::GetTexture(const std::string& aliasOrPath)
 
 AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
 {
+    {
+        std::lock_guard<std::mutex> lock(s_mtxAudio);
+        auto it = s_audioCache.find(aliasOrPath);
+        if (it != s_audioCache.end())
+        {
+            return AssetHandle<AudioClip>(it->second);
+        }
+    }
+
+    // まだキャッシュされていないので、新規に AudioClip を組み立てる
     AudioClip clip{};
 
     if (auto d = AssetCatalog::Find(aliasOrPath))
@@ -174,15 +188,42 @@ AssetHandle<AudioClip> AssetManager::GetAudio(const std::string& aliasOrPath)
             clip.param1 = d->param1;
             clip.param2 = d->param2;
         }
+        else
+        {
+#if defined(_DEBUG)
+            // type ミスマッチの警告（CSV 側の type 設定ミスに気づけるように）
+            std::string msg = "[AssetManager::GetAudio] alias '" + aliasOrPath +
+                "' is not type 'audio' (type='" + d->type + "')\n";
+            OutputDebugStringA(msg.c_str());
+#endif
+        }
     }
 
-    // 台帳に無い場合は aliasOrPath をそのままパス扱い
+    // CSV に存在しない / type 不一致などで path が取れなかった場合は
+    // aliasOrPath をそのままパスとして扱う
     if (clip.path.empty())
     {
         clip.path = aliasOrPath;
     }
 
-    return AssetHandle<AudioClip>(std::make_shared<AudioClip>(std::move(clip)));
+    // ここで shared_ptr に包み、キャッシュに登録
+    auto sp = std::make_shared<AudioClip>(std::move(clip));
+    {
+        std::lock_guard<std::mutex> lock(s_mtxAudio);
+        // 同時アクセスで別スレッドが先に登録している可能性もあるので二重チェック
+        auto it = s_audioCache.find(aliasOrPath);
+        if (it == s_audioCache.end())
+        {
+            s_audioCache.emplace(aliasOrPath, sp);
+        }
+        else
+        {
+            // すでに存在していたらそちらを返す
+            sp = it->second;
+        }
+    }
+
+    return AssetHandle<AudioClip>(sp);
 }
 
 AssetHandle<EffectRef> AssetManager::GetEffect(const std::string& aliasOrPath)

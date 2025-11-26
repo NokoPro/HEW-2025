@@ -31,8 +31,8 @@ IXAudio2MasteringVoice* AudioManager::masterVoice = nullptr;
 IXAudio2SourceVoice* AudioManager::bgmVoice = nullptr;
 
 std::map<std::string, AudioManager::SoundData> AudioManager::sounds;
-std::map<std::string, AudioManager::SEVoice> AudioManager::seVoices;
-
+std::map<std::string, std::vector<AudioManager::SEVoice>> AudioManager::seVoices;
+std::mutex                                                AudioManager::seMutex;
 bool AudioManager::Initialize()
 {
     HRESULT hr = XAudio2Create(&xAudio, 0, XAUDIO2_DEFAULT_PROCESSOR);
@@ -46,11 +46,21 @@ void AudioManager::Shutdown()
 {
     if (bgmVoice) { bgmVoice->DestroyVoice(); bgmVoice = nullptr; }
 
-    for (auto& kv : seVoices)
     {
-        if (kv.second.voice) kv.second.voice->DestroyVoice();
+        std::lock_guard<std::mutex> lock(seMutex);
+        for (auto& kv : seVoices)
+        {
+            for (auto& state : kv.second)
+            {
+                if (state.voice)
+                {
+                    state.voice->DestroyVoice();
+                    state.voice = nullptr;
+                }
+            }
+        }
+        seVoices.clear();
     }
-    seVoices.clear();
 
     for (auto& kv : sounds)
     {
@@ -172,9 +182,6 @@ void AudioManager::PlaySE(const std::string& name, float volume)
     if (it == sounds.end()) return;
 
     auto& data = it->second;
-    auto& state = seVoices[name];
-
-    if (state.playing) return;
 
     IXAudio2SourceVoice* voice = nullptr;
     if (FAILED(xAudio->CreateSourceVoice(&voice, &data.wfx))) return;
@@ -183,18 +190,41 @@ void AudioManager::PlaySE(const std::string& name, float volume)
     voice->SubmitSourceBuffer(&data.buffer);
     voice->Start(0);
 
-    state.voice = voice;
-    state.playing = true;
+    // seVoices に登録
+    {
+        std::lock_guard<std::mutex> lock(seMutex);
+        auto& vec = seVoices[name];
+        SEVoice inst{};
+        inst.voice = voice;
+        vec.push_back(inst);
+    }
 
-    std::thread([&state]() {
+    // 再生完了を待って片付けるスレッド
+    std::thread([name, voice]() {
         XAUDIO2_VOICE_STATE s{};
         do {
-            state.voice->GetState(&s);
+            voice->GetState(&s);
             Sleep(1);
         } while (s.BuffersQueued > 0);
 
-        state.voice->DestroyVoice();
-        state.voice = nullptr;
-        state.playing = false;
-        }).detach();
+        voice->DestroyVoice();
+
+        // seVoices からこの voice を削除
+        std::lock_guard<std::mutex> lock(seMutex);
+        auto it = seVoices.find(name);
+        if (it != seVoices.end())
+        {
+            auto& vec = it->second;
+            vec.erase(
+                std::remove_if(vec.begin(), vec.end(),
+                    [voice](const SEVoice& v) { return v.voice == voice; }),
+                vec.end()
+            );
+
+            if (vec.empty())
+            {
+                seVoices.erase(it);
+            }
+        }
+    }).detach();
 }

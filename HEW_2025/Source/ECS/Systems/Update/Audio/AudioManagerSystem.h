@@ -12,7 +12,8 @@
 #include <string>
 #include <xaudio2.h>
 #include <map>
-
+#include <vector>   
+#include <mutex>    
 
 
 class AudioManager
@@ -51,5 +52,6 @@ private:
         bool playing = false;
     };
 
-    static std::map<std::string, SEVoice> seVoices;
+    static std::map<std::string, std::vector<SEVoice>> seVoices;
+    static std::mutex                                  seMutex;
 };
