@@ -324,6 +324,12 @@
     <ClCompile Include="Source\System\TimeAttackManager.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabBackGround.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -592,6 +598,15 @@
     </ClInclude>
     <ClInclude Include="Source\System\GameplayConfig.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\BackGroundRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

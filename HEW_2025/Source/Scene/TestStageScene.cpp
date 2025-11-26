@@ -27,6 +27,9 @@
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
 #include "ECS/Components/Render/FollowerComponent.h"
+// 背景
+#include "ECS/Components/Render/BackGroundComponent.h"
+
 
 /// ECS システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
@@ -37,6 +40,8 @@
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Render/FollowerSystem.h"
 #include "ECS/Systems/Render/PlayerUISystem.h"
+// 背景
+#include "ECS/Systems/Render/BackGroundRenderSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -55,6 +60,8 @@
 #include "ECS/Prefabs/PrefabFollower.h"
 #include "ECS/Prefabs/PrefabFollowerJump.h"
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
+// 背景
+#include "ECS/Prefabs/PrefabBackGround.h"
 
 #include <cstdio>
 #include <DirectXMath.h>
@@ -71,6 +78,8 @@ TestStageScene::TestStageScene()
     RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
     RegisterFollowerJumpPrefab(m_prefabs);      // ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs);     // ブリンクUI専用フォロワー
+
+    RegisterBackGroundPrefab(m_prefabs);        // 背景
 
     //
     // 1. アセット取得
@@ -125,6 +134,7 @@ TestStageScene::TestStageScene()
 
     // 2-5 描画
     // 背景用描画システム
+    m_drawBackGround = &m_sys.AddRender<BackGroundRenderSystem>();
 
 	// 3Dモデル描画システム
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
@@ -144,6 +154,14 @@ TestStageScene::TestStageScene()
         StageLoader loader;
         // パスは実行時カレントからの相対。必要に応じて調整。
         loader.Load("Assets/Stages/TestStage2.json", m_world, m_prefabs);
+    }
+
+    // 背景
+    {
+        PrefabRegistry::SpawnParams sp;
+        //sp.position = { 0.0f, 0.0f, -10.0f }; // ステージ上部など適当な位置
+        //sp.scale = { 1.0f, 1.0f, 1.0f };
+        m_prefabs.Spawn("BackGround", m_world, sp);
     }
 
     // ゴールオブジェクト生成
@@ -318,6 +336,8 @@ void TestStageScene::Draw()
         const auto& V = m_followCamera->GetView();
         const auto& P = m_followCamera->GetProj();
 
+        if (m_drawBackGround)
+            m_drawBackGround->SetViewProj(V, P);
         if (m_drawModel)
             m_drawModel->SetViewProj(V, P);
         if (m_drawSprite)
