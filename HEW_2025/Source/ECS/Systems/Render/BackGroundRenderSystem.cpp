@@ -80,6 +80,8 @@ void BackGroundRenderSystem::Render(const World& world)
 		Sprite::SetWorld(s.world);
 		Sprite::SetOffset(s.offset);
 		Sprite::SetSize(s.size);
+		Sprite::SetUVPos({0,0});
+		Sprite::SetUVScale({ 1,1 });
 		Sprite::SetTexture(s.hTex);
 		Sprite::Draw();
 	}
