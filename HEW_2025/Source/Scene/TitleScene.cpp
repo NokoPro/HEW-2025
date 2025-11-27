@@ -19,6 +19,7 @@
 
 #include "TitleScene.h"
 #include "Scene/TestStageScene.h"
+#include "Scene/StageSelectScene.h"
 
 
 TitleScene::TitleScene()
@@ -36,7 +37,7 @@ void TitleScene::Update()
 	// ƒV[ƒ“•ÏX
 	if (IsKeyPress(VK_SPACE))
 	{
-		ChangeScene<TestStageScene>();
+		ChangeScene<StageSelectScene>();
 	}
 }
 

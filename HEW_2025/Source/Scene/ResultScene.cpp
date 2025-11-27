@@ -19,7 +19,8 @@
 /**********************************************************************************************/
 
 #include "ResultScene.h"
-#include "Scene/TestStageScene.h"
+#include "Scene/TitleScene.h"
+#include "Scene/StageSelectScene.h"
 
 
 ResultScene::ResultScene()
@@ -35,9 +36,9 @@ ResultScene::~ResultScene()
 void ResultScene::Update()
 {
 	// ÉVÅ[ÉìïœçX
-	if (IsKeyPress(VK_SPACE))
+	if (IsKeyPress(VK_ESCAPE))
 	{
-		ChangeScene<TestStageScene>();
+		ChangeScene<StageSelectScene>();
 	}
 }
 

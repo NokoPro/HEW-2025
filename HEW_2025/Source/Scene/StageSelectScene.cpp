@@ -36,7 +36,7 @@ void StageSelectScene::Update()
 	// ƒV[ƒ“•ÏX
 	if (IsKeyPress(VK_SPACE))
 	{
-//		ChangeScene<>();
+		ChangeScene<TestStageScene>();
 	}
 }
 

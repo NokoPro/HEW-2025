@@ -609,7 +609,7 @@
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\StageSelectScene.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

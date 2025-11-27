@@ -8,10 +8,11 @@
  * =============================================================================================
  *  Progress Log  - 進捗ログ
  * ---------------------------------------------------------------------------------------------
- *  [ @date 2025/11/22 ]
+ *  [ @date 2025/11/25 ]
  * 
  *    - [◎] ステージ読み込み＆生成を実装
  *    - [] タイマー機能の追加
+ *    - [◎] ゴール遷移＆デス
  *
  **********************************************************************************************/
 #include "TestStageScene.h"
@@ -60,6 +61,10 @@
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
 
+//シーン遷移
+#include "SceneAPI.h"
+#include "ResultScene.h"
+
 TestStageScene::TestStageScene()
 {
     RegisterPlayerPrefab(m_prefabs);            // プレイヤープレハブ登録
@@ -107,10 +112,10 @@ TestStageScene::TestStageScene()
     auto* colSys = &m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
 
     // 2-3.2 ゴール判定システム追加
-    m_sys.AddUpdate<GoalSystem>(colSys); // GoalSystemを追加
+    m_goalSystem = &m_sys.AddUpdate<GoalSystem>(colSys); // GoalSystemを追加
 
     // 2-3.3 Deathゾーン判定システム追加
-    m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
+    m_deathSystem = &m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
 
     // 追加：追従システム
     // 物理演算が終わった後の座標をもとに追従させる
@@ -308,6 +313,17 @@ void TestStageScene::Update()
     // 固定フレームレート想定で更新
     const float dt = 1.0f / 60.0f;
     m_sys.Tick(m_world, dt);
+
+    //リザルトシーン遷移
+    if (m_goalSystem->IsCleared())
+    {
+        ChangeScene<ResultScene>();
+    }
+
+    //デスシーン
+    if (m_deathSystem->IsDead())
+    {
+    }
 }
 
 void TestStageScene::Draw()
