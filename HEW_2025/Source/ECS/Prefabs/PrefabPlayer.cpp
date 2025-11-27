@@ -61,10 +61,10 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 
             auto& mr = w.Add<ModelRendererComponent>(e);
             // 共有キャッシュを使わず、毎回独立インスタンスを生成してアニメ状態の共有を防ぐ
-            const std::string modelAlias = sp.modelAlias.empty() ? std::string("mdl_player") : sp.modelAlias;
+            const std::string modelAlias = sp.modelAlias.empty() ? std::string("mdl_2Pplayer") : sp.modelAlias;
             mr.model = AssetManager::CreateModelInstance(modelAlias);
-            mr.localScale = { 1.25f, 0.5f, 1.25f }; // スケール調整
-            mr.localOffset = { 0.f, -0.5f, 0.f }; // 足元を原点に合わせる
+            mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
+            mr.localOffset = { 0.f, 0.4f, 0.f }; // 足元を原点に合わせる
             
             // このモデルインスタンスに対して個別にアニメを追加
             AnimeNo idleNo = Model::ANIME_NONE;
@@ -91,55 +91,55 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             }
 
             // アニメ制御コンポーネント
-            auto& anim = w.Add<ModelAnimationComponent>(e);
-            anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
-            anim.loop = true;
-            anim.speed = 1.0f;
-            anim.playRequested = (anim.animeNo >= 0);
+            //auto& anim = w.Add<ModelAnimationComponent>(e);
+            //anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
+            //anim.loop = true;
+            //anim.speed = 1.0f;
+            //anim.playRequested = (anim.animeNo >= 0);
 
-            // ステートテーブル
-            auto& table = w.Add<ModelAnimationTableComponent>(e);
-            // まず全クリップ無効化
-            for (auto& d : table.table)
-            {
-                d.animeNo = -1;
-                d.loop = true;
-                d.speed = 1.0f;
-            }
+            //// ステートテーブル
+            //auto& table = w.Add<ModelAnimationTableComponent>(e);
+            //// まず全クリップ無効化
+            //for (auto& d : table.table)
+            //{
+            //    d.animeNo = -1;
+            //    d.loop = true;
+            //    d.speed = 1.0f;
+            //}
 
-            if (idleNo != Model::ANIME_NONE)
-            {
-                auto& d = table.table[static_cast<size_t>(ModelAnimState::Idle)];
-                d.animeNo = static_cast<int>(idleNo);
-                d.loop = true;
-                d.speed = 1.0f;
-            }
-            if (runNo != Model::ANIME_NONE)
-            {
-                auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
-                d.animeNo = static_cast<int>(runNo);
-                d.loop = true;
-                d.speed = 0.01f;
-            }
-            if (jumpNo != Model::ANIME_NONE)
-            {
-                auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
-                d.animeNo = static_cast<int>(jumpNo);
-                d.loop = false;   // ジャンプ開始を1回再生とか
-                d.speed = 0.05f;
-            }
-            if (fallNo != Model::ANIME_NONE)
-            {
-                auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
-                d.animeNo = static_cast<int>(fallNo);
-                d.loop = false;
-                d.speed = 0.05f;
-            }
+            //if (idleNo != Model::ANIME_NONE)
+            //{
+            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Idle)];
+            //    d.animeNo = static_cast<int>(idleNo);
+            //    d.loop = true;
+            //    d.speed = 1.0f;
+            //}
+            //if (runNo != Model::ANIME_NONE)
+            //{
+            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
+            //    d.animeNo = static_cast<int>(runNo);
+            //    d.loop = true;
+            //    d.speed = 0.01f;
+            //}
+            //if (jumpNo != Model::ANIME_NONE)
+            //{
+            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
+            //    d.animeNo = static_cast<int>(jumpNo);
+            //    d.loop = false;   // ジャンプ開始を1回再生とか
+            //    d.speed = 0.05f;
+            //}
+            //if (fallNo != Model::ANIME_NONE)
+            //{
+            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
+            //    d.animeNo = static_cast<int>(fallNo);
+            //    d.loop = false;
+            //    d.speed = 0.05f;
+            //}
 
-            // ステート現在値
-            auto& state = w.Add<ModelAnimationStateComponent>(e);
-            state.current = ModelAnimState::Idle;
-            state.requested = ModelAnimState::Idle;
+            //// ステート現在値
+            //auto& state = w.Add<ModelAnimationStateComponent>(e);
+            //state.current = ModelAnimState::Idle;
+            //state.requested = ModelAnimState::Idle;
 
             // 当たり判定は前回と同じ例
             auto& col = w.Add<Collider2DComponent>(e);

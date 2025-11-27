@@ -78,7 +78,7 @@ TestStageScene::TestStageScene()
     //
     // 1. アセット取得
     //
-    m_playerModel = AssetManager::GetModel("mdl_player");
+    m_playerModel = AssetManager::GetModel("mdl_2Pplayer");
     if (m_playerModel)
     {
         m_playerModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
@@ -214,7 +214,7 @@ TestStageScene::TestStageScene()
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 0;                         // 1P
-        sp.modelAlias = "mdl_player";
+        sp.modelAlias = "mdl_2Pplayer";
 
         m_playerEntity1 = m_prefabs.Spawn("Player", m_world, sp);
 
@@ -245,7 +245,7 @@ TestStageScene::TestStageScene()
         sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 1;                         // 2P
-        sp.modelAlias = "mdl_Player";           // ← 2P用モデル
+        sp.modelAlias = "mdl_2Pplayer";           // ← 2P用モデル
 
         m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
 
