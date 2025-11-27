@@ -599,9 +599,6 @@
     <ClInclude Include="Source\System\GameplayConfig.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Render\TimerComponent.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>

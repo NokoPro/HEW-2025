@@ -7,11 +7,11 @@
  *********************************************************************/
 #include "ECS/Systems/Render/TimerSystem.h"
 #include "ECS/World.h"
-#include "ECS/Components/Render/TimerComponent.h"
 #include "ECS/Components/Render/DigitUIComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
+#include "System/TimeAttackManager.h"
 #include <cmath>
 
 static const int ANIM_SCORE_SPLITE_X = 5; // 横分割数
@@ -24,19 +24,22 @@ static const float DIGIT_STEP_X = 4.0f;
 
 void TimerSystem::Update(World& world, float dt)
 {
-	// 1.時間を進める
-	int currentScoreInt = 0;
+	TimeAttackManager::Get().Update();
 
-	world.View<TimerComponent>([&](EntityId, TimerComponent& timer)
-		{
-			if (timer.isRunning)
-			{
-				timer.currentTime += dt;
-				// 必要なら上限処理
-				if (timer.currentTime > 999.0f) timer.currentTime = 999.0f;
-			}
-			currentScoreInt = static_cast<int>(timer.currentTime);
-		});
+	float totalTime = TimeAttackManager::Get().GetElapsed();
+	
+	// カンスト処理
+	if (totalTime > 5999.0f) totalTime = 5999.0f;
+	
+	// 分・秒に分解
+	int totalSec = static_cast<int>(totalTime);
+	int min = totalSec / 60;
+	int sec = totalSec % 60;
+
+	int min10 = (min / 10)  % 10;
+	int min1 = min % 10;
+	int sec10 = (sec / 10) % 10;
+	int sec1 = sec % 10;
 
 	// 追加：カメラの位置を取得する
 	DirectX::XMFLOAT3 camPos = { 0.0f, 0.0f, 0.0f };
@@ -57,33 +60,51 @@ void TimerSystem::Update(World& world, float dt)
 	world.View<DigitUIComponent, Sprite2DComponent, TransformComponent>(
 		[&](EntityId, const DigitUIComponent& digit, Sprite2DComponent& sprite, TransformComponent&tr)
 		{
-			// この桁に表示すべき数字を計算
-			int number = (currentScoreInt / digit.digitPlace) % 10;
+			//-----表示する数字を決定-----
+			int numberIndex = 0;
+			float xOffsetUnit = 0.0f; // 中央からのズレ位置
 
-			// UV計算
-			int col = number % ANIM_SCORE_SPLITE_X;
-			int row = number / ANIM_SCORE_SPLITE_X;
+			switch (digit.type)
+			{
+				case DigitUIComponent::Type::MinTens:
+					numberIndex = min10;
+					xOffsetUnit = -2.0f; // 一番左
+					break;
+				case DigitUIComponent::Type::MinOnes:
+					numberIndex = min1;
+					xOffsetUnit = -1.0f;
+					break;
+				case DigitUIComponent::Type::Separator:
+					numberIndex = 10; // セパレーターのインデックス
+					xOffsetUnit = 0.0f; // 真ん中
+					break;
+				case DigitUIComponent::Type::SecTens:
+					numberIndex = sec10;
+					xOffsetUnit = 1.0f;
+					break;
+				case DigitUIComponent::Type::SecOnes:
+					numberIndex = sec1;
+					xOffsetUnit = 2.0f; // 一番右
+					break;
+			}
 
-			sprite.uvOffset.x = sizeTexX * col;
-			sprite.uvOffset.y = sizeTexY * row;
+			//-----UV計算-----
+			int col = numberIndex % ANIM_SCORE_SPLITE_X;
+			int row = numberIndex / ANIM_SCORE_SPLITE_X;
+
+			sprite.uvOffset.x = sizeTexX * static_cast<int>(col);
+			sprite.uvOffset.y = sizeTexY * static_cast<int>(row);
 			sprite.uvSize.x = sizeTexX;
 			sprite.uvSize.y = sizeTexY;
 
-			// 座標追従
+			//-----座標追従-----
 			if (foundCamera)
 			{
-				// 桁ごとのXズレを計算
-				float xOffset = 0.0f;
-				if (digit.digitPlace == 100) xOffset = -DIGIT_STEP_X;
-				else if (digit.digitPlace == 10) xOffset = 0.0f;
-				else if (digit.digitPlace == 1) xOffset = DIGIT_STEP_X;
-				
-				// カメラ位置を基準に配置
+				float xOffset = xOffsetUnit * DIGIT_STEP_X;
+
 				tr.position.x = camPos.x + xOffset;
 				tr.position.y = camPos.y + UI_OFFSET_Y;
-
 				tr.position.z = camPos.z + UI_OFFSET_Z;
-				
 			}
 		}
 	);

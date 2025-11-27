@@ -27,7 +27,6 @@
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
 #include "ECS/Components/Render/FollowerComponent.h"
-#include "ECS/Components/Render/TimerComponent.h"
 
 /// ECS ƒVƒXƒeƒ€ŒQ
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"

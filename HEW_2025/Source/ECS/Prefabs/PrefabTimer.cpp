@@ -9,8 +9,8 @@
 #include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
-#include "ECS/Components/Render/TimerComponent.h"
 #include "ECS/Components/Render/DigitUIComponent.h"
+#include "System/TimeAttackManager.h"
 
 void RegisterTimerPrefab(PrefabRegistry& registry)
 {
@@ -23,39 +23,36 @@ void RegisterTimerPrefab(PrefabRegistry& registry)
 				return kInvalidEntity;
 			}
 			
-			auto& timer = w.Add<TimerComponent>(masterEntity);
-			timer.currentTime = 0.0f; // 0秒スタート
-			timer.isRunning = true;
+			// シングルトンをリセットして開始
+			TimeAttackManager::Get().Reset();
+			TimeAttackManager::Get().StartRun(); // 計測開始
 
-			// 3桁の数字を生成
-			int places[] = { 100, 10, 1 };
-			float stepX = 4.0f;
+			// 生成する桁の定義リスト
+			DigitUIComponent::Type types[] = {
+				DigitUIComponent::Type::MinTens,
+				DigitUIComponent::Type::MinOnes,
+				DigitUIComponent::Type::Separator,
+				DigitUIComponent::Type::SecTens,
+				DigitUIComponent::Type::SecOnes
+			};
 
-			for(int i = 0; i < 3; ++i)
+			for(int i = 0; i < 5; ++i)
 			{
 				EntityId digitEnt = w.Create();
 				
-				float offsetX = (i * stepX) - stepX;
-
-				float x = sp.position.x + offsetX;
-				float y = sp.position.y;
-				float z = sp.position.z;
-
+				// 初期位置
 				w.Add<TransformComponent>(digitEnt,
-					DirectX::XMFLOAT3(x, y, z),
-					sp.rotationDeg,
-					sp.scale);
+					sp.position, sp.rotationDeg, sp.scale);
 
 				auto& spr = w.Add<Sprite2DComponent>(digitEnt);
 				spr.alias = "tex_number";
 				spr.visible = true;
 				spr.layer = 101;
-
 				spr.width = 5.0f;
 				spr.height = 5.0f;
 
 				auto& dig = w.Add<DigitUIComponent>(digitEnt);
-				dig.digitPlace = places[i];
+				dig.type = types[i]; // 役割を設定
 			}
 			return masterEntity;
 		}

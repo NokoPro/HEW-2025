@@ -301,7 +301,6 @@
     <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\PlayerUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
-    <ClInclude Include="Source\ECS\Components\Render\TimerComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h" />
