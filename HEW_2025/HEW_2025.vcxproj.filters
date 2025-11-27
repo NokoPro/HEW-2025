@@ -339,6 +339,9 @@
     <ClCompile Include="Source\System\TimeAttackManager.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\System\RankingManager.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
     </ClCompile>
@@ -621,6 +624,9 @@
       <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\GameplayConfig.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\RankingManager.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h">

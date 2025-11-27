@@ -49,6 +49,8 @@
 #include "ECS/Prefabs/PrefabFollowerJump.h"
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
 
+
+
 #include <cstdio>
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
@@ -242,6 +244,9 @@ TestScene::TestScene()
     RegisterFollowerJumpPrefab(m_prefabs);  // 新: ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs); // 新: ブリンクUI専用フォロワー
 
+    //ランキングコンストラクタ
+
+
     //
     // 1. アセット取得
     //
@@ -291,7 +296,6 @@ TestScene::TestScene()
 
     //追加
     m_sys.AddUpdate<AudioPlaySystem>();
-
     
     // 2-5 描画
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();

@@ -20,6 +20,9 @@
 #include <iomanip>
 #include <sstream>
 
+//追加11/25篠原純
+#include"System/RankingManager.h"
+
 //--------------------------------------------------------------------------------------------------
 // コンストラクタ: タイマー初期化
 //--------------------------------------------------------------------------------------------------
@@ -91,6 +94,20 @@ void TimeAttackManager::NotifyClear()
             m_bestTime = m_elapsed;
             m_dirty = true;
         }
+
+        //追加ランキング登録
+        auto& rank = RankingManager::Get();
+
+        int pos = rank.AddRecord(m_elapsed);
+        if (pos != -1)
+        {
+            char msg[128];
+            sprintf_s(msg, "ランクイン！\n%d位\n記録：%.3f秒", pos, m_elapsed);
+            MessageBoxA(NULL, msg, "Ranking", MB_OK | MB_ICONINFORMATION);
+
+        }
+        RankingManager::Get().Save("Assets/Ranking.csv");
+        RankingManager::Get().ShowRankingMessege();
     }
 }
 
