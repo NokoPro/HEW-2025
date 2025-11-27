@@ -158,6 +158,15 @@ void Model::Reset()
 		if (matIt->pTexture) delete matIt->pTexture;
 		++matIt;
 	}
+
+	if (m_pDefPS)
+	{
+		m_pDefPS->ClearTextures();
+	}
+	if (m_pDefVS)
+	{
+		m_pDefVS->ClearTextures();
+	}
 }
 
 /*
@@ -241,6 +250,15 @@ bool Model::Load(const char* file, float scale, Flip flip)
 */
 void Model::Draw(int meshNo, Texture* overrideTex)
 {
+	if (m_pVS == nullptr) { m_pVS = m_pDefVS; }
+	if (m_pPS == nullptr) { m_pPS = m_pDefPS; }
+
+	// ★追加: Bindする前に、前回の描画で残っているテクスチャ情報をクリアする
+	// これを行わないと、Bind時に「既に破棄されたテクスチャ」をセットしようとして
+	// 0xC0000005 アクセス違反が発生する
+	m_pVS->ClearTextures();
+	m_pPS->ClearTextures();
+
 	// シェーダー設定
 	m_pVS->Bind();
 	m_pPS->Bind();

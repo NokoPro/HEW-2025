@@ -378,6 +378,9 @@
     <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -697,6 +700,12 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Effect\EffectSlotsComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\GameCommon.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

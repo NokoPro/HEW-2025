@@ -1,8 +1,7 @@
 /*********************************************************************/
 /* @file   DeathZoneSystem.h
  * @brief  死亡ゾーンシステム
- * 
- * @author 浅野勇生
+ * * @author 浅野勇生
  * @date   2025/11/13
  *********************************************************************/
 #pragma once
@@ -20,7 +19,15 @@ public:
     void ForceDeath() { m_triggered = true; }
     void ResetDeathFlag() { m_triggered = false; }
     bool IsDead() const { return m_triggered; }
+
+    /**
+     * @brief デスゾーンの上昇速度を設定する
+     * @param speed 毎秒の上昇量(World単位/sec)
+     */
+    void SetRiseSpeed(float speed) { m_riseSpeed = speed; }
+
 private:
     Collision2DSystem* m_colSys = nullptr;  /// 死亡ゾーンの当たり判定システム
     bool m_triggered = false;               /// 死亡ゾーンに触れたかどうか
+    float m_riseSpeed = 1.0f;               /// 上昇速度（デフォルト値）
 };

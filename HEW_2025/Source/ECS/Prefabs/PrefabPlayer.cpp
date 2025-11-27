@@ -68,6 +68,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
             mr.localOffset = { 0.f, 0.4f, 0.f }; // 足元を原点に合わせる
+            mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
             
             // このモデルインスタンスに対して個別にアニメを追加
             AnimeNo idleNo = Model::ANIME_NONE;

@@ -33,26 +33,12 @@ bool Game_Init(HWND /*hWnd*/, unsigned int /*width*/, unsigned int /*height*/)
     g_SceneManager.Change<TitleScene>();
     // レコード読み込み (タイムアタック用)
     TimeAttackManager::Get().LoadRecord("time_record.dat");
-    // カウントダウン開始 (初期設定値から) 長さ3秒
-    TimeAttackManager::Get().StartCountdown(3.0f);
+
     return true;
 }
 
 void Game_Update()
 {
-    // タイムアタック更新
-    TimeAttackManager::Get().Update();
-
-    // デバッグ用タイマー操作 (暫定) - 後日削除予定
-    auto& dbg = DebugSettings::Get();
-    if (!dbg.gameTimerRunning && !dbg.gameCleared && !dbg.gameDead)
-    {
-        dbg.gameTimerRunning = true;
-    }
-    if (dbg.gameTimerRunning && TimeAttackManager::Get().GetState() == TimeAttackManager::State::Running)
-    {
-        dbg.gameElapsedSeconds += (1.0f / 60.0f); // 固定タイムステップ
-    }
     g_SceneManager.Update();
 }
 

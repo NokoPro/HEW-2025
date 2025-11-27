@@ -54,6 +54,10 @@ void TimeAttackManager::Reset()
     m_countdownTotal = 0.0f;
     m_countdownRemaining = 0.0f;
     m_dirty = false;
+
+    // ★修正: シーン遷移などで時間が空いた場合、いきなり大きなdtが出ないようにカウンタを現在時刻で更新しておく
+    LARGE_INTEGER c; QueryPerformanceCounter(&c);
+    m_prevCounter = c.QuadPart;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -61,6 +65,10 @@ void TimeAttackManager::Reset()
 //--------------------------------------------------------------------------------------------------
 void TimeAttackManager::StartCountdown(float seconds)
 {
+    // ★念のためここでもリセット（Resetを呼ばずにStartCountdownだけ呼んだ場合への保険）
+    LARGE_INTEGER c; QueryPerformanceCounter(&c);
+    m_prevCounter = c.QuadPart;
+
     if (seconds <= 0.0f)
     {
         StartRun();
