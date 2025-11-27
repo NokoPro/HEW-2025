@@ -38,6 +38,7 @@
 #include "ECS/Systems/Render/FollowerSystem.h"
 #include "ECS/Systems/Render/PlayerUISystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
+#include "ECS/Systems/Update/Effect/EffectSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -125,6 +126,9 @@ TestStageScene::TestStageScene()
 
     // 5. 実際の再生と時間進行（既存）
     m_sys.AddUpdate<ModelAnimationSystem>();
+
+	// 6. エフェクトシステム（既存）
+    m_sys.AddUpdate<EffectSystem>();
 
     // 追加：追従システム
     // 物理演算が終わった後の座標をもとに追従させる
@@ -319,6 +323,8 @@ void TestStageScene::Update()
     // 固定フレームレート想定で更新
     const float dt = 1.0f / 60.0f;
     m_sys.Tick(m_world, dt);
+
+	EffectRuntime::Update(dt);
 }
 
 void TestStageScene::Draw()
@@ -336,9 +342,13 @@ void TestStageScene::Draw()
         if (m_debugCollision)
             m_debugCollision->SetViewProj(V, P);
 
+		EffectRuntime::SetCamera(V, P);
+
 		ShaderList::SetL(V, P);
     }
 
     // モデル描画
     m_sys.Render(m_world);
+
+	EffectRuntime::Render();
 }

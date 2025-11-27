@@ -11,6 +11,7 @@
 #include "Scene/TestStageScene.h"
 #include "System/DebugSettings.h"
 #include "System/TimeAttackManager.h"
+#include "System/EffectRuntime.h"
 
 namespace
 {
@@ -60,5 +61,6 @@ void Game_Draw()
 void Game_Uninit()
 {
     TimeAttackManager::Get().SaveRecord("time_record.dat");
+
     // SceneManagerは終了時に自動的に破棄されるため追加処理不要
 }

@@ -29,17 +29,22 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
 	PlayerInputComponent* pic1 = nullptr;
 	PlayerInputComponent* pic2 = nullptr;
 
-    world.View<PlayerInputComponent, MovementIntentComponent>(
-        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent) {
+	EffectComponent* effect1 = nullptr;
+	EffectComponent* effect2 = nullptr;
+
+    world.View<PlayerInputComponent, MovementIntentComponent,EffectComponent>(
+        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent,EffectComponent& ef) {
             if (pic.playerIndex == 0) 
             {
                 intent1 = &intent;
 				pic1 = &pic;
+				effect1 = &ef;
 			}
             if (pic.playerIndex == 1)
             {
                 intent2 = &intent;
 				pic2 = &pic;
+				effect2 = &ef;
             }
         }
     );
@@ -82,6 +87,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
 			pic1->isJumpRequested = true;
+			effect1->playRequested = true; // ジャンプエフェクト再生リクエスト
         }
     }
     if (intent1 && !intent1->forceJumpConsumed) {
@@ -89,6 +95,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent1->forceJumpRequested = true;
             intent1->forceJumpConsumed = true;
 			pic2->isJumpRequested = true;
+			effect2->playRequested = true; // ジャンプエフェクト再生リクエスト
         }
     }
 
@@ -100,7 +107,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent2->blinkRequested = true;
             
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
-            pic1->isBlinkRequested = true;
+            pic2->isBlinkRequested = true;
         }
     }
     if (intent1) 
@@ -108,7 +115,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
-            pic2->isBlinkRequested = true;
+            pic1->isBlinkRequested = true;
         }
     }
 }

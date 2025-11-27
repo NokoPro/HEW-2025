@@ -20,6 +20,7 @@
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "ECS/Components/Input/MovementIntentComponent.h"
 #include "ECS/Components/Physics/TransformComponent.h"
+#include "ECS/Components/Effect/EffectComponent.h"
 
 class PlayerInputSystem final : public IUpdateSystem
 {

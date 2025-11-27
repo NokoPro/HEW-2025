@@ -151,14 +151,14 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\assimp\include;$(ProjectDir)Source;$(SolutionDir)libs\imgui;$(SolutionDir)libs\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\assimp\include;$(ProjectDir)Source;$(SolutionDir)libs\imgui;$(SolutionDir)libs\imgui\backends;$(SolutionDir)libs\Effekseer\Include\Effekseer;$(SolutionDir)libs\Effekseer\Include\EffekseerRendererDX11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libs\assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\assimp\lib;$(SolutionDir)libs\Effekseer\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -171,14 +171,14 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;IMGUI_ENABLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\assimp\include;$(ProjectDir)Source;$(SolutionDir)libs\imgui;$(SolutionDir)libs\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\assimp\include;$(ProjectDir)Source;$(SolutionDir)libs\imgui;$(SolutionDir)libs\imgui\backends;$(SolutionDir)libs\Effekseer\Include\Effekseer;$(SolutionDir)libs\Effekseer\Include\EffekseerRendererDX11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libs\assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\assimp\lib;$(SolutionDir)libs\Effekseer\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -193,7 +193,7 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libs\assimp\include;$(ProjectDir)Source;$(SolutionDir)libs\imgui;$(SolutionDir)libs\imgui\backends;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs\assimp\include;$(ProjectDir)Source;$(SolutionDir)libs\imgui;$(SolutionDir)libs\imgui\backends;$(SolutionDir)libs\Effekseer\Include\Effekseer;$(SolutionDir)libs\Effekseer\Include\EffekseerRendererDX11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -202,7 +202,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libs\assimp\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\assimp\lib;$(SolutionDir)libs\Effekseer\Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
@@ -240,6 +240,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\GoalSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp" />
@@ -262,6 +263,7 @@
     <ClCompile Include="Source\System\DirectX\Shader.cpp" />
     <ClCompile Include="Source\System\DirectX\ShaderList.cpp" />
     <ClCompile Include="Source\System\DirectX\Texture.cpp" />
+    <ClCompile Include="Source\System\EffectRuntime.cpp" />
     <ClCompile Include="Source\System\Geometory.cpp" />
     <ClCompile Include="Source\System\ImGuiLayer.cpp" />
     <ClCompile Include="Source\System\Input.cpp" />
@@ -284,6 +286,7 @@
     <ClInclude Include="libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Input\MovementIntentComponent.h" />
@@ -328,6 +331,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h" />
@@ -357,6 +361,7 @@
     <ClInclude Include="Source\System\DirectX\Shader.h" />
     <ClInclude Include="Source\System\DirectX\ShaderList.h" />
     <ClInclude Include="Source\System\DirectX\Texture.h" />
+    <ClInclude Include="Source\System\EffectRuntime.h" />
     <ClInclude Include="Source\System\GameplayConfig.h" />
     <ClInclude Include="Source\System\Geometory.h" />
     <ClInclude Include="Source\System\ImGuiLayer.h" />

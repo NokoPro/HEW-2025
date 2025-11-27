@@ -154,6 +154,15 @@
     <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Anim">
       <UniqueIdentifier>{7f4939d6-221c-4f21-9dbe-fefaa7fb4d48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Effect">
+      <UniqueIdentifier>{896218e4-fce3-4850-bcb2-f7a89142010b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Effect">
+      <UniqueIdentifier>{0e2d7542-5b78-4d48-9a8c-4864b1e6319d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Effect">
+      <UniqueIdentifier>{62ebe4c6-730c-4a04-819d-007f54f37a68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -338,6 +347,12 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\EffectRuntime.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -616,6 +631,15 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\System\EffectRuntime.h">
+      <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

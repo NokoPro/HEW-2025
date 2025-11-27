@@ -19,6 +19,8 @@
 #include "ECS/Components/Physics/Collider2DComponent.h"
 #include "ECS/Components/Render/ModelComponent.h"
 
+#include "ECS/Components/Effect/EffectComponent.h"
+
 #include "System/AssetManager.h"
 #include "System/DirectX/ShaderList.h"
 #include "System/Model.h"
@@ -140,6 +142,13 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             //auto& state = w.Add<ModelAnimationStateComponent>(e);
             //state.current = ModelAnimState::Idle;
             //state.requested = ModelAnimState::Idle;
+
+			// エフェクトコンポーネント（足元の砂埃など）
+			auto& efc = w.Add<EffectComponent>(e);
+			efc.effect = AssetManager::GetEffect("vfx_player_jump");
+			efc.playOnSpawn = false;
+			efc.loop = false;
+			efc.autoDestroyEntity = false;
 
             // 当たり判定は前回と同じ例
             auto& col = w.Add<Collider2DComponent>(e);

@@ -46,6 +46,7 @@
 
  // 追加：ゲーム本体
 #include "Game.h"
+#include "System/EffectRuntime.h"
 
 /**
  * @brief ウィンドウプロシージャの宣言。
@@ -135,6 +136,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 
     // ImGui 初期化（有効化時のみ）
     ImGuiLayer::Init(hWnd);
+
+	EffectRuntime::Initialize();
 
     // ゲーム(ECS)側の初期化
     Game_Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -364,7 +367,9 @@ void Uninit()
     ShaderList::Uninit();
 
     UninitInput();
+    EffectRuntime::Shutdown();
     UninitDirectX();
+
 }
 
 /**
