@@ -1,19 +1,26 @@
 /*****************************************************************//**
  * @file   TimerSystem.cpp 
- * @brief       
-  * 
+ * @brief  タイマーの表示更新とカメラ追従を行うシステム 
+ * * - TimeAttackManagerから時間を取得して表示内容(UV)を更新    
+  * - カメラの位置を取得し、常に画面貞一に表示されるよう座標を更新
  * @author 川谷優真
  * @date   2025/11/25
  *********************************************************************/
 #include "ECS/Systems/Render/TimerSystem.h"
 #include "ECS/World.h"
+
+// コンポーネント群
 #include "ECS/Components/Render/DigitUIComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
+
+// 時間管理マネージャー
 #include "System/TimeAttackManager.h"
+
 #include <cmath>
 
+// 画面分割設定
 static const int ANIM_SCORE_SPLITE_X = 5; // 横分割数
 static const int ANIM_SCORE_SPLITE_Y = 5; // 縦分割数
 
