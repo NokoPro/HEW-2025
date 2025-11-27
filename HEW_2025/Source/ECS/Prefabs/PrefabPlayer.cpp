@@ -20,6 +20,7 @@
 #include "ECS/Components/Render/ModelComponent.h"
 
 #include "ECS/Components/Effect/EffectComponent.h"
+#include "ECS/Components/Effect/EffectSlotsComponent.h"
 
 #include "System/AssetManager.h"
 #include "System/DirectX/ShaderList.h"
@@ -149,6 +150,13 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 			efc.playOnSpawn = false;
 			efc.loop = false;
 			efc.autoDestroyEntity = false;
+
+            // エフェクトスロット登録（用途に応じたプリセット）
+            auto& slots = w.Add<EffectSlotsComponent>(e);
+            slots.onJump  = AssetManager::GetEffect("vfx_player_jump");
+            slots.onBlink = AssetManager::GetEffect("vfx_blink");
+            //slots.onDash  = AssetManager::GetEffect("vfx_dash");
+            //slots.onLand  = AssetManager::GetEffect("vfx_land_smoke");
 
             // 当たり判定は前回と同じ例
             auto& col = w.Add<Collider2DComponent>(e);

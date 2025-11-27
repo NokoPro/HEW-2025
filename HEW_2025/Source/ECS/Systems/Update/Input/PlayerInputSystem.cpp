@@ -29,22 +29,26 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
 	PlayerInputComponent* pic1 = nullptr;
 	PlayerInputComponent* pic2 = nullptr;
 
-	EffectComponent* effect1 = nullptr;
-	EffectComponent* effect2 = nullptr;
+    EffectComponent* effect1 = nullptr;
+    EffectComponent* effect2 = nullptr;
+    EffectSlotsComponent* slots1 = nullptr;
+    EffectSlotsComponent* slots2 = nullptr;
 
-    world.View<PlayerInputComponent, MovementIntentComponent,EffectComponent>(
-        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent,EffectComponent& ef) {
+    world.View<PlayerInputComponent, MovementIntentComponent,EffectComponent,EffectSlotsComponent>(
+        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent,EffectComponent& ef, EffectSlotsComponent& slots) {
             if (pic.playerIndex == 0) 
             {
                 intent1 = &intent;
 				pic1 = &pic;
 				effect1 = &ef;
+                slots1 = &slots;
 			}
             if (pic.playerIndex == 1)
             {
                 intent2 = &intent;
 				pic2 = &pic;
 				effect2 = &ef;
+                slots2 = &slots;
             }
         }
     );
@@ -86,8 +90,16 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
-			pic1->isJumpRequested = true;
-			effect1->playRequested = true; // ジャンプエフェクト再生リクエスト
+            pic1->isJumpRequested = true;
+            if (effect2)
+            {
+                if (slots2 && slots2->onJump)
+                {
+                    effect2->effect = slots2->onJump;
+                }
+                effect2->loop = false;
+                effect2->playRequested = true;
+            }
         }
     }
     if (intent1 && !intent1->forceJumpConsumed) {
@@ -95,7 +107,15 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent1->forceJumpRequested = true;
             intent1->forceJumpConsumed = true;
 			pic2->isJumpRequested = true;
-			effect2->playRequested = true; // ジャンプエフェクト再生リクエスト
+            if (effect1)
+            {
+                if (slots1 && slots1->onJump)
+                {
+                    effect1->effect = slots1->onJump;
+                }
+                effect1->loop = false;
+                effect1->playRequested = true;
+            }
         }
     }
 
@@ -107,7 +127,17 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent2->blinkRequested = true;
             
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
-            pic2->isBlinkRequested = true;
+            pic1->isBlinkRequested = true;
+            // 相手(2P)にブリンクの見た目を出す
+            if (effect2)
+            {
+                if (slots2 && slots2->onBlink)
+                {
+                    effect2->effect = slots2->onBlink;
+                }
+                effect2->loop = false;
+                effect2->playRequested = true;
+            }
         }
     }
     if (intent1) 
@@ -115,7 +145,17 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
-            pic1->isBlinkRequested = true;
+            pic2->isBlinkRequested = true;
+            // 相手(1P)にブリンクの見た目を出す
+            if (effect1)
+            {
+                if (slots1 && slots1->onBlink)
+                {
+                    effect1->effect = slots1->onBlink;
+                }
+                effect1->loop = false;
+                effect1->playRequested = true;
+            }
         }
     }
 }

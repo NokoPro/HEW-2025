@@ -28,6 +28,19 @@ void EffectSystem::Update(World& world, float dt)
 
             const auto& ref = *efc.effect; // EffectRef
 
+            // A) エフェクト切替検知: lastPath と異なるアセットが指定されたら、再生中なら停止→再生し直し
+            if (!ref.path.empty())
+            {
+                if (efc.playing && efc.lastPath != ref.path)
+                {
+                    // 再生中エフェクトを止め、次に再生を要求
+                    efc.stopRequested = true;
+                    efc.playRequested = true;
+                }
+                // lastPath を更新（この時点ではまだ Play 前の可能性もあるが、次回検知のために保持）
+                efc.lastPath = ref.path;
+            }
+
             // 1. 再生開始条件チェック
             if (!efc.playing)
             {
@@ -67,6 +80,7 @@ void EffectSystem::Update(World& world, float dt)
                     {
                         efc.nativeHandle = handle;
                         efc.playing = true;
+                        efc.lastPath = ref.path;
                     }
                 }
             }

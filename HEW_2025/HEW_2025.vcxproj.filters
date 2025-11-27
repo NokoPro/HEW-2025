@@ -641,6 +641,9 @@
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Effect\EffectSlotsComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Config\gameplay.csv" />

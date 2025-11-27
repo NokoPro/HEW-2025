@@ -287,6 +287,7 @@
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Effect\EffectSlotsComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Input\MovementIntentComponent.h" />

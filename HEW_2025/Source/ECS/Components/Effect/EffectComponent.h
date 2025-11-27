@@ -18,6 +18,7 @@
  *********************************************************************/
 #pragma once
 #include <cstdint>
+#include <string>
 #include "System/AssetManager.h"
 
  /**
@@ -27,6 +28,9 @@ struct EffectComponent
 {
     /// 再生するエフェクト情報（AssetManager::GetEffect で取得）
     AssetHandle<EffectRef> effect;
+
+    /// 直前に再生していたエフェクトのパス（切替検知用）
+    std::string lastPath;
 
     /// 生成されたフレームで自動再生するか
     bool playOnSpawn = true;

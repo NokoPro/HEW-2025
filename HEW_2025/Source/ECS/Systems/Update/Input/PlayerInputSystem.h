@@ -21,6 +21,7 @@
 #include "ECS/Components/Input/MovementIntentComponent.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Effect/EffectComponent.h"
+#include "ECS/Components/Effect/EffectSlotsComponent.h"
 
 class PlayerInputSystem final : public IUpdateSystem
 {
