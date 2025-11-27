@@ -11,3 +11,4 @@ texture,assets/texture/ui/ui_flip.png,ui_blink,2,0,1,,,,,
 audio,Assets/Audio/BGM.wav,bgm_main,,,1,,,,,テストシーンのBGM
 audio,Assets/Audio/jump.wav,se_jump_p1,,,1,,,,,1PのジャンプSE
 audio,Assets/Audio/jump1.wav,se_jump_p2,,,1,,,,,2PのジャンプSE
+texture,Assets/Texture/Number.png,tex_number,,0,1,,,,,

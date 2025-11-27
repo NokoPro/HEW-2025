@@ -54,6 +54,10 @@ void SpriteRenderSystem::Render(const World& world)
 			XMMATRIX W = XMMatrixTranslation(0.0f, 0.0f, tr.position.z);
 			XMStoreFloat4x4(&spriteData.world, XMMatrixTranspose(W));
 
+			// UV情報をコンポーネントからコピー
+			spriteData.uvOffset = sp.uvOffset;
+			spriteData.uvSize = sp.uvSize;
+
 			// リストに追加
 			m_spriteList.push_back(spriteData);
 		}
@@ -81,6 +85,8 @@ void SpriteRenderSystem::Render(const World& world)
 		Sprite::SetOffset(s.offset);
 		Sprite::SetSize(s.size);
 		Sprite::SetTexture(s.hTex);
+		Sprite::SetUVPos(s.uvOffset);
+		Sprite::SetUVScale(s.uvSize);
 		Sprite::Draw();
 	}
 }

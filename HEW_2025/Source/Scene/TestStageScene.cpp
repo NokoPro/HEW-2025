@@ -27,6 +27,7 @@
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
 #include "ECS/Components/Render/FollowerComponent.h"
+#include "ECS/Components/Render/TimerComponent.h"
 
 /// ECS システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
@@ -37,6 +38,7 @@
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Render/FollowerSystem.h"
 #include "ECS/Systems/Render/PlayerUISystem.h"
+#include "ECS/Systems/Render/TimerSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -55,6 +57,7 @@
 #include "ECS/Prefabs/PrefabFollower.h"
 #include "ECS/Prefabs/PrefabFollowerJump.h"
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
+#include "ECS/Prefabs/PrefabTimer.h"
 
 #include <cstdio>
 #include <DirectXMath.h>
@@ -71,6 +74,7 @@ TestStageScene::TestStageScene()
     RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
     RegisterFollowerJumpPrefab(m_prefabs);      // ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs);     // ブリンクUI専用フォロワー
+	RegisterTimerPrefab(m_prefabs);            // タイマープレハブ登録
 
     //
     // 1. アセット取得
@@ -118,6 +122,9 @@ TestStageScene::TestStageScene()
 
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
+
+    // タイマーシステム追加
+    m_sys.AddUpdate<TimerSystem>();
 
     //追加
     m_sys.AddUpdate<AudioPlaySystem>();
@@ -253,6 +260,14 @@ TestStageScene::TestStageScene()
             }
         }
     } // <-- 2P ブロック閉じ
+
+    // タイマーUI生成
+        {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 5.0f, 3.0f, 0.0f };
+        sp.scale = { 2.0f, 2.0f, 1.0f };
+        m_prefabs.Spawn("Timer", m_world, sp);
+	}
 
     // 5. カメラエンティティ生成
     {

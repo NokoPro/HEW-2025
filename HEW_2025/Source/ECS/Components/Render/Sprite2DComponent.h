@@ -8,6 +8,7 @@
  *********************************************************************/
 #pragma once
 #include <string>
+#include <DirectXMath.h>
 
  /**
   * @brief スプライトを描画するための情報
@@ -39,6 +40,9 @@ struct Sprite2DComponent
      * @details true のときのみ描画処理とテクスチャ取得を行います。
      */
     bool visible = true;
+
+	DirectX::XMFLOAT2 uvOffset = { 0.0f, 0.0f }; ///< UVオフセット
+	DirectX::XMFLOAT2 uvSize = { 1.0f, 1.0f };   ///< UVサイズ
 };
 
 
