@@ -19,6 +19,7 @@ int RankingManager::AddRecord(float time)
 
 int RankingManager::GetRank(float time) const
 {
+	//何位？
 	for (size_t i = 0; i < m_entries.size(); i++)
 	{
 		if (m_entries[i] == time)
@@ -41,6 +42,7 @@ float RankingManager::GetEntry(size_t i) const
 
 void RankingManager::Load(const std::string& path)
 {
+	//Ranking.csv を読み込んでる
 	m_filePath = path;
 	Reset();
 	std::ifstream ifs(path);
@@ -61,6 +63,7 @@ void RankingManager::Load(const std::string& path)
 
 void RankingManager::Save(const std::string& path)
 {
+	//Ranking.csv に保存してる
 	if (m_entries.empty()) return;
 
 	std::ofstream ofs(path, std::ios::trunc);
@@ -73,11 +76,13 @@ void RankingManager::Save(const std::string& path)
 
 void RankingManager::Reset()
 {
+	//初期化
 	m_entries.clear();
 }
 
 void RankingManager::ShowRankingMessege() const
 {
+	//メッセージボックスを表示（仮）
 	if (m_entries.empty())
 	{
 		MessageBoxA(NULL,"ランキングデータがありません", "Ranking", MB_OK);

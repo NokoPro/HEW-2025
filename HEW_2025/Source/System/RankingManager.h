@@ -3,6 +3,7 @@
  * @brief     クリア時間をランキングにCSVで保存
  *
  * @author    篠原純
+ * @author    清水光之介
  * @date      2025/11/25
  *
  * =============================================================================================
@@ -54,8 +55,11 @@ private:
 	RankingManager(){}
 	~RankingManager(){}
 private:
+	//ランキング最大値
 	static constexpr size_t MAX_RANK = 10;
+	//ランキング入れ替えとか
 	std::vector<float> m_entries;
+	//保存する場所
 	std::string m_filePath;
 
 };
