@@ -8,6 +8,8 @@
 #include "MovementApplySystem.h"
 #include <algorithm>  // std::clamp
 #include "System/DebugSettings.h"
+#include "ECS/Components/Effect/EffectComponent.h"
+#include "ECS/Components/Effect/EffectSlotsComponent.h"
 
 // CSV値との同期
 void MovementApplySystem::SyncConfig()
@@ -91,6 +93,29 @@ void MovementApplySystem::Update(World& world, float dt)
                     }
                     intent.isBlinking = true;
                     intent.blinkConsumed = true;
+
+                    // ここでブリンクを実行したタイミングでエフェクト再生を指示
+                    if (auto* efc = world.TryGet<EffectComponent>(e))
+                    {
+                        if (auto* slots = world.TryGet<EffectSlotsComponent>(e))
+                        {
+                            if (slots->onBlink)
+                            {
+                                efc->effect = slots->onBlink;
+                                // スロットの既定パラメータを反映
+                                efc->offset      = slots->onBlinkParams.offset;
+                                efc->rotationDeg = slots->onBlinkParams.rotationDeg;
+                                efc->scale       = slots->onBlinkParams.scale;
+                            }
+                        }
+                        // 向きに合わせてミラー（右:+1, 左:-1）。ここではキャラクターの facing を利用
+                        efc->rotationDeg.y = (intent.facing >= 0) ? 180.0f : -180.0f;
+                        efc->offset.x = (intent.facing >= 0) ? std::fabs(efc->offset.x) : -std::fabs(efc->offset.x);
+                        efc->scale.x  = (intent.facing >= 0) ? std::fabs(efc->scale.x)  : -std::fabs(efc->scale.x);
+
+                        efc->loop = false;
+                        efc->playRequested = true;
+                    }
                 }
                 intent.blinkRequested = false;
                 intent.blinkSpeed = 0.0f;

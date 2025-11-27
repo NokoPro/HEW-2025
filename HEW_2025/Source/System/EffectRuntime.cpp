@@ -257,6 +257,30 @@ void EffectRuntime::SetLocation(Handle handle, const XMFLOAT3& worldPos)
         worldPos.z);
 }
 
+void EffectRuntime::SetRotationDeg(Handle handle, const XMFLOAT3& rotationDeg)
+{
+    if (!g_manager.Get() || handle < 0)
+    {
+        return;
+    }
+
+    // Effekseer ‚Íƒ‰ƒWƒAƒ“Žw’è‚Ì API
+    const float rx = XMConvertToRadians(rotationDeg.x);
+    const float ry = XMConvertToRadians(rotationDeg.y);
+    const float rz = XMConvertToRadians(rotationDeg.z);
+    g_manager->SetRotation(static_cast<::Effekseer::Handle>(handle), rx, ry, rz);
+}
+
+void EffectRuntime::SetScale(Handle handle, const XMFLOAT3& scale)
+{
+    if (!g_manager.Get() || handle < 0)
+    {
+        return;
+    }
+
+    g_manager->SetScale(static_cast<::Effekseer::Handle>(handle), scale.x, scale.y, scale.z);
+}
+
 void EffectRuntime::Stop(Handle handle)
 {
     if (!g_manager.Get() || handle < 0)

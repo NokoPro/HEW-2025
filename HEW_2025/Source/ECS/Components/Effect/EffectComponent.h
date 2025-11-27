@@ -19,6 +19,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include <DirectXMath.h>
 #include "System/AssetManager.h"
 
  /**
@@ -52,4 +53,13 @@ struct EffectComponent
 
     /// ランタイム側のハンドル（Effekseer::Handle 等に相当）
     int nativeHandle = -1;
+
+    /// エフェクトのローカルオフセット（エンティティの位置からの相対座標）
+    DirectX::XMFLOAT3 offset{ 0.0f, 0.0f, 0.0f };
+
+    /// エフェクトのローカル回転（度数法、XYZ）
+    DirectX::XMFLOAT3 rotationDeg{ 0.0f, 0.0f, 0.0f };
+
+    /// エフェクトのローカルスケール（XYZ）
+    DirectX::XMFLOAT3 scale{ 1.0f, 1.0f, 1.0f };
 };

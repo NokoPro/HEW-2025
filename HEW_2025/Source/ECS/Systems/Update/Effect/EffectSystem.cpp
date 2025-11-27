@@ -10,6 +10,37 @@ namespace
         // 例えば:
         return tr.position;  // position が XMFLOAT3 の場合
     }
+
+    // エンティティのTransformに対して、EffectComponentのローカルオフセットを回転させて加算
+    XMFLOAT3 ComputeEffectWorldPos(const TransformComponent& tr, const EffectComponent& efc)
+    {
+        // エンティティの回転（度数法）をラジアンに変換
+        const float pitch = XMConvertToRadians(tr.rotationDeg.x);
+        const float yaw   = XMConvertToRadians(tr.rotationDeg.y);
+        const float roll  = XMConvertToRadians(tr.rotationDeg.z);
+
+        // ローカルオフセットにエンティティのローカルスケールを適用（必要に応じて）
+        XMFLOAT3 scaledOffset{
+            efc.offset.x * tr.scale.x,
+            efc.offset.y * tr.scale.y,
+            efc.offset.z * tr.scale.z
+        };
+
+        // 行列でローカル→ワールド方向への回転を適用
+        XMMATRIX R = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+        XMVECTOR off = XMLoadFloat3(&scaledOffset);
+        XMVECTOR offRot = XMVector3Transform(off, R);
+
+        XMFLOAT3 pos = GetWorldPosition(tr);
+        XMFLOAT3 offRotF{};
+        XMStoreFloat3(&offRotF, offRot);
+
+        return XMFLOAT3{
+            pos.x + offRotF.x,
+            pos.y + offRotF.y,
+            pos.z + offRotF.z
+        };
+    }
 }
 
 void EffectSystem::Update(World& world, float dt)
@@ -62,7 +93,7 @@ void EffectSystem::Update(World& world, float dt)
 
                 if (shouldPlay)
                 {
-                    const XMFLOAT3 pos = GetWorldPosition(tr);
+                    const XMFLOAT3 worldPos = ComputeEffectWorldPos(tr, efc);
 
                     // ループフラグは param1 から決める or efc.loop を直接見る
                     bool loop = efc.loop;
@@ -75,12 +106,17 @@ void EffectSystem::Update(World& world, float dt)
                         }
                     }
 
-                    auto handle = EffectRuntime::Play(ref.path.c_str(), pos, loop);
+                    auto handle = EffectRuntime::Play(ref.path.c_str(), worldPos, loop);
                     if (handle >= 0)
                     {
                         efc.nativeHandle = handle;
                         efc.playing = true;
                         efc.lastPath = ref.path;
+
+                        // 位置・回転・スケールを反映
+                        EffectRuntime::SetLocation(efc.nativeHandle, worldPos);
+                        EffectRuntime::SetRotationDeg(efc.nativeHandle, efc.rotationDeg);
+                        EffectRuntime::SetScale(efc.nativeHandle, efc.scale);
                     }
                 }
             }
@@ -88,8 +124,10 @@ void EffectSystem::Update(World& world, float dt)
             // 2. 再生中のエフェクトに対する処理
             if (efc.playing && efc.nativeHandle >= 0)
             {
-                const XMFLOAT3 pos = GetWorldPosition(tr);
-                EffectRuntime::SetLocation(efc.nativeHandle, pos);
+                const XMFLOAT3 worldPos = ComputeEffectWorldPos(tr, efc);
+                EffectRuntime::SetLocation(efc.nativeHandle, worldPos);
+                EffectRuntime::SetRotationDeg(efc.nativeHandle, efc.rotationDeg);
+                EffectRuntime::SetScale(efc.nativeHandle, efc.scale);
 
                 // 停止リクエスト
                 if (efc.stopRequested)

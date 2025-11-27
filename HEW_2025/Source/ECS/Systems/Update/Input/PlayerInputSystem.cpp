@@ -64,7 +64,8 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent.jump = false;
             intent.dash = false;
 			pic.isJumpRequested = false;
-            pic.isBlinkRequested = false;
+            // ブリンクは「実行時にエフェクトを出す」ので、ここで消さない
+            // pic.isBlinkRequested = false;
 
             // 向きはmoveX入力で更新
             switch (pic.playerIndex)
@@ -125,19 +126,9 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
         {
             intent2->blinkRequested = true;
-            
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
+            // 入力時点ではエフェクトを再生しない。ワンショットフラグのみ設定
             pic1->isBlinkRequested = true;
-            // 相手(2P)にブリンクの見た目を出す
-            if (effect2)
-            {
-                if (slots2 && slots2->onBlink)
-                {
-                    effect2->effect = slots2->onBlink;
-                }
-                effect2->loop = false;
-                effect2->playRequested = true;
-            }
         }
     }
     if (intent1) 
@@ -145,19 +136,12 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
+            // 入力時点ではエフェクトを再生しない。ワンショットフラグのみ設定
             pic2->isBlinkRequested = true;
-            // 相手(1P)にブリンクの見た目を出す
-            if (effect1)
-            {
-                if (slots1 && slots1->onBlink)
-                {
-                    effect1->effect = slots1->onBlink;
-                }
-                effect1->loop = false;
-                effect1->playRequested = true;
-            }
         }
     }
+
+    // 以降のエフェクト再生は MovementApplySystem でブリンクが実行されたタイミングで行う
 }
 
 

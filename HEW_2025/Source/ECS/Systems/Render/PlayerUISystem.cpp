@@ -9,6 +9,9 @@
  * @date   2025/11/17
  *********************************************************************/
 #include "PlayerUISystem.h"
+#include "ECS/Components/Input/PlayerInputComponent.h"
+#include "ECS/Components/Input/MovementIntentComponent.h"
+#include "ECS/Components/Physics/Rigidbody2DComponent.h"
 
 // 表示保持時間
 static constexpr float UI_SHOW_TIME = 1.0f;
@@ -18,41 +21,25 @@ static constexpr float OFFSET_BLINK_Y = 2.999f;
 
 void PlayerUISystem::Update(World& world, float dt)
 {
-    // プレイヤー番号ごとの入力状態取得
-    // プレイヤーインデックス -> 入力トリガ保持
-    bool playerForceJump[2] = { false,false };
-    bool playerBlink[2]     = { false,false };
-
-    world.View<PlayerInputComponent>(
-        [&](EntityId, const PlayerInputComponent& pic)
-        {
-            const int idx = pic.playerIndex;
-            if (idx < 0 || idx > 1) return; // 想定外はスキップ
-
-            playerBlink[idx] = pic.isBlinkRequested;
-            playerForceJump[idx] = pic.isJumpRequested;
-        }
-    );
-
     // UIエンティティ更新: Follower + PlayerUI + Sprite
     world.View<FollowerComponent, PlayerUIComponet, Sprite2DComponent>(
         [&](EntityId, FollowerComponent& follower, PlayerUIComponet& ui, Sprite2DComponent& sp)
         {
-            // 追従対象の PlayerInputComponent が必要
-            const PlayerInputComponent* input = world.TryGet<PlayerInputComponent>(follower.targetId);
-            if (!input) { sp.visible = false; return; }
-            int idx = input->playerIndex;
-            if (idx < 0 || idx > 1) { sp.visible = false; return; }
+            PlayerInputComponent* inputFollow = world.TryGet<PlayerInputComponent>(follower.targetId);
+            if (!inputFollow) { sp.visible = false; return; }
+            int followIdx = inputFollow->playerIndex;
+            if (followIdx < 0 || followIdx > 1) { sp.visible = false; return; }
 
-            // ジャンプUI
+            // ジャンプUI（追従先の入力でワンショット表示）
             if (sp.alias == "ui_jump")
             {
-                if (playerForceJump[idx])
+                if (inputFollow->isJumpRequested)
                 {
                     ui.jumpActive = true;
                     ui.jumpTimer  = UI_SHOW_TIME;
                     sp.visible = true;
                     follower.offset.y = OFFSET_JUMP_Y;
+                    inputFollow->isJumpRequested = false;
                 }
                 if (ui.jumpActive)
                 {
@@ -64,20 +51,64 @@ void PlayerUISystem::Update(World& world, float dt)
                         sp.visible = false;
                     }
                 }
-                ui.playerHI = ui.jumpActive; // 旧互換
+                ui.playerHI = ui.jumpActive;
                 ui.playerUItimer = ui.jumpTimer;
                 return;
             }
-            // ブリンクUI
+
+            // ブリンクUI: Lボタンを押した側（＝ブリンクしていない側）に表示する
             if (sp.alias == "ui_blink")
             {
-                if (playerBlink[idx])
+                // 押した側のフラグ
+                const bool blinkRequestedByFollower = inputFollow->isBlinkRequested;
+
+                // ブリンク実行者（フォロワーとは逆のプレイヤー）のEntityIdを取得
+                EntityId blinkerId = follower.targetId; // 初期値は追従先。同一なら後で差し替え
+                world.View<PlayerInputComponent>(
+                    [&](EntityId e, const PlayerInputComponent& pic)
+                    {
+                        if (pic.playerIndex != followIdx)
+                        {
+                            blinkerId = e;
+                        }
+                    }
+                );
+
+                MovementIntentComponent* blinkerIntent = world.TryGet<MovementIntentComponent>(blinkerId);
+                Rigidbody2DComponent* blinkerRb = world.TryGet<Rigidbody2DComponent>(blinkerId);
+
+                const bool blinking = blinkerIntent ? blinkerIntent->isBlinking : false;
+                const bool risingEdge = (blinking && !ui.prevBlinking);
+                const bool canShowAgain = blinkerRb ? blinkerRb->onGround : false;
+
+                // 地面に着いたら使用済み解除（再表示可能）。かつ、押した側がL押下中ならタイマーを即再更新して表示し直しOK。
+                if (canShowAgain)
+                {
+                    ui.blinkUsed = false;
+                    if (blinkRequestedByFollower)
+                    {
+                        ui.blinkActive = true;
+                        ui.blinkTimer  = UI_SHOW_TIME;
+                        sp.visible = true;
+                        follower.offset.y = OFFSET_BLINK_Y;
+                        // 押した側のワンショットはクリア（継続押しでも毎フレーム再スタートは防ぐ）
+                        inputFollow->isBlinkRequested = false;
+                    }
+                }
+
+                // 立ち上がり時に開始。未使用のときだけ。
+                if (risingEdge && blinkRequestedByFollower && !ui.blinkActive && !ui.blinkUsed)
                 {
                     ui.blinkActive = true;
                     ui.blinkTimer  = UI_SHOW_TIME;
                     sp.visible = true;
                     follower.offset.y = OFFSET_BLINK_Y;
+                    ui.blinkUsed = true;
+                    ui.blinkOwnerIndex = (followIdx ^ 1); // 0/1反転で相手
+                    inputFollow->isBlinkRequested = false;
                 }
+
+                // タイマー進行
                 if (ui.blinkActive)
                 {
                     ui.blinkTimer -= dt;
@@ -88,9 +119,13 @@ void PlayerUISystem::Update(World& world, float dt)
                         sp.visible = false;
                     }
                 }
-                ui.playerYO = ui.blinkActive; // 旧互換
+
+                // 前フレームの状態を保存（立ち上がり検出用）
+                ui.prevBlinking = blinking;
+                ui.playerYO = ui.blinkActive;
                 return;
             }
+
             // その他は非表示
             sp.visible = false;
         }

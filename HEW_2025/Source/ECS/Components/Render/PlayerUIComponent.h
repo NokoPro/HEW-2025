@@ -24,4 +24,10 @@ struct PlayerUIComponet
 
 	bool  blinkActive = false;  // ブリンクUIアクティブ
 	float blinkTimer  = 0.0f;   // ブリンクUI残時間
+
+	bool  blinkUsed   = false;  // ブリンク使用済みフラグ（着地まで再表示しない）
+	int   blinkOwnerIndex = -1; // ブリンクを実行したプレイヤーのインデックス（着地検知用）
+
+	// 追加: フレーム間エッジ検出用（isBlinkingの立ち上がり）
+	bool  prevBlinking = false;
 };

@@ -29,7 +29,7 @@
 #include <cstdint>
 #include <DirectXMath.h>
 
-// Effekseer の Matrix44 を前方宣言（ヘッダでの依存を最小限にする）
+// Effekseer の Matrix44 の前方宣言（ヘッダでの依存を最小化）
 namespace Effekseer { struct Matrix44; }
 
 namespace EffectRuntime
@@ -101,4 +101,8 @@ namespace EffectRuntime
      * @return true なら「もう再生されていない」
      */
     bool IsFinished(Handle handle);
+
+    // 追加: 回転とスケール制御API
+    void SetRotationDeg(Handle handle, const DirectX::XMFLOAT3& rotationDeg);
+    void SetScale(Handle handle, const DirectX::XMFLOAT3& scale);
 } // namespace EffectRuntime

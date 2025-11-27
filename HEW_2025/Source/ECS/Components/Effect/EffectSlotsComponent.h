@@ -17,6 +17,17 @@
 #pragma once
 
 #include "System/AssetManager.h"
+#include <DirectXMath.h>
+
+struct EffectParams
+{
+    // ローカルオフセット（エンティティ基準）
+    DirectX::XMFLOAT3 offset{ 0.0f, 0.0f, 0.0f };
+    // ローカル回転（度数法）
+    DirectX::XMFLOAT3 rotationDeg{ 0.0f, 0.0f, 0.0f };
+    // ローカルスケール
+    DirectX::XMFLOAT3 scale{ 1.0f, 1.0f, 1.0f };
+};
 
 struct EffectSlotsComponent
 {
@@ -24,4 +35,10 @@ struct EffectSlotsComponent
     AssetHandle<EffectRef> onBlink;  // ブリンク時
     AssetHandle<EffectRef> onDash;   // ダッシュ時
     AssetHandle<EffectRef> onLand;   // 着地時
+
+    // それぞれのスロット用の変換パラメータ
+    EffectParams onJumpParams{};
+    EffectParams onBlinkParams{};
+    EffectParams onDashParams{};
+    EffectParams onLandParams{};
 };
