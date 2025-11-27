@@ -74,6 +74,10 @@ private:
     ModelRenderSystem* m_drawModel = nullptr;
     // Sprite 描画システム（2D UI 等）
     class SpriteRenderSystem* m_drawSprite = nullptr;
+
+    // 背景 描画システム
+    class BackGroundRenderSystem* m_drawBackGround = nullptr;
+
     // カメラシステム（行列をもらう用）
     FollowCameraSystem* m_followCamera = nullptr;
 

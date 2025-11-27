@@ -11,6 +11,9 @@ texture,assets/texture/ui/ui_flip.png,ui_blink,2,0,1,,,,,
 audio,Assets/Audio/BGM.wav,bgm_main,,,1,,,,,テストシーンのBGM
 audio,Assets/Audio/jump.wav,se_jump_p1,,,1,,,,,1PのジャンプSE
 audio,Assets/Audio/jump1.wav,se_jump_p2,,,1,,,,,2PのジャンプSE
+texture,Assets/Texture/BackGround/newBackGround.jpg,tex_newbackground,2,0,1,,,,,背景のみ
+texture,Assets/Texture/BackGround/w1920h1080.jpg,tex_w1920h1080,2,0,1,,,,,横1920縦1080
+texture,Assets/Texture/BackGround/w1920h2160.jpg,tex_w1920h2160,2,0,1,,,,,横1920縦2160
 texture,Assets/Model/KayKit_Platformer_Pack_1.0_FREE/Textures/platformer_texture.png,tex_block,,,1,,,,,
 anim,Assets/Model/Player/Idle.fbx,anim_player_idle,,,1,,,,,
 anim,Assets/Model/Player/SlowRun.fbx,anim_player_run,,,1,,,,,

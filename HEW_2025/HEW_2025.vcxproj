@@ -217,6 +217,7 @@
     <ClCompile Include="..\libs\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\libs\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabBackGround.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerBlink.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
@@ -302,11 +304,13 @@
     <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\PlayerUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h" />
@@ -321,6 +325,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h" />
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\IUpdateSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Render\BackGroundRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h" />
