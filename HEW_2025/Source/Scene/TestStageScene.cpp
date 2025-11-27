@@ -314,16 +314,18 @@ void TestStageScene::Update()
     const float dt = 1.0f / 60.0f;
     m_sys.Tick(m_world, dt);
 
-    //リザルトシーン遷移
-    if (m_goalSystem->IsCleared())
-    {
+
+    //シーン遷移
+    if (m_deathSystem->IsDead())
+    {//デスシーン
+        
+    }
+    else if (m_goalSystem->IsCleared())
+    {//クリアシーン
         ChangeScene<ResultScene>();
     }
 
-    //デスシーン
-    if (m_deathSystem->IsDead())
-    {
-    }
+
 }
 
 void TestStageScene::Draw()
