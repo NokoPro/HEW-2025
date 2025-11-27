@@ -27,9 +27,7 @@
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
 #include "ECS/Components/Render/FollowerComponent.h"
-// 背景
 #include "ECS/Components/Render/BackGroundComponent.h"
-
 
 /// ECS システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
@@ -40,7 +38,6 @@
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Render/FollowerSystem.h"
 #include "ECS/Systems/Render/PlayerUISystem.h"
-// 背景
 #include "ECS/Systems/Render/BackGroundRenderSystem.h"
 
 /// 入力・物理関連コンポーネント
@@ -60,7 +57,6 @@
 #include "ECS/Prefabs/PrefabFollower.h"
 #include "ECS/Prefabs/PrefabFollowerJump.h"
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
-// 背景
 #include "ECS/Prefabs/PrefabBackGround.h"
 
 #include <cstdio>
@@ -78,7 +74,6 @@ TestStageScene::TestStageScene()
     RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
     RegisterFollowerJumpPrefab(m_prefabs);      // ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs);     // ブリンクUI専用フォロワー
-
     RegisterBackGroundPrefab(m_prefabs);        // 背景
 
     //

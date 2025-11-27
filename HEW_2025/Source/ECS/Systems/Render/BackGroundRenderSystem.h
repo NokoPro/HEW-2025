@@ -23,7 +23,7 @@
 #include <algorithm>
 
  /**
-   * @class SpriteRenderSystem
+   * @class BackGroundRenderSystem
    * @brief BackGroundComponent を持っているものをすべて描画する
    */
 class BackGroundRenderSystem : public IRenderSystem
@@ -35,7 +35,7 @@ private:
     struct SortableSprite
     {
         // ソート用キー
-        int layer;      // Sprite2DComponent::layer
+        int layer;      // BackGroundComponent::layer
         float zDepth;   // TransformComponent::position.z
 
         // 描画用データ

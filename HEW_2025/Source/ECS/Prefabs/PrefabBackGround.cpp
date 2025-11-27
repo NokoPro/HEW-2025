@@ -20,21 +20,23 @@ void RegisterBackGroundPrefab(PrefabRegistry& registry)
             EntityId e = w.Create();
             if (e == kInvalidEntity) return kInvalidEntity;
 
-            // Transform
-
             /// TransformÅiscale ÇÕÇªÇÃÇ‹Ç‹égÇ¶ÇÈÇÊÇ§Ç…ÇµÇƒÇ®Ç≠Åj
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
             tr.position.x = 35.0f;
-            tr.position.y = 45.0f;
+            tr.position.y = 45.0f;  // yç¿ïWí≤êÆÇµÇ‹ÇµÇΩ
             tr.scale = { 1.0f,1.0f,1.0f };
 
             // Spriteîwåi
             auto& spb = w.Add<BackGroundComponent>(e);
             spb.alias = "tex_w1920h2160"; // îwåiâÊëú
-            //"tex_newbackground"
-            //"tex_w1920h1080"
-            //"tex_w1920h2160"
-            spb.width = 76.8f;     //76.8f          64.0f
+
+            // í«â¡ÇµÇΩîwåiâÊëúñºëO
+            //"tex_newbackground" newBackGround.jpg
+            //"tex_w1920h1080"    w1920h1080.jpg
+            //"tex_w1920h2160"    w1920h2160.jpg
+
+                                   // ééÇµÇΩíl
+            spb.width = 76.8f;     //76.8f  ,64.0f
             spb.height = 86.4f;    //172.8f ,86.4f   64.0f
             spb.originX = 0.5f;
             spb.originY = 0.5f;

@@ -17,8 +17,8 @@
 struct BackGroundComponent
 {
     std::string alias;           ///< 使用するテクスチャID
-    float width = 1920.0f;         ///< 表示幅（ピクセルベース想定）
-    float height = 1080.0f;        ///< 表示高さ
+    float width = 1920.0f;       ///< 表示幅（ピクセルベース想定）
+    float height = 1080.0f;      ///< 表示高さ
     float originX = 0.5f;        ///< 原点X(0～1) 0.5なら中央
     float originY = 0.5f;        ///< 原点Y(0～1)
 
