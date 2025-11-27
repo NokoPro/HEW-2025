@@ -32,6 +32,7 @@ int RankingManager::GetRank(float time) const
 
 size_t RankingManager::GetCount() const
 {
+	//ランキングの数何個あるか確認
 	return m_entries.size();
 }
 
