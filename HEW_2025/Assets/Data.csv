@@ -12,3 +12,5 @@ audio,Assets/Audio/BGM.wav,bgm_main,,,1,,,,,テストシーンのBGM
 audio,Assets/Audio/jump.wav,se_jump_p1,,,1,,,,,1PのジャンプSE
 audio,Assets/Audio/jump1.wav,se_jump_p2,,,1,,,,,2PのジャンプSE
 texture,Assets/Texture/BackGround/newBackGround.jpg,tex_newbackground,2,0,1,,,,,背景のみ
+texture,Assets/Texture/BackGround/w1920h1080.jpg,tex_w1920h1080,2,0,1,,,,,横1920縦1080
+texture,Assets/Texture/BackGround/w1920h2160.jpg,tex_w1920h2160,2,0,1,,,,,横1920縦2160
