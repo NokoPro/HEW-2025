@@ -13,6 +13,9 @@
 #include "System/TimeAttackManager.h"
 #include "System/EffectRuntime.h"
 
+//タイトルシーン
+#include "Scene/TitleScene.h"
+
 namespace
 {
     SceneManager g_SceneManager; // ゲーム全体で 1 つ
@@ -27,7 +30,7 @@ SceneManager& GetSceneManager()
 bool Game_Init(HWND /*hWnd*/, unsigned int /*width*/, unsigned int /*height*/)
 {
     // 最初にテストステージへ遷移
-    g_SceneManager.Change<TestStageScene>();
+    g_SceneManager.Change<TitleScene>();
     // レコード読み込み (タイムアタック用)
     TimeAttackManager::Get().LoadRecord("time_record.dat");
     // カウントダウン開始 (初期設定値から) 長さ3秒

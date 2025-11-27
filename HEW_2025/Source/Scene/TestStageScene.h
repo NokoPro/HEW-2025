@@ -47,7 +47,11 @@
 #include "ECS/Prefabs/PrefabPlayer.h"
 //追加
 #include"ECS/Systems/Update/Audio/AudioPlaySystem.h"
- /**
+
+class GoalSystem;
+class  DeathZoneSystem;
+
+  /**
   * @class TestScene
   * @brief 開発中にECSの動作確認をするためのシーン
   */
@@ -82,6 +86,12 @@ private:
     FollowCameraSystem* m_followCamera = nullptr;
 
     CollisionDebugRenderSystem* m_debugCollision = nullptr;
+
+    //ゴールシステム
+    GoalSystem* m_goalSystem = nullptr;
+
+    //デスシステム
+    DeathZoneSystem* m_deathSystem = nullptr;
 
     // 入力・物理
     CollisionEventBuffer m_colBuf;  // 今フレームの当たりが入る

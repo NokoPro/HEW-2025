@@ -339,6 +339,15 @@
     <ClCompile Include="Source\System\TimeAttackManager.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\ResultScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\TitleScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\StageSelectScene.cpp">
+      <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Source\System\RankingManager.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
@@ -649,6 +658,15 @@
     </ClInclude>
     <ClInclude Include="Source\System\EffectRuntime.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\ResultScene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\TitleScene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\StageSelectScene.h">
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\BackGroundRenderSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>

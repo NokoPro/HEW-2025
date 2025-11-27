@@ -8,10 +8,11 @@
  * =============================================================================================
  *  Progress Log  - 進捗ログ
  * ---------------------------------------------------------------------------------------------
- *  [ @date 2025/11/22 ]
+ *  [ @date 2025/11/25 ]
  * 
  *    - [◎] ステージ読み込み＆生成を実装
  *    - [] タイマー機能の追加
+ *    - [◎] ゴール遷移＆デス
  *
  **********************************************************************************************/
 #include "TestStageScene.h"
@@ -71,6 +72,10 @@
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
 
+//シーン遷移
+#include "SceneAPI.h"
+#include "ResultScene.h"
+
 TestStageScene::TestStageScene()
 {
     RegisterPlayerPrefab(m_prefabs);            // プレイヤープレハブ登録
@@ -121,10 +126,10 @@ TestStageScene::TestStageScene()
     auto* colSys = &m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
 
     // 2-3.2 ゴール判定システム追加
-    m_sys.AddUpdate<GoalSystem>(colSys); // GoalSystemを追加
+    m_goalSystem = &m_sys.AddUpdate<GoalSystem>(colSys); // GoalSystemを追加
 
     // 2-3.3 Deathゾーン判定システム追加
-    m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
+    m_deathSystem = &m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
 
     // 3. Rigidbody の状態からアニメステート決定（Idle / Run / Jump / Fall）
     m_sys.AddUpdate<PlayerLocomotionAnimSystem>();
@@ -341,6 +346,19 @@ void TestStageScene::Update()
     // 固定フレームレート想定で更新
     const float dt = 1.0f / 60.0f;
     m_sys.Tick(m_world, dt);
+
+
+    //シーン遷移
+    if (m_deathSystem->IsDead())
+    {//デスシーン
+        
+    }
+    else if (m_goalSystem->IsCleared())
+    {//クリアシーン
+        ChangeScene<ResultScene>();
+    }
+
+
 
 	EffectRuntime::Update(dt);
 }

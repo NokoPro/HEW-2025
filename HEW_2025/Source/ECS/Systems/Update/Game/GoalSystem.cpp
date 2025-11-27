@@ -14,6 +14,11 @@
 #include "System/TimeAttackManager.h"
 #include <Windows.h>
 
+ //シーンの遷移
+#include "Scene/SceneAPI.h"
+#include "Scene/ResultScene.h"
+
+
 void GoalSystem::Update(World& world, float dt)
 {
 	// すでにクリアしていたら何もしない
