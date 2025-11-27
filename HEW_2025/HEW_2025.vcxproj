@@ -228,6 +228,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabTimer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
@@ -235,6 +236,7 @@
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\TimerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.cpp" />
@@ -307,6 +309,7 @@
     <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h" />
@@ -325,6 +328,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabTimer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h" />
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\IUpdateSystem.h" />
@@ -334,6 +338,7 @@
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Render\TimerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h" />

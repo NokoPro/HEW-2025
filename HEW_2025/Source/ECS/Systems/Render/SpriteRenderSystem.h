@@ -44,6 +44,8 @@ private:
         DirectX::XMFLOAT2 offset;
         DirectX::XMFLOAT2 size; // 表示サイズ
         Texture* hTex;          // テクスチャハンドル
+		DirectX::XMFLOAT2 uvOffset; // UVオフセット
+		DirectX::XMFLOAT2 uvSize;   // UVサイズ
     };
 
 public:

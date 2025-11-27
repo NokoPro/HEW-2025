@@ -339,6 +339,12 @@
     <ClCompile Include="Source\System\TimeAttackManager.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\TimerSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabTimer.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Scene\ResultScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
@@ -640,6 +646,15 @@
     </ClInclude>
     <ClInclude Include="Source\System\GameplayConfig.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\TimerSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabTimer.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\RankingManager.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
