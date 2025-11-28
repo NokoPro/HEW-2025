@@ -253,7 +253,7 @@ void Model::Draw(int meshNo, Texture* overrideTex)
 	if (m_pVS == nullptr) { m_pVS = m_pDefVS; }
 	if (m_pPS == nullptr) { m_pPS = m_pDefPS; }
 
-	// ★追加: Bindする前に、前回の描画で残っているテクスチャ情報をクリアする
+	// Bindする前に、前回の描画で残っているテクスチャ情報をクリアする
 	// これを行わないと、Bind時に「既に破棄されたテクスチャ」をセットしようとして
 	// 0xC0000005 アクセス違反が発生する
 	m_pVS->ClearTextures();
@@ -883,7 +883,7 @@ void Model::MakeBoneNodes(const void* ptr)
 			node.name = name;
 			node.parent = parent;
 			node.children.resize(assimpNode->mNumChildren);
-			node.mat = combined;  // ★ 自分までの累積行列をちゃんと入れる
+			node.mat = combined;  // 自分までの累積行列をちゃんと入れる
 
 			m_nodes.push_back(node);
 			NodeIndex nodeIndex = static_cast<NodeIndex>(m_nodes.size() - 1);
@@ -892,7 +892,7 @@ void Model::MakeBoneNodes(const void* ptr)
 			for (UINT i = 0; i < assimpNode->mNumChildren; ++i)
 			{
 				m_nodes[nodeIndex].children[i] = FuncAssimpNodeConvert(
-					assimpNode->mChildren[i], nodeIndex, combined); // ★ parentMat ではなく combined を渡す
+					assimpNode->mChildren[i], nodeIndex, combined); // parentMat ではなく combined を渡す
 			}
 			return nodeIndex;
 		};

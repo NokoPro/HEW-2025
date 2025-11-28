@@ -41,7 +41,7 @@
 StageSelectScene::StageSelectScene()
 {
     // 1. システム登録
-    // ★追加: カメラシステムを登録（Update用）
+    // カメラシステムを登録（Update用）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
     // UI描画システム（Render用）
@@ -57,7 +57,7 @@ StageSelectScene::StageSelectScene()
         tr.position = { 0.0f, 0.0f, -10.0f }; // 原点中心、手前に引く
 
         auto& c3d = m_world.Add<Camera3DComponent>(cam);
-        c3d.mode = Camera3DComponent::Mode::Fixed; // ★先ほど作ったFixedモード
+        c3d.mode = Camera3DComponent::Mode::Fixed; // Fixedモード
 
         // 画面の高さ(720)を基準にする
         // これで (0,0) が画面中央、Y範囲が -360～+360 になる
@@ -112,7 +112,7 @@ StageSelectScene::~StageSelectScene()
 
 void StageSelectScene::Update()
 {
-    // ★追加: システム全体の更新 (これで FollowCameraSystem::Update が呼ばれる)
+    // システム全体の更新 (これで FollowCameraSystem::Update が呼ばれる)
     m_sys.Tick(m_world, 1.0f / 60.0f);
 
     UpdateUI();

@@ -55,7 +55,7 @@ private:
 
     // システムへの参照
     SpriteRenderSystem* m_drawSprite = nullptr;
-    FollowCameraSystem* m_followCamera = nullptr; // ★追加
+    FollowCameraSystem* m_followCamera = nullptr;
 
     // 選択状態
     State m_state = State::SelectStage;
