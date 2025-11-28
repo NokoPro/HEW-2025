@@ -32,7 +32,7 @@ void RegisterFloorPrefab(PrefabRegistry& registry)
             // Œ©‚½–Ú
             auto& mr = w.Add<ModelRendererComponent>(e);
             const char* mdlName =
-                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
+                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_floor";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
 
@@ -45,7 +45,7 @@ void RegisterFloorPrefab(PrefabRegistry& registry)
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
 
-            mr.overrideTexture = AssetManager::GetTexture("tex_block");
+			mr.localScale = { 2.0f, 2.0f, 1.0f };
 
             // “–‚½‚èFÃ“I‚È°
             auto& col = w.Add<Collider2DComponent>(e);

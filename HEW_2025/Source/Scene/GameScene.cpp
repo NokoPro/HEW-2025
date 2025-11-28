@@ -192,21 +192,27 @@ void GameScene::Initialize()
     // ç∂âEÇÃï«
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 0.0f, 25.0f, 0.0f };
+        sp.position = { 0.0f, 30.0f, 0.0f };
         sp.scale = { 2.0f, 50.0f, 4.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 70.0f, 25.0f, 0.0f };
+        sp.position = { 70.0f, 30.0f, 0.0f };
         sp.scale = { 2.0f, 50.0f, 4.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
-
+    // ê^ÇÒíÜÇÃï«
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 35.0f, -5.0f, -3.0f };
-        sp.scale = { 40.0f, 7.0f, 6.0f };   // â°í∑ÇÃè∞
+        sp.position = { 35.0f, 16.0f, 0.0f };
+        sp.scale = { 1.0f, 44.0f, 4.0f };
+        m_prefabs.Spawn("Wall", m_world, sp);
+    }
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 35.0f, -5.0f, 0.0f };
+        sp.scale = { 40.0f, 7.0f, 1.0f };   // â°í∑ÇÃè∞
         sp.rotationDeg = { 0.f,0.f,0.f };
         m_prefabs.Spawn("Floor", m_world, sp);
     }

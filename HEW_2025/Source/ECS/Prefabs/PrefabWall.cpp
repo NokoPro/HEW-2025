@@ -34,10 +34,10 @@ void RegisterWallPrefab(PrefabRegistry& registry)
 			/// Œ©‚½–Ú
             auto& mr = w.Add<ModelRendererComponent>(e);
             const char* mdlName =
-                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
+                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_column";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
-            mr.overrideTexture = AssetManager::GetTexture("tex_block");
+            //mr.overrideTexture = AssetManager::GetTexture("tex_block");
             // ƒŒƒCƒ„[
             mr.layer = 20;
 
