@@ -142,7 +142,7 @@ void Geometory::MakeCylinder()
     for (int i = 0; i <= N; ++i) {             // N+1 本。最後はシームを閉じるための重複
         int   k = i % N;                  // 位置用のインデックス（角度を繰り返す）
         float tpos = (float)k / N;           // 位置計算用（0..1 だが角度は %N で循環）
-        float tu = (float)i / N;           // ★ UV 用（0..1 を素直に伸ばす／i=N で 1.0）
+        float tu = (float)i / N;           // UV 用（0..1 を素直に伸ばす／i=N で 1.0）
         float ang = tpos * 2.0f * 3.1415926535f;
         float cx = std::cos(ang), sz = std::sin(ang);
 

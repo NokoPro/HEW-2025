@@ -325,7 +325,6 @@ void GameScene::Update()
     }
     else
     {
-        // ★修正: AddUpdate はシステムを追加してしまうので、GetUpdate を使用する
         // アニメーション、カメラ、タイマー、オーディオのみ更新
         if (auto* sys = m_sys.GetUpdate<FollowCameraSystem>())      sys->Update(m_world, dt);
         if (auto* sys = m_sys.GetUpdate<ModelAnimationSystem>())    sys->Update(m_world, dt);

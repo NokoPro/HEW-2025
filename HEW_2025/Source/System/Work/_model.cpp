@@ -159,7 +159,7 @@ void Model::MakeMaterial(const void* ptr, std::string directory)
 
                 if (!texFile.empty() && texFile[0] == '*')
                 {
-                    // ★ 埋め込みテクスチャ
+                    // 埋め込みテクスチャ
                     int texIndex = std::atoi(texFile.c_str() + 1);
                     if (texIndex >= 0 && texIndex < static_cast<int>(pScene->mNumTextures))
                     {
@@ -312,7 +312,7 @@ void Model::MakeMaterial(const void* ptr, std::string directory)
                         }
                     }
 
-                    // ★ ディレクトリ部分を切り落としてファイル名だけにする
+                    // ディレクトリ部分を切り落としてファイル名だけにする
                     std::string fileName;
                     {
                         size_t pos = texFile.find_last_of("\\/");
@@ -341,7 +341,7 @@ void Model::MakeMaterial(const void* ptr, std::string directory)
 #endif
                         delete tex;
 
-                        // ★おまけ：どうしても読みたい場合、元の texFile でも一応トライ
+                        // どうしても読みたい場合、元の texFile でも一応トライ
                         // （プロジェクト側で texFile をそのままの相対パスで配置したとき用）
                         tex = new Texture();
                         if (SUCCEEDED(tex->Create(texFile.c_str())))

@@ -81,7 +81,7 @@ void Geometory::DrawBox()
 	m_pVS->WriteBuffer(0, m_WVP);
 	m_pVS->Bind();
 
-	// ★ 追加：PSへ色定数を書き込む（b0 = debugColor）
+	// PSへ色定数を書き込む（b0 = debugColor）
 	m_pPS->WriteBuffer(0, &m_Color);
 	m_pPS->Bind();
 
