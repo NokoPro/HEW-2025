@@ -114,6 +114,12 @@ void TimeAttackManager::NotifyClear()
             MessageBoxA(NULL, msg, "Ranking", MB_OK | MB_ICONINFORMATION);
 
         }
+        else
+        {
+            char msg[128];
+            sprintf_s(msg, "ランク外！\n%d位\n記録：%.3f秒", pos, m_elapsed);
+            MessageBoxA(NULL, msg, "Ranking", MB_OK | MB_ICONINFORMATION);
+        }
         RankingManager::Get().Save("Assets/Ranking.csv");
         RankingManager::Get().ShowRankingMessege();
     }
