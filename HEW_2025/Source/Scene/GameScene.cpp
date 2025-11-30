@@ -151,7 +151,7 @@ void GameScene::Initialize()
     m_drawBackGround = &m_sys.AddRender<BackGroundRenderSystem>();
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
     m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
-#ifdef _DEBUG || _IMGUI_ENABLED
+#ifdef _DEBUG | _IMGUI_ENABLED
     m_debugCollision = &m_sys.AddRender<CollisionDebugRenderSystem>();
 #endif
 
@@ -231,7 +231,7 @@ void GameScene::Initialize()
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 10.0f, 2.0f, 0.0f };
-        sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
+        sp.rotationDeg = { 0.0f, 180.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 0;
         sp.modelAlias = "mdl_2Pplayer";
@@ -250,7 +250,7 @@ void GameScene::Initialize()
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 60.0f, 2.0f, 0.0f };
-        sp.rotationDeg = { 0.0f, 120.0f, 0.0f };
+        sp.rotationDeg = { 0.0f, 180.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 1;
         sp.modelAlias = "mdl_2Pplayer";

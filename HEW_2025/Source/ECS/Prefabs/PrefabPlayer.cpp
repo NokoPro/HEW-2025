@@ -33,6 +33,7 @@ static const char* kAnimIdleAlias = "anim_player_idle";
 static const char* kAnimRunAlias  = "anim_player_run";
 static const char* kAnimJumpAlias = "anim_player_jump";
 static const char* kAnimFallAlias = "anim_player_fall";
+static const char* kAnimWalkAlias = "anim_player_walk";
 
 void RegisterPlayerPrefab(PrefabRegistry& registry)
 {
@@ -75,75 +76,58 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             AnimeNo runNo  = Model::ANIME_NONE;
             AnimeNo jumpNo = Model::ANIME_NONE;
             AnimeNo fallNo = Model::ANIME_NONE;
+            AnimeNo walkNo = Model::ANIME_NONE;
 
             if (mr.model)
             {
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-                const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
-                idleNo = mr.model->AddAnimation(idlePath.c_str());
+                //const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
+                //idleNo = mr.model->AddAnimation(idlePath.c_str());
 
-                const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
-                runNo = mr.model->AddAnimation(runPath.c_str());
+                //const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
+                //runNo = mr.model->AddAnimation(runPath.c_str());
 
-                const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
-                jumpNo = mr.model->AddAnimation(jumpPath.c_str());
+                //const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
+                //jumpNo = mr.model->AddAnimation(jumpPath.c_str());
 
-                const auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
-                fallNo = mr.model->AddAnimation(fallPath.c_str());
+                //const auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
+                //fallNo = mr.model->AddAnimation(fallPath.c_str());
+
+                const auto walkPath = AssetManager::ResolveAnimationPath(kAnimWalkAlias);
+                walkNo = mr.model->AddAnimation(walkPath.c_str());
             }
 
             // アニメ制御コンポーネント
-            //auto& anim = w.Add<ModelAnimationComponent>(e);
-            //anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
-            //anim.loop = true;
-            //anim.speed = 1.0f;
-            //anim.playRequested = (anim.animeNo >= 0);
+            auto& anim = w.Add<ModelAnimationComponent>(e);
+            anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
+            anim.loop = true;
+            anim.speed = 1.0f;
+            anim.playRequested = (anim.animeNo >= 0);
 
-            //// ステートテーブル
-            //auto& table = w.Add<ModelAnimationTableComponent>(e);
-            //// まず全クリップ無効化
-            //for (auto& d : table.table)
-            //{
-            //    d.animeNo = -1;
-            //    d.loop = true;
-            //    d.speed = 1.0f;
-            //}
+            // ステートテーブル
+            auto& table = w.Add<ModelAnimationTableComponent>(e);
+            // まず全クリップ無効化
+            for (auto& d : table.table)
+            {
+                d.animeNo = -1;
+                d.loop = true;
+                d.speed = 1.0f;
+            }
 
-            //if (idleNo != Model::ANIME_NONE)
-            //{
-            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Idle)];
-            //    d.animeNo = static_cast<int>(idleNo);
-            //    d.loop = true;
-            //    d.speed = 1.0f;
-            //}
-            //if (runNo != Model::ANIME_NONE)
-            //{
-            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
-            //    d.animeNo = static_cast<int>(runNo);
-            //    d.loop = true;
-            //    d.speed = 0.01f;
-            //}
-            //if (jumpNo != Model::ANIME_NONE)
-            //{
-            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
-            //    d.animeNo = static_cast<int>(jumpNo);
-            //    d.loop = false;   // ジャンプ開始を1回再生とか
-            //    d.speed = 0.05f;
-            //}
-            //if (fallNo != Model::ANIME_NONE)
-            //{
-            //    auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
-            //    d.animeNo = static_cast<int>(fallNo);
-            //    d.loop = false;
-            //    d.speed = 0.05f;
-            //}
+            if (idleNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Walk)];
+                d.animeNo = static_cast<int>(idleNo);
+                d.loop = true;
+                d.speed = 1.0f;
+            }
 
-            //// ステート現在値
-            //auto& state = w.Add<ModelAnimationStateComponent>(e);
-            //state.current = ModelAnimState::Idle;
-            //state.requested = ModelAnimState::Idle;
+            // ステート現在値
+            auto& state = w.Add<ModelAnimationStateComponent>(e);
+            state.current = ModelAnimState::Walk;
+            state.requested = ModelAnimState::Walk;
 
 			// エフェクトコンポーネント（足元の砂埃など）
 			auto& efc = w.Add<EffectComponent>(e);

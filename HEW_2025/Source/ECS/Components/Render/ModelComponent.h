@@ -78,6 +78,7 @@ enum class ModelAnimState
 {
     None = 0,
     Idle,
+    Walk,
     Run,
     Jump,
     Fall,
