@@ -53,13 +53,7 @@ private:
     World m_world;
     SystemRegistry m_sys;
 
-    // システムへの参照
-    SpriteRenderSystem* m_drawSprite = nullptr;
-    FollowCameraSystem* m_followCamera = nullptr;
 
-    // UI用エンティティID
-    EntityId m_entResultBackground = 0;
-    EntityId m_entRetryButton = 0;
     
 
 };
