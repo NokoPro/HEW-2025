@@ -8,6 +8,7 @@
 #include "PlayerInputSystem.h"
 #include "System/Input.h"   // ←あなたの環境の入力ヘッダ名に合わせてください
 #include <cmath> // 追加: 補間用
+#include "ECS/Systems/Update/Audio/AudioManagerSystem.h"
 
 // --- 追加: 角度補間関数 ---
 namespace 
@@ -54,11 +55,12 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     );
 
     // 入力初期化・入力反映
-    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent>(
+    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent,Rigidbody2DComponent>(
         [&](EntityId,
             PlayerInputComponent& pic,
             MovementIntentComponent& intent,
-            TransformComponent& tr)
+            TransformComponent& tr,
+            Rigidbody2DComponent& rig)
         {
             intent.moveX = 0.0f;
             intent.jump = false;
@@ -70,8 +72,8 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             // 向きはmoveX入力で更新
             switch (pic.playerIndex)
             {
-            case 0: ReadPlayer0(intent); break;
-            case 1: ReadPlayer1(intent); break;
+            case 0: ReadPlayer0(intent,rig); break;
+            case 1: ReadPlayer1(intent,rig); break;
             default: break;
             }
             // moveXが0でなければ向きを更新
@@ -92,10 +94,13 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
             pic1->isJumpRequested = true;
+
+            
             if (effect2)
             {
                 if (slots2 && slots2->onJump)
                 {
+                    AudioManager::PlaySE("se_jump_p1", 0.1f);
                     effect2->effect = slots2->onJump;
                 }
                 effect2->loop = false;
@@ -112,6 +117,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             {
                 if (slots1 && slots1->onJump)
                 {
+                    AudioManager::PlaySE("se_jump_p1", 0.1f);
                     effect1->effect = slots1->onJump;
                 }
                 effect1->loop = false;
@@ -150,7 +156,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
  * キーボード: A/D + Space
  * Pad #0     : D-Pad左右 or 左スティックX + Aボタン
  */
-void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent)
+void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent, Rigidbody2DComponent& rig)
 {
     // --- キーボード ---
     const bool keyLeft = IsKeyPress('A');
@@ -181,6 +187,10 @@ void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent)
     // ジャンプ：Space or Pad A
     if (keyJump || padJump)
     {
+        if (rig.onGround == true)
+        {
+            AudioManager::PlaySE("se_jump_p1", 0.1f);
+        }
         outIntent.jump = true;
     }
 }
@@ -190,7 +200,7 @@ void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent)
  * キーボード: ←/→ + ↑
  * Pad #1     : D-Pad左右 or 左スティックX + Aボタン
  */
-void PlayerInputSystem::ReadPlayer1(MovementIntentComponent& outIntent)
+void PlayerInputSystem::ReadPlayer1(MovementIntentComponent& outIntent, Rigidbody2DComponent& rig)
 {
     // --- キーボード ---
     const bool keyLeft = IsKeyPress(VK_LEFT);
@@ -219,6 +229,11 @@ void PlayerInputSystem::ReadPlayer1(MovementIntentComponent& outIntent)
 
     if (keyJump || padJump)
     {
+        if (rig.onGround == true)
+        {
+            AudioManager::PlaySE("se_jump_p1", 0.1f);
+        }
+
         outIntent.jump = true;
     }
 }

@@ -39,6 +39,7 @@
 #include "ECS/Prefabs/PrefabRegistry.h"
 #include "ECS/Prefabs/PrefabPlayer.h"
 #include "ECS/Systems/Update/Audio/AudioPlaySystem.h"
+#include "System/TimeAttackManager.h"
 
 // 前方宣言
 class GoalSystem;
@@ -98,6 +99,8 @@ private:
     // モデル資産
     AssetHandle<Model>   m_playerModel;
     AssetHandle<Model>   m_groundModel;
+
+	TimeAttackManager::State m_prevState = TimeAttackManager::State::Ready;
 
     // エンティティID管理
     EntityId             m_playerEntity1 = kInvalidEntity;

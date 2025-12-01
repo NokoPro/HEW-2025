@@ -76,6 +76,7 @@ GameScene::GameScene(int stageNo, Difficulty difficulty)
 
 GameScene::~GameScene()
 {
+    AudioManager::StopBGM();
 }
 
 void GameScene::Initialize()
@@ -311,6 +312,12 @@ void GameScene::Initialize()
     // タイムアタックリセット＆カウントダウン開始
     TimeAttackManager::Get().Reset();
     TimeAttackManager::Get().StartCountdown(3.0f); // 3秒前
+
+     AudioManager::LoadAudioAlias("bgm_main");
+     AudioManager::SetBGMVolume(0.1f);
+
+     AudioManager::LoadAudioAlias("se_jump_p1");
+
 }
 
 void GameScene::Update()
@@ -319,6 +326,22 @@ void GameScene::Update()
     // 1. タイムアタック計測更新
     auto state = TimeAttackManager::Get().GetState();
     TimeAttackManager::Get().Update();
+
+    // ステート遷移を検出
+    if (m_prevState != state) 
+    {
+        if (state == TimeAttackManager::State::Running) 
+        {
+            // ゲーム開始で再生
+            AudioManager::PlayBGM("bgm_main", true);
+        }
+        else 
+        {
+            // 終了・待機・カウントダウンに遷移したら停止
+            AudioManager::StopBGM();
+        }
+        m_prevState = state;
+    }
 
     // 2. システム更新の選別
     // カウントダウン中 (State::Countdown) または 待機中 (Ready) は
@@ -348,10 +371,12 @@ void GameScene::Update()
     if (m_deathSystem && m_deathSystem->IsDead())
     {
 		// リトライ
+        AudioManager::StopBGM();
         ChangeScene<StageSelectScene>();
     }
     else if (m_goalSystem && m_goalSystem->IsCleared())
     {
+        AudioManager::StopBGM();
         ChangeScene<ResultScene>();
     }
 

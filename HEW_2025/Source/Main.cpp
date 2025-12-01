@@ -44,6 +44,8 @@
 #include "System/ImGuiLayer.h"
 #include "System/DebugSettings.h"
 #include "System/DirectX/DirectX.h"
+#include "ECS/Systems/Update/Audio/AudioManagerSystem.h"
+
 
  // í«â¡ÅFÉQÅ[ÉÄñ{ëÃ
 #include "Game.h"
@@ -355,6 +357,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
     AssetCatalog::LoadCsv("Assets/Data.csv");
     AssetManager::Init();
 
+	AudioManager::Initialize();
+
     return S_OK;
 }
 
@@ -366,6 +370,8 @@ void Uninit()
     Sprite::Uninit();
     Geometory::Uninit();
     ShaderList::Uninit();
+
+	AudioManager::Shutdown();
 
     UninitInput();
     EffectRuntime::Shutdown();

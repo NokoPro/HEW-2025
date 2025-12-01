@@ -68,7 +68,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             const std::string modelAlias = sp.modelAlias.empty() ? std::string("mdl_2Pplayer") : sp.modelAlias;
             mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
-            mr.localOffset = { 0.f, 0.f, 0.f }; // 足元を原点に合わせる
+            mr.localOffset = { 0.f, 0.3f, 0.f }; // 足元を原点に合わせる
             mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
             
             // このモデルインスタンスに対して個別にアニメを追加
