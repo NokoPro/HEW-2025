@@ -53,6 +53,7 @@
 #include "ECS/Prefabs/PrefabFloor.h"
 #include "ECS/Prefabs/PrefabWall.h"
 #include "ECS/Prefabs/PrefabStaticBlock.h"
+#include"ECS/Prefabs/PrefabGameOver.h"
 #include "ECS/Prefabs/PrefabGoal.h"
 #include "ECS/Prefabs/PrefabDeathZone.h"
 #include "ECS/Prefabs/PrefabMovingPlatform.h"
@@ -87,6 +88,7 @@ void GameScene::Initialize()
     RegisterFloorPrefab(m_prefabs);
     RegisterWallPrefab(m_prefabs);
     RegisterStaticBlockPrefab(m_prefabs);
+	RegisterGameOverPrefab(m_prefabs);
     RegisterGoalPrefab(m_prefabs);
     RegisterDeathZonePrefab(m_prefabs);
     RegisterMovingPlatformPrefab(m_prefabs);
@@ -267,6 +269,15 @@ void GameScene::Initialize()
         m_prefabs.Spawn("Timer", m_world, sp);
     }
 
+	// GameoverUI
+	{
+		PrefabRegistry::SpawnParams sp;
+		sp.position = { 35.0f, 0.0f, 0.0f };
+		sp.scale = { 1.0f, 1.0f, 1.0f };
+		m_prefabs.Spawn("GameOver", m_world, sp);
+	}
+
+
     // -------------------------------------------------------
     // 5. ƒJƒƒ‰Ý’è
     // -------------------------------------------------------
@@ -363,7 +374,7 @@ void GameScene::Draw()
         if (m_drawModel)      m_drawModel->SetViewProj(V, P);
         if (m_drawSprite)     m_drawSprite->SetViewProj(V, P);
         if (m_debugCollision) m_debugCollision->SetViewProj(V, P);
-
+        
         EffectRuntime::SetCamera(V, P);
         ShaderList::SetL(V, P);
     }

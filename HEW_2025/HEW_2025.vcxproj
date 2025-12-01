@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -222,6 +222,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerBlink.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerJump.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabGameOver.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="..\libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\libs\imgui\imstb_textedit.h" />
     <ClInclude Include="..\libs\imgui\imstb_truetype.h" />
+    <ClInclude Include="GameOverUIComponent.h" />
     <ClInclude Include="libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
@@ -323,6 +325,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollowerBlink.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollowerJump.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabGameOver.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabGoal.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />

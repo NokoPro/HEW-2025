@@ -112,9 +112,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
-      <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\ヘッダー ファイル\ECS\Components\Audio">
       <UniqueIdentifier>{f6fbbfb0-cd31-45d4-aabd-2a53e5e86716}</UniqueIdentifier>
     </Filter>
@@ -162,6 +159,9 @@
     </Filter>
     <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Effect">
       <UniqueIdentifier>{62ebe4c6-730c-4a04-819d-007f54f37a68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Tag">
+      <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -348,9 +348,6 @@
     <ClCompile Include="Source\Scene\ResultScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\TitleScene.cpp">
-      <Filter>Source\ソース ファイル\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scene\StageSelectScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
@@ -380,6 +377,12 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabGameOver.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\TitleScene.cpp">
+      <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -552,7 +555,7 @@
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Tag\Tag.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Tag</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
@@ -706,6 +709,12 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverUIComponent.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabGameOver.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
