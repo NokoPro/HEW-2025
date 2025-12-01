@@ -384,7 +384,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultUi.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
-    <ClCompile Include="ResultUiRenderSystem.cpp">
+    <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
   </ItemGroup>

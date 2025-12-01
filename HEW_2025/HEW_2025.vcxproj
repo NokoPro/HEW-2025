@@ -217,7 +217,6 @@
     <ClCompile Include="..\libs\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\libs\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="ResultUiRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabBackGround.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
@@ -237,6 +236,7 @@
     <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\TimerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
