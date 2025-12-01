@@ -55,12 +55,13 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     );
 
     // 入力初期化・入力反映
-    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent,Rigidbody2DComponent>(
+    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent,Rigidbody2DComponent, ModelAnimationStateComponent>(
         [&](EntityId,
             PlayerInputComponent& pic,
             MovementIntentComponent& intent,
             TransformComponent& tr,
-            Rigidbody2DComponent& rig)
+            Rigidbody2DComponent& rig,
+            ModelAnimationStateComponent& anim)
         {
             intent.moveX = 0.0f;
             intent.jump = false;
@@ -77,9 +78,28 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             default: break;
             }
             // moveXが0でなければ向きを更新
-            if (intent.moveX > 0.01f) 
+            if (intent.moveX > 0.01f)
+            {
                 intent.facing = 1;
-            else if (intent.moveX < -0.01f) intent.facing = -1;
+            }
+            else if (intent.moveX < -0.01f)
+            {
+                intent.facing = -1;
+            }
+
+            // ここからアニメ切替（Walk/Idleのみ）
+            const float walkThresholdInput = 0.2f; // 入力のデッドゾーン
+            const bool hasInputX = std::fabs(intent.moveX) >= walkThresholdInput;
+
+            // 入力ゼロなら即Idle、入力ありならWalk
+            if (!hasInputX)
+            {
+                RequestModelAnimation(anim, ModelAnimState::Idle);
+            }
+            else
+            {
+                RequestModelAnimation(anim, ModelAnimState::Walk);
+            }
 
             // --- 回転 ---
             float targetY = (intent.facing == 1) ? 130.0f : -130.0f;

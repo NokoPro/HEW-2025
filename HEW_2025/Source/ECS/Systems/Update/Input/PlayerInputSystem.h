@@ -23,6 +23,7 @@
 #include "ECS/Components/Effect/EffectComponent.h"
 #include "ECS/Components/Effect/EffectSlotsComponent.h"
 #include "ECS/Components/Physics/Rigidbody2DComponent.h"
+#include "ECS/Components/Render/ModelComponent.h"
 
 class PlayerInputSystem final : public IUpdateSystem
 {

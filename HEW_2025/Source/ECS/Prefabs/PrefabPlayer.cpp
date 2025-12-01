@@ -68,7 +68,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             const std::string modelAlias = sp.modelAlias.empty() ? std::string("mdl_2Pplayer") : sp.modelAlias;
             mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
-            mr.localOffset = { 0.f, 0.3f, 0.f }; // 足元を原点に合わせる
+            mr.localOffset = { 0.f, -0.15f, 0.f }; // 足元を原点に合わせる
             mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
             
             // このモデルインスタンスに対して個別にアニメを追加
@@ -83,8 +83,8 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-                //const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
-                //idleNo = mr.model->AddAnimation(idlePath.c_str());
+                const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
+                idleNo = mr.model->AddAnimation(idlePath.c_str());
 
                 //const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
                 //runNo = mr.model->AddAnimation(runPath.c_str());
@@ -101,7 +101,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 
             // アニメ制御コンポーネント
             auto& anim = w.Add<ModelAnimationComponent>(e);
-            anim.animeNo = (walkNo != Model::ANIME_NONE) ? static_cast<int>(walkNo) : -1;
+            anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
             anim.loop = true;
             anim.speed = 1.0f;
             anim.playRequested = true;
@@ -116,6 +116,13 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 d.speed = 1.0f;
             }
 
+            if (idleNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Idle)];
+                d.animeNo = static_cast<int>(idleNo);
+                d.loop = true;
+                d.speed = 1.0f;
+            }
             if (walkNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Walk)];
@@ -126,8 +133,8 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 
             // ステート現在値
             auto& state = w.Add<ModelAnimationStateComponent>(e);
-            state.current = ModelAnimState::Walk;
-            state.requested = ModelAnimState::Walk;
+            state.current = ModelAnimState::Idle;
+            state.requested = ModelAnimState::Idle;
 
 			// エフェクトコンポーネント（足元の砂埃など）
 			auto& efc = w.Add<EffectComponent>(e);
