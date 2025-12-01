@@ -68,7 +68,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             const std::string modelAlias = sp.modelAlias.empty() ? std::string("mdl_2Pplayer") : sp.modelAlias;
             mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
-            mr.localOffset = { 0.f, 0.4f, 0.f }; // 足元を原点に合わせる
+            mr.localOffset = { 0.f, 0.f, 0.f }; // 足元を原点に合わせる
             mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
             
             // このモデルインスタンスに対して個別にアニメを追加
@@ -101,10 +101,10 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 
             // アニメ制御コンポーネント
             auto& anim = w.Add<ModelAnimationComponent>(e);
-            anim.animeNo = (idleNo != Model::ANIME_NONE) ? static_cast<int>(idleNo) : -1;
+            anim.animeNo = (walkNo != Model::ANIME_NONE) ? static_cast<int>(walkNo) : -1;
             anim.loop = true;
             anim.speed = 1.0f;
-            anim.playRequested = (anim.animeNo >= 0);
+            anim.playRequested = true;
 
             // ステートテーブル
             auto& table = w.Add<ModelAnimationTableComponent>(e);
@@ -116,10 +116,10 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 d.speed = 1.0f;
             }
 
-            if (idleNo != Model::ANIME_NONE)
+            if (walkNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Walk)];
-                d.animeNo = static_cast<int>(idleNo);
+                d.animeNo = static_cast<int>(walkNo);
                 d.loop = true;
                 d.speed = 1.0f;
             }
