@@ -34,6 +34,16 @@
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Update/Core/FollowCameraSystem.h"
 
+//System
+#include "ECS/Systems/Render/BackGroundRenderSystem.h"
+
+//prefab
+#include "ECS/Prefabs/PrefabRegistry.h"
+
+// 前方宣言
+class SpriteRenderSystem;
+class BackGroundRenderSystem;
+
 class ResultScene : public Scene
 {
 public:
@@ -41,7 +51,7 @@ public:
     ~ResultScene() override;
 
     void Update() override;
-    void Draw();
+    void Draw() override;
 
 private:
     
@@ -52,8 +62,12 @@ private:
     // ECS
     World m_world;
     SystemRegistry m_sys;
+    PrefabRegistry m_prefabs;
 
-
+    // 描画システム
+    SpriteRenderSystem* m_drawSprite = nullptr;
+    BackGroundRenderSystem* m_drawBackGround = nullptr;
     
-
+    // 更新システム
+    FollowCameraSystem* m_followCamera = nullptr;
 };
