@@ -72,7 +72,6 @@
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
-#include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
 
 //シーン遷移
 #include "SceneAPI.h"
@@ -133,9 +132,6 @@ TestStageScene::TestStageScene()
 
     // 2-3.3 Deathゾーン判定システム追加
     m_deathSystem = &m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
-
-    // 3. Rigidbody の状態からアニメステート決定（Idle / Run / Jump / Fall）
-    m_sys.AddUpdate<PlayerLocomotionAnimSystem>();
 
     // 4. ステート → クリップ情報 (AnimeNo / Loop / Speed)
     m_sys.AddUpdate<ModelAnimationStateSystem>();

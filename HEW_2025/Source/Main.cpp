@@ -51,6 +51,20 @@
 #include "Game.h"
 #include "System/EffectRuntime.h"
 
+static void PreloadEffectsFromCatalog()
+{
+    AssetCatalog::ForEach(
+        [](const AssetDesc& desc)
+        {
+            // type=="effect" かつ preload=true のものだけ対象
+            if (desc.type == "effect" && desc.preload)
+            {
+                // Data.csv の path はすでに実パスなのでそのまま渡す
+                EffectRuntime::Preload(desc.path.c_str());
+            }
+        });
+}
+
 /**
  * @brief ウィンドウプロシージャの宣言。
  * @details Win32 メッセージを処理する関数。定義はファイル後半。
@@ -141,6 +155,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
     ImGuiLayer::Init(hWnd);
 
 	EffectRuntime::Initialize();
+
+    PreloadEffectsFromCatalog();
 
     // ゲーム(ECS)側の初期化
     Game_Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);

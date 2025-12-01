@@ -10,6 +10,7 @@
 #include <cmath> // 追加: 補間用
 #include "ECS/Systems/Update/Audio/AudioManagerSystem.h"
 
+
 // --- 追加: 角度補間関数 ---
 namespace 
 {
@@ -55,29 +56,29 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     );
 
     // 入力初期化・入力反映
-    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent,Rigidbody2DComponent, ModelAnimationStateComponent>(
+    // 入力初期化・入力反映
+    world.View<PlayerInputComponent, MovementIntentComponent, Rigidbody2DComponent>(
         [&](EntityId,
             PlayerInputComponent& pic,
             MovementIntentComponent& intent,
-            TransformComponent& tr,
-            Rigidbody2DComponent& rig,
-            ModelAnimationStateComponent& anim)
+            Rigidbody2DComponent& rig)
         {
+            // Intent 初期化
             intent.moveX = 0.0f;
             intent.jump = false;
             intent.dash = false;
-			pic.isJumpRequested = false;
-            // ブリンクは「実行時にエフェクトを出す」ので、ここで消さない
-            // pic.isBlinkRequested = false;
+            pic.isJumpRequested = false;
+            // ブリンク系は MovementApplySystem 側でフラグを見て処理するのでここでは消さない
 
-            // 向きはmoveX入力で更新
+            // 実入力を MovementIntent に反映
             switch (pic.playerIndex)
             {
-            case 0: ReadPlayer0(intent,rig); break;
-            case 1: ReadPlayer1(intent,rig); break;
+            case 0: ReadPlayer0(intent, rig); break;
+            case 1: ReadPlayer1(intent, rig); break;
             default: break;
             }
-            // moveXが0でなければ向きを更新
+
+            // moveX が 0 でなければ向きを更新（Facing は StateSystem が使う）
             if (intent.moveX > 0.01f)
             {
                 intent.facing = 1;
@@ -86,27 +87,9 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             {
                 intent.facing = -1;
             }
-
-            // ここからアニメ切替（Walk/Idleのみ）
-            const float walkThresholdInput = 0.2f; // 入力のデッドゾーン
-            const bool hasInputX = std::fabs(intent.moveX) >= walkThresholdInput;
-
-            // 入力ゼロなら即Idle、入力ありならWalk
-            if (!hasInputX)
-            {
-                RequestModelAnimation(anim, ModelAnimState::None);
-            }
-            else
-            {
-                RequestModelAnimation(anim, ModelAnimState::Walk);
-            }
-
-            // --- 回転 ---
-            float targetY = (intent.facing == 1) ? 130.0f : -130.0f;
-            float lerpSpeed = 0.2f; // 0.0～1.0: 値を大きくすると速く回転
-            tr.rotationDeg.y = LerpAngle(tr.rotationDeg.y, targetY, lerpSpeed);
         }
     );
+
 
     // --- Rボタンジャンプ（相手に1回だけ） ---
     if (intent2 && !intent2->forceJumpConsumed) {

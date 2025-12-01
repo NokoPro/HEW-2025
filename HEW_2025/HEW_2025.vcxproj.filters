@@ -366,9 +366,6 @@
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
-    </ClCompile>
     <ClCompile Include="Source\System\EffectRuntime.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
@@ -379,6 +376,12 @@
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionStateSystem.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.cpp">
       <Filter>Source\ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -665,9 +668,6 @@
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Effect</Filter>
     </ClInclude>
@@ -705,6 +705,15 @@
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Core\PlayerStateComponent.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionStateSystem.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.h">
       <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

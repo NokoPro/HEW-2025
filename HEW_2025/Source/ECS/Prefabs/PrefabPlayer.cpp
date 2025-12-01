@@ -21,6 +21,7 @@
 
 #include "ECS/Components/Effect/EffectComponent.h"
 #include "ECS/Components/Effect/EffectSlotsComponent.h"
+#include "ECS/Components/Core/PlayerStateComponent.h"
 
 #include "System/AssetManager.h"
 #include "System/DirectX/ShaderList.h"
@@ -62,6 +63,9 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             // 物理
             auto& rb = w.Add<Rigidbody2DComponent>(e);
             rb.useGravity = true;
+
+			// プレイヤーステート
+			w.Add<PlayerStateComponent>(e);
 
             auto& mr = w.Add<ModelRendererComponent>(e);
             // 共有キャッシュを使わず、毎回独立インスタンスを生成してアニメ状態の共有を防ぐ
@@ -147,8 +151,8 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             auto& slots = w.Add<EffectSlotsComponent>(e);
             slots.onJump  = AssetManager::GetEffect("vfx_player_jump");
             slots.onBlink = AssetManager::GetEffect("vfx_blink");
-            //slots.onDash  = AssetManager::GetEffect("vfx_dash");
-            //slots.onLand  = AssetManager::GetEffect("vfx_land_smoke");
+            slots.onDash  = AssetManager::GetEffect("vfx_walk");
+            slots.onLand  = AssetManager::GetEffect("vfx_landing");
 
             // 当たり判定は前回と同じ例
             auto& col = w.Add<Collider2DComponent>(e);

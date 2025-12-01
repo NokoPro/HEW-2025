@@ -105,4 +105,9 @@ namespace EffectRuntime
     // 追加: 回転とスケール制御API
     void SetRotationDeg(Handle handle, const DirectX::XMFLOAT3& rotationDeg);
     void SetScale(Handle handle, const DirectX::XMFLOAT3& scale);
+
+    // パスを指定して「読み込むだけ」のプリロード
+    // すでにキャッシュ済みなら何もしない。
+    bool Preload(const char* pathUtf8);
+
 } // namespace EffectRuntime

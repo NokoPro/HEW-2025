@@ -36,6 +36,8 @@
 #include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
+#include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h"
+#include "ECS/Systems/Update/Anim/PlayerPresentationSystem.h"
 
 // ÇªÇÃëºÉcÅ[Éã
 #include "System/CameraHelper.h"
@@ -117,7 +119,6 @@ void GameScene::Initialize()
     m_sys.AddUpdate<MovingPlatformSystem>();
     m_sys.AddUpdate<PlayerInputSystem>();
     m_sys.AddUpdate<PlayerUISystem>();
-    m_sys.AddUpdate<ModelAnimationSystem>();
     m_sys.AddUpdate<MovementApplySystem>();
     m_sys.AddUpdate<PhysicsStepSystem>(&m_colBuf);
 
@@ -136,9 +137,10 @@ void GameScene::Initialize()
     case Difficulty::Hard:   deathSpeed = 2.0f; break;
     }
     m_deathSystem->SetRiseSpeed(deathSpeed);
-
+	m_sys.AddUpdate<PlayerLocomotionStateSystem>();
     m_sys.AddUpdate<ModelAnimationStateSystem>();
     m_sys.AddUpdate<ModelAnimationSystem>();
+	m_sys.AddUpdate<PlayerPresentationSystem>();
     m_sys.AddUpdate<EffectSystem>();
     m_sys.AddUpdate<FollowerSystem>();
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();

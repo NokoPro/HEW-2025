@@ -10,6 +10,8 @@
 #include "EffectRuntime.h"
 #include "System/DirectX/DirectX.h"
 
+#include <unordered_map>
+
  // Effekseer
 #include <Effekseer.h>
 #include <EffekseerRendererDX11.h>
@@ -37,6 +39,8 @@ namespace
 
     bool g_initialized = false;
     bool g_coordinateLHSet = false;
+
+    std::unordered_map<std::string, ::Effekseer::EffectRef> g_effectCache;
 
     // ローカル変換ヘルパー
     ::Effekseer::Vector3D ToEffekseerVector(const XMFLOAT3& v)
@@ -85,6 +89,37 @@ namespace
             dst.Values[r][3] = rowMajor.m[r][3];
         }
     }
+
+    ::Effekseer::EffectRef LoadEffectCached(const char* pathUtf8)
+    {
+        if (!g_manager.Get() || pathUtf8 == nullptr || *pathUtf8 == '\0')
+        {
+            return ::Effekseer::EffectRef();
+        }
+
+        // ASCII 前提なのでそのままキーにしてOK
+        std::string key(pathUtf8);
+
+        // すでにキャッシュ済みならそれを返す
+        auto it = g_effectCache.find(key);
+        if (it != g_effectCache.end())
+        {
+            return it->second;
+        }
+
+        // 初回ロード
+        const std::u16string path16 = ToUtf16Ascii(pathUtf8);
+        ::Effekseer::EffectRef effect = ::Effekseer::Effect::Create(g_manager, path16.c_str());
+        if (!effect.Get())
+        {
+            return ::Effekseer::EffectRef();
+        }
+
+        g_effectCache.emplace(key, effect);
+        return effect;
+    }
+
+
 } // namespace
 
 //-------------------------------------------------------------------------
@@ -156,6 +191,8 @@ bool EffectRuntime::Initialize()
 
 void EffectRuntime::Shutdown()
 {
+    g_effectCache.clear();
+
     g_manager.Reset();
     g_renderer.Reset();
     g_graphicsDevice.Reset();
@@ -199,23 +236,23 @@ void EffectRuntime::Render()
 }
 
 
-EffectRuntime::Handle EffectRuntime::Play(const char* pathUtf8, const XMFLOAT3& worldPos, bool loop)
+EffectRuntime::Handle EffectRuntime::Play(const char* pathUtf8,
+    const XMFLOAT3& worldPos, bool loop)
 {
     if (!g_manager.Get() || pathUtf8 == nullptr || *pathUtf8 == '\0')
     {
         return -1;
     }
 
-    // 6.8. エフェクト読み込み
-    const std::u16string path16 = ToUtf16Ascii(pathUtf8);
-    ::Effekseer::EffectRef effect = ::Effekseer::Effect::Create(g_manager, path16.c_str());
+    // キャッシュ経由で取得
+    ::Effekseer::EffectRef effect = LoadEffectCached(pathUtf8);
     if (!effect.Get())
     {
         return -1;
     }
 
-    // 8.1. 再生
-    ::Effekseer::Handle h = g_manager->Play(effect,
+    ::Effekseer::Handle h = g_manager->Play(
+        effect,
         worldPos.x,
         worldPos.y,
         worldPos.z);
@@ -224,13 +261,11 @@ EffectRuntime::Handle EffectRuntime::Play(const char* pathUtf8, const XMFLOAT3& 
         return -1;
     }
 
-    // ループ制御は基本的にエフェクト側の設定で行う。
-    // ECS 側では「loop=true の場合は IsFinished を見て自動 Destroy しない」
-    // という使い方だけに留めている。
-    (void)loop;
+    (void)loop; // ループは今はフラグ用途のみなのでそのまま
 
     return static_cast<Handle>(h);
 }
+
 
 void EffectRuntime::SetCamera(const DirectX::XMFLOAT4X4& viewT,
     const DirectX::XMFLOAT4X4& projT)
@@ -281,6 +316,16 @@ void EffectRuntime::SetScale(Handle handle, const XMFLOAT3& scale)
     g_manager->SetScale(static_cast<::Effekseer::Handle>(handle), scale.x, scale.y, scale.z);
 }
 
+bool EffectRuntime::Preload(const char* pathUtf8)
+{
+    if (!g_initialized || pathUtf8 == nullptr || *pathUtf8 == '\0')
+    {
+        return false;
+    }
+
+    auto ef = LoadEffectCached(pathUtf8);
+    return ef.Get() != nullptr;
+}
 void EffectRuntime::Stop(Handle handle)
 {
     if (!g_manager.Get() || handle < 0)

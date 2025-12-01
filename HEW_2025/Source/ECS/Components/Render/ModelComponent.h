@@ -83,7 +83,8 @@ enum class ModelAnimState
     Jump,
     Fall,
     Land,
-    Attack,
+    Blink,
+    Goal,
 
     Count,  // 配列サイズ用
 };
