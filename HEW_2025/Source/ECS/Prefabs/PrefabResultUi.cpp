@@ -15,7 +15,7 @@
 
 void RegisterResultUiPrefab(PrefabRegistry& registry)
 {
-    registry.Register("BackGround",
+    registry.Register("ResultBackGround",
         [](World& w, const PrefabRegistry::SpawnParams& sp) -> EntityId
         {
             // エンティティ生成

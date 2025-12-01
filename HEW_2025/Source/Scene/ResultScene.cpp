@@ -59,7 +59,7 @@ ResultScene::ResultScene()
 		sp.scale = { 1.0f, 1.0f, 1.0f };
 		
 		
-		m_prefabs.Spawn("BackGround", m_world, sp);
+		m_prefabs.Spawn("ResultBackGround", m_world, sp);
 	}
 	// 5. ƒJƒƒ‰¶¬
 	{
