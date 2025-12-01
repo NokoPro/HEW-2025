@@ -94,7 +94,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             // “ü—Íƒ[ƒ‚È‚ç‘¦IdleA“ü—Í‚ ‚è‚È‚çWalk
             if (!hasInputX)
             {
-                RequestModelAnimation(anim, ModelAnimState::Idle);
+                RequestModelAnimation(anim, ModelAnimState::None);
             }
             else
             {

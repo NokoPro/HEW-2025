@@ -171,6 +171,8 @@ public:
 	void SetParametricBlend(float blendRate);
 	// アニメーションの現在再生時間を変更
 	void SetAnimationTime(AnimeNo no, float time);
+	// アニメーション停止
+	void StopAnimation();
 
 	// 再生フラグ
 	bool IsPlay(AnimeNo no);

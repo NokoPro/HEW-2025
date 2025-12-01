@@ -36,7 +36,6 @@
 #include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
-#include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
 
 // その他ツール
 #include "System/CameraHelper.h"
@@ -138,7 +137,6 @@ void GameScene::Initialize()
     }
     m_deathSystem->SetRiseSpeed(deathSpeed);
 
-    m_sys.AddUpdate<PlayerLocomotionAnimSystem>();
     m_sys.AddUpdate<ModelAnimationStateSystem>();
     m_sys.AddUpdate<ModelAnimationSystem>();
     m_sys.AddUpdate<EffectSystem>();
@@ -364,7 +362,6 @@ void GameScene::Update()
 
         // ステート系も回さないとアイドル状態が反映されない可能性があるなら追加
         if (auto* sys = m_sys.GetUpdate<ModelAnimationStateSystem>()) sys->Update(m_world, dt);
-        if (auto* sys = m_sys.GetUpdate<PlayerLocomotionAnimSystem>()) sys->Update(m_world, dt);
     }
 
     // シーン遷移ロジック

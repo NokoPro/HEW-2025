@@ -15,6 +15,16 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                 // まだ何も要求されていない
                 if (state.requested == ModelAnimState::None)
                 {
+                    if (state.current != ModelAnimState::None)
+                    {
+                        // 停止をリクエスト（animeNo < 0 の約束）
+                        anim.animeNo = -1;
+                        anim.loop = false;
+                        anim.speed = 0.0f;
+                        anim.playRequested = true;
+
+                        state.current = ModelAnimState::None;
+                    }
                     return;
                 }
 

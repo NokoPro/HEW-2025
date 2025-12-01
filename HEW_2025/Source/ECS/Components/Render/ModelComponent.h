@@ -106,5 +106,9 @@ struct ModelAnimationStateComponent
 inline void RequestModelAnimation(ModelAnimationStateComponent& state,
     ModelAnimState next)
 {
-    state.requested = next;
+    // 無駄な書き換えを減らしてデバッグしやすくする
+    if (state.requested != next)
+    {
+        state.requested = next;
+    }
 }

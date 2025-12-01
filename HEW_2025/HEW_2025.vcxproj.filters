@@ -366,9 +366,6 @@
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
     </ClCompile>
@@ -380,6 +377,9 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
+      <Filter>Source\ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -665,9 +665,6 @@
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
@@ -706,6 +703,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

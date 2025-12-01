@@ -619,20 +619,27 @@ void Model::Step(float tick)
 	//--- アニメーションの時間更新
 	// メインアニメ
 	UpdateAnime(m_playNo, tick);
+
 	// ブレンドアニメ
 	if (m_blendNo != ANIME_NONE)
 	{
 		UpdateAnime(m_blendNo, tick);
-		m_blendTime += tick;
-		if (m_blendTime <= m_blendTime)
+
+		if (m_blendTotalTime > 0.0f)
 		{
-			// ブレンドアニメの自動終了
-			m_blendTime = 0.0f;
-			m_blendTotalTime = 0.0f;
-			m_playNo = m_blendNo;
-			m_blendNo = ANIME_NONE;
+			// 経過時間を進める（クランプ付き）
+			m_blendTime += tick;
+			if (m_blendTime >= m_blendTotalTime)
+			{
+				// ブレンド終了 → ブレンド側をメインに昇格
+				m_blendTime = 0.0f;
+				m_blendTotalTime = 0.0f;
+				m_playNo = m_blendNo;
+				m_blendNo = ANIME_NONE;
+			}
 		}
 	}
+
 	// パラメトリック
 	if (m_playNo == PARAMETRIC_ANIME || m_blendNo == PARAMETRIC_ANIME)
 	{
@@ -640,6 +647,7 @@ void Model::Step(float tick)
 		UpdateAnime(m_parametric[1], tick);
 	}
 }
+
 
 /*
 * @brief アニメーション再生
@@ -765,6 +773,17 @@ void Model::SetAnimationTime(AnimeNo no, float time)
 		anime.nowTime -= anime.totalTime;
 	}
 }
+
+void Model::StopAnimation()
+{
+	// 再生中のアニメをすべてリセット
+	m_playNo = ANIME_NONE;
+	m_blendNo = ANIME_NONE;
+	m_blendTime = 0.0f;
+	m_blendTotalTime = 0.0f;
+}
+
+
 
 /*
 * @brief 再生フラグの取得
@@ -1142,15 +1161,20 @@ void Model::CalcBones(NodeIndex index, const DirectX::XMMATRIX parent)
 		}
 	}
 	// ブレンドアニメ
-	if (m_blendNo != ANIME_NONE)
+	if (m_blendNo != ANIME_NONE && m_blendTotalTime > 0.0f)
 	{
-		LerpTransform(&transform, m_nodeTransform[MAIN][index], m_nodeTransform[BLEND][index], m_blendTime / m_blendTotalTime);
+		float t = std::clamp(m_blendTime / m_blendTotalTime, 0.0f, 1.0f);
+		LerpTransform(&transform,
+			m_nodeTransform[MAIN][index],
+			m_nodeTransform[BLEND][index],
+			t);
 	}
 	else
 	{
 		// メインアニメのみ
 		transform = m_nodeTransform[MAIN][index];
 	}
+
 
 	// 該当ノードの姿勢行列を計算
 	Node& node = m_nodes[index];

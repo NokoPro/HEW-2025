@@ -41,6 +41,11 @@ void ModelAnimationSystem::Update(World& world, float dt)
                     // 合成アニメーションやブレンドはとりあえず後回し。
                     model->Play(anim.animeNo, anim.loop, anim.speed);
                 }
+                else
+                {
+                    // animeNo < 0 は「アニメ停止」の意味にする
+                    model->StopAnimation();
+                }
                 // TODO: animeNo < 0 の場合に「再生停止」をどう扱うかは今後決める
 
                 anim.playRequested = false;
