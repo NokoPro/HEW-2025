@@ -34,18 +34,18 @@
 #include "System/DirectX/ShaderList.h" // ShaderList::SetL—p
 
 //”wŒi
-#include "ECS/Prefabs/PrefabBackGround.h"
+#include "ECS/Prefabs/PrefabResultUi.h"
 
 ResultScene::ResultScene()
 {
 	// -------------------------------------------------------
 	// 0. ƒvƒŒƒnƒu“o˜^
 	// -------------------------------------------------------
-	RegisterBackGroundPrefab(m_prefabs);
+	RegisterResultUiPrefab(m_prefabs);
 	// -------------------------------------------------------
    // 2. System“o˜^
    // -------------------------------------------------------
-	m_drawBackGround = &m_sys.AddRender<BackGroundRenderSystem>();
+	m_drawBackGround = &m_sys.AddRender<ResultUiRenderSystem>();
 	m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
 	// ƒJƒƒ‰ƒVƒXƒeƒ€‚ğ“o˜^iUpdate—pj
 	m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();

@@ -35,14 +35,15 @@
 #include "ECS/Systems/Update/Core/FollowCameraSystem.h"
 
 //System
-#include "ECS/Systems/Render/BackGroundRenderSystem.h"
+#include "ECS/Systems/Render/ResultUiRenderSystem.h"
+
 
 //prefab
 #include "ECS/Prefabs/PrefabRegistry.h"
 
 // 前方宣言
 class SpriteRenderSystem;
-class BackGroundRenderSystem;
+class ResultUiRenderSystem;
 
 class ResultScene : public Scene
 {
@@ -66,7 +67,7 @@ private:
 
     // 描画システム
     SpriteRenderSystem* m_drawSprite = nullptr;
-    BackGroundRenderSystem* m_drawBackGround = nullptr;
+    ResultUiRenderSystem* m_drawBackGround = nullptr;
     
     // 更新システム
     FollowCameraSystem* m_followCamera = nullptr;
