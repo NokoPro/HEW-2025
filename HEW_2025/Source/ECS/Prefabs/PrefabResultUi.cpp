@@ -24,9 +24,9 @@ void RegisterResultUiPrefab(PrefabRegistry& registry)
 
             /// TransformÅiscale ÇÕÇªÇÃÇ‹Ç‹égÇ¶ÇÈÇÊÇ§Ç…ÇµÇƒÇ®Ç≠Åj
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
-            tr.position.x = 35.0f;
-            tr.position.y = 45.0f;  // yç¿ïWí≤êÆÇµÇ‹ÇµÇΩ
-            tr.scale = { 1.0f,1.0f,1.0f };
+            tr.position.x = sp.position.x;
+            tr.position.y = sp.position.y;  // yç¿ïWí≤êÆÇµÇ‹ÇµÇΩ
+            tr.scale = sp.scale;
 
             // Spriteîwåi
             auto& spb = w.Add<ResultUiComponent>(e);
@@ -38,10 +38,10 @@ void RegisterResultUiPrefab(PrefabRegistry& registry)
             //"tex_w1920h2160"    w1920h2160.jpg
 
                                    // ééÇµÇΩíl
-            spb.width = 76.8f;     //76.8f  ,64.0f
-            spb.height = 86.4f;    //172.8f ,86.4f   64.0f
-            spb.originX = 0.5f;
-            spb.originY = 0.5f;
+            spb.width = 16.8f+ sp.scale.x;     //76.8f  ,64.0f
+            spb.height = 16.4f+ sp.scale.y;    //172.8f ,86.4f   64.0f
+            spb.originX = 0.5f + sp.position.x;
+            spb.originY = 0.5f + sp.position.y;
             spb.layer = -10;      // îwåiå„ñ 
             spb.visible = true;   // ï\é¶
 
