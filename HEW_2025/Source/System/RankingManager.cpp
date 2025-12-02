@@ -75,6 +75,19 @@ void RankingManager::Save(const std::string& path)
 	}
 }
 
+
+float RankingManager::GetTimeByRank(int rank) const
+{
+	// rank は 1 ～ m_entries.size() の範囲
+	if (rank <= 0 || rank > static_cast<int>(m_entries.size()))
+	{
+		return -1.0f;  // 無効なら -1 を返す（お好みで変更可）
+	}
+
+	// m_entries は 0 始まりなので rank - 1
+	return m_entries[rank - 1];
+}
+
 void RankingManager::Reset()
 {
 	//初期化
