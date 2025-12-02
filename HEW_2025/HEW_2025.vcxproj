@@ -219,6 +219,7 @@
     <ClCompile Include="..\libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabBackGround.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabFailure.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerBlink.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerJump.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabFailure.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h" />

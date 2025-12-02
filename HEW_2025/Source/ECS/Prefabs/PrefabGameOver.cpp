@@ -1,3 +1,10 @@
+/*********************************************************************/
+/* @file   PrefabGameOver.cpp
+ * @brief  ゲームオーバープレハブ実装
+ *
+ * @author 奥田修也
+ * @date   2025/12/2
+ *********************************************************************/
 #include"PrefabGameOver.h"
 #include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"
@@ -30,8 +37,8 @@ void RegisterGameOverPrefab(PrefabRegistry& registry)
 			spgo.alias = "tex_gameover";
 			spgo.visible = true;
 			spgo.layer = 102; // UIより前面に表示
-			spgo.width = 16.0f; // 幅
-			spgo.height = 10.4f; // 高さ
+			spgo.width = 32.0f; // 幅
+			spgo.height = 20.8f; // 高さ
 
 			return masterEntity;
 		}

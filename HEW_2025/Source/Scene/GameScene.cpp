@@ -272,7 +272,7 @@ void GameScene::Initialize()
 	// GameoverUI
 	{
 		PrefabRegistry::SpawnParams sp;
-		sp.position = { 35.0f, 0.0f, 0.0f };
+		sp.position = { 35.0f, 6.0f, 0.0f };
 		sp.scale = { 1.0f, 1.0f, 1.0f };
 		m_prefabs.Spawn("GameOver", m_world, sp);
 	}

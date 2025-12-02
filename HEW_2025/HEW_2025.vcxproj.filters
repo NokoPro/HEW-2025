@@ -384,6 +384,9 @@
     <ClCompile Include="Source\Scene\TitleScene.cpp">
       <Filter>Source\ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabFailure.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -714,6 +717,9 @@
       <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabGameOver.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabFailure.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
