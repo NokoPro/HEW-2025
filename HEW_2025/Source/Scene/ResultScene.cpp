@@ -50,6 +50,7 @@ ResultScene::ResultScene()
 	
 	
 	
+	
 	// -------------------------------------------------------
    // 2. System“o˜^
    // -------------------------------------------------------
@@ -84,9 +85,10 @@ ResultScene::ResultScene()
 	//3‚¢‚Ì‚½‚¢‚Ü
 
 	{
+		
 		PrefabRegistry::SpawnParams sp;
 		sp.position = { 0.0f, 0.0f, 0.0f };
-		sp.scale = { 2.0f, 2.0f, 1.0f };
+		sp.scale = { 2.0f, 2.0f, 10.0f };
 		m_prefabs.Spawn("ResultTimer", m_world, sp);
 	}
 	{
@@ -140,18 +142,11 @@ void ResultScene::Update()
 	m_sys.Tick(m_world, dt);
 	if (auto* sys = m_sys.GetUpdate<ResultTimerSystem>())
 	{
-		sys->SetTime(1);
-		sys->Update(m_world, dt);
-	}
-	
-	if (auto* sys = m_sys.GetUpdate<ResultTimerSystem>())
-	{
-		sys->SetTime(10);
-		sys->Update(m_world, dt);
-	}
-	
-	
 		
+		sys->Update(m_world, dt);
+	}
+	
+	
 
 
 	if (IsKeyPress(VK_ESCAPE))

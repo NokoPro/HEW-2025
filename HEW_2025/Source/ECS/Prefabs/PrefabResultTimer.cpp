@@ -12,11 +12,13 @@
 #include "ECS/Components/Render/DigitUIComponent.h"
 #include "System/TimeAttackManager.h"
 #include"ECS/Prefabs/PrefabResultTimer.h"
+#include"ECS/Components/Render/RankComponent.h"
 
-int g_Rank = 0;
+
 
 void RegisterResultTimerPrefab(PrefabRegistry& registry)
 {
+	
 	registry.Register("ResultTimer", [](World& w, const PrefabRegistry::SpawnParams& sp)->EntityId
 		{
 			// 親エンティティ
@@ -38,6 +40,8 @@ void RegisterResultTimerPrefab(PrefabRegistry& registry)
 				DigitUIComponent::Type::SecTens,
 				DigitUIComponent::Type::SecOnes
 			};
+			
+			
 
 			for (int i = 0; i < 5; ++i)
 			{
@@ -46,6 +50,7 @@ void RegisterResultTimerPrefab(PrefabRegistry& registry)
 				// 初期位置
 				w.Add<TransformComponent>(digitEnt,
 					sp.position, sp.rotationDeg, sp.scale);
+				
 
 				auto& spr = w.Add<Sprite2DComponent>(digitEnt);
 				spr.alias = "tex_number";
@@ -55,17 +60,16 @@ void RegisterResultTimerPrefab(PrefabRegistry& registry)
 				spr.height = 5.0f;
 				spr.originX = sp.position.x;
 				spr.originY = sp.position.y;
-
+				
 
 				auto& dig = w.Add<DigitUIComponent>(digitEnt);
 				dig.type = types[i]; // 役割を設定
+
+				auto& Rank = w.Add<RankComponent>(digitEnt);
+
+				Rank.Rank = (int)sp.scale.z;
 			}
 			return masterEntity;
 		}
 	);
-}
-void SetRank(int rank)
-{
-	g_Rank = rank;
-	
 }

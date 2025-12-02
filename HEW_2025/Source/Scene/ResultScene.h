@@ -64,7 +64,7 @@ private:
     World m_world;
     SystemRegistry m_sys;
     PrefabRegistry m_prefabs;
-
+    
     // •`‰æƒVƒXƒeƒ€
     SpriteRenderSystem* m_drawSprite = nullptr;
     ResultUiRenderSystem* m_drawBackGround = nullptr;

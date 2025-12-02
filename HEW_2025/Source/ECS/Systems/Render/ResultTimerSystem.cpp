@@ -15,6 +15,7 @@
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
 #include "System/RankingManager.h"
+#include "ECS/Components/Render/RankComponent.h"
 // 時間管理マネージャー
 #include "System/TimeAttackManager.h"
 
@@ -31,6 +32,15 @@ static const float DIGIT_STEP_X = 4.0f;
 
 void ResultTimerSystem::Update(World& world, float dt)
 {
+	int Rank = 0;
+	world.View<RankComponent>(
+		[&](EntityId,const RankComponent& rc)
+		{
+			Rank = rc.Rank;
+		}
+	);
+	
+	m_Time = RankingManager::Get().GetTimeByRank(Rank);
 	float totalTime=m_Time;
 
 	// カンスト処理
@@ -115,9 +125,4 @@ void ResultTimerSystem::Update(World& world, float dt)
 	);
 }
 
-float ResultTimerSystem::SetTime(float Rank)
-{
-	m_Time = RankingManager::Get().GetTimeByRank(Rank);
 
-	return m_Time;
-}

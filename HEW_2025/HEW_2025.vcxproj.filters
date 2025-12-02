@@ -390,6 +390,9 @@
     <ClCompile Include="Source\ECS\Systems\Render\ResultTimerSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabResultTimer.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -727,6 +730,12 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ResultTimerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\RankComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
