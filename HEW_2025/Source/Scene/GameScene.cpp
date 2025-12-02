@@ -231,7 +231,7 @@ void GameScene::Initialize()
     // 1P
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 10.0f, 2.0f, 0.0f };
+        sp.position = { 10.0f, 2.0f, -20.0f };
         sp.rotationDeg = { 0.0f, 180.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 0;
@@ -250,7 +250,7 @@ void GameScene::Initialize()
     // 2P
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 60.0f, 2.0f, 0.0f };
+        sp.position = { 60.0f, 2.0f, -20.0f };
         sp.rotationDeg = { 0.0f, 180.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 1;

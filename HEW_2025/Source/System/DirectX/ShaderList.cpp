@@ -174,7 +174,7 @@ void ShaderList::SetL(DirectX::XMFLOAT4X4 viewT, DirectX::XMFLOAT4X4 projT)
 	// 4. シェーダ側に「ライトからシーンへの向き」とカメラ位置を設定
 	//    PS では L = normalize(-lightDir); なので、ここではそのまま「光が飛んでくる向き」を渡す
 	ShaderList::SetLight(
-		XMFLOAT4(1.5f, 1.5f, 1.5f, 1.0f),  // 色（とりあえず白）
+		XMFLOAT4(2.5f, 2.5f, 2.5f, 1.0f),  // 色（とりあえず白）
 		lightDir
 	);
 

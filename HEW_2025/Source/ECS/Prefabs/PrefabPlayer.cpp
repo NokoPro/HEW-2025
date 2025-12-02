@@ -150,6 +150,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             // エフェクトスロット登録（用途に応じたプリセット）
             auto& slots = w.Add<EffectSlotsComponent>(e);
             slots.onJump  = AssetManager::GetEffect("vfx_player_jump");
+            
             slots.onBlink = AssetManager::GetEffect("vfx_blink");
             slots.onDash  = AssetManager::GetEffect("vfx_walk");
             slots.onLand  = AssetManager::GetEffect("vfx_landing");

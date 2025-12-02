@@ -59,7 +59,7 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
             case PlayerLocomotionState::None:
             case PlayerLocomotionState::Idle:
                 // Idle アニメがないので、ここでは何も再生しない
-                animState.requested = ModelAnimState::None;
+                animState.requested = ModelAnimState::Idle;
                 break;
 
             case PlayerLocomotionState::Walk:
@@ -116,11 +116,12 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
                             (state.m_facing == PlayerFacingState::Right) ? 1 : -1;
 
                         // X 方向だけ左右反転（オフセット & スケール）
-                        p.offset.x = std::fabs(p.offset.x) * (sign >= 0 ? 1.0f : -1.0f);
-                        p.scale.x = std::fabs(p.scale.x) * (sign >= 0 ? 1.0f : -1.0f);
+                        p.rotationDeg.y = (sign >= 0) ? 180.0f : -180.0f;
 
-                        // Y 回転も左右で反転させる（モデル側と合わせるなら 0 / 180 を使うなど）
-                        p.rotationDeg.y = (sign >= 0) ? 0.0f : 180.0f;
+                        p.offset.x = (sign >= 0 ? std::fabs(p.offset.x) : -std::fabs(p.offset.x));
+                        p.scale.x = (sign >= 0 ? std::fabs(p.scale.x) : -std::fabs(p.scale.x));
+
+                        // Y 回転も左右で反転させる（モデル側の回転に合わせる）
 
                         return p;
                     };

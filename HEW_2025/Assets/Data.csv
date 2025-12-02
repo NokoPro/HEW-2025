@@ -1,4 +1,4 @@
-anim,Assets/Models/Player2P/ao_usagi_defo.fbx,anim_player_idle,,,1,,,,,
+anim,Assets/Models/Player2P/ao_usagi_defo1.fbx,anim_player_idle,,,1,,,,,
 anim,Assets/Model/Player/SlowRun.fbx,anim_player_run,,,1,,,,,
 anim,Assets/Model/Player/Jump.fbx,anim_player_jump,,,1,,,,,
 anim,Assets/Model/Player/Fall.fbx,anim_player_fall,,,1,,,,,
@@ -7,7 +7,7 @@ audio,Assets/Audio/BGM.wav,bgm_main,,,1,,,,,テストシーンのBGM
 audio,Assets/Audio/jump.wav,se_jump_p1,,,1,,,,,1PのジャンプSE
 audio,Assets/Audio/jump1.wav,se_jump_p2,,,1,,,,,2PのジャンプSE
 effect,Assets/Effect/zyanpu.efkefc,vfx_player_jump,,,1,,,,,
-effect,Assets/Effect/Jump/air_dash.efkefc,vfx_blink,,,1,,,,,
+effect,Assets/Effect/air_dash.efkefc,vfx_blink,,,1,,,,,
 effect,Assets/Effect/hasiri.efkefc,vfx_walk,,,1,,,,,
 effect,Assets/Effect/smoke1.efkefc,vfx_landing,,,1,,,,,
 model,assets/model/slime.fbx,mdl_slime,0.2,1,1,,,,,
