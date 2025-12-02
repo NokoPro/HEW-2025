@@ -226,6 +226,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabResultTimer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultUi.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h" />

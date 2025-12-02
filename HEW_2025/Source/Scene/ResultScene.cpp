@@ -30,6 +30,7 @@
 #include "ECS/Components/Core/ActiveCameraTag.h"
 #include"ECS/Systems/Render/ResultTimerSystem.h"
 #include"ECS/Prefabs/PrefabTimer.h"
+#include"ECS/Prefabs/PrefabResultTimer.h"
 
 // アセット
 #include "System/AssetManager.h"
@@ -44,7 +45,9 @@ ResultScene::ResultScene()
 	// 0. プレハブ登録
 	// -------------------------------------------------------
 	RegisterResultUiPrefab(m_prefabs);
-	RegisterTimerPrefab(m_prefabs);
+	
+	RegisterResultTimerPrefab(m_prefabs);
+	
 	
 	
 	// -------------------------------------------------------
@@ -82,18 +85,18 @@ ResultScene::ResultScene()
 
 	{
 		PrefabRegistry::SpawnParams sp;
-		sp.position = { 5.0f, 3.0f, 0.0f };
-		sp.scale = { 2.0f, 2.0f, 1.0f };
-		m_prefabs.Spawn("Timer", m_world, sp);
-	}
-
-	{
-		PrefabRegistry::SpawnParams sp;
 		sp.position = { 0.0f, 0.0f, 0.0f };
 		sp.scale = { 2.0f, 2.0f, 1.0f };
-		m_prefabs.Spawn("Timer", m_world, sp);
+		m_prefabs.Spawn("ResultTimer", m_world, sp);
+	}
+	{
+		PrefabRegistry::SpawnParams sp;
+		sp.position = { 1.0f, 1.0f, 1.0f };
+		sp.scale = { 2.0f, 2.0f, 1.0f };
+		m_prefabs.Spawn("ResultTimer", m_world, sp);
 	}
 
+	
 	// 5. カメラ生成
 	{
 		EntityId cam = m_world.Create();
@@ -140,11 +143,13 @@ void ResultScene::Update()
 		sys->SetTime(1);
 		sys->Update(m_world, dt);
 	}
+	
 	if (auto* sys = m_sys.GetUpdate<ResultTimerSystem>())
 	{
-		sys->SetTime(2);
+		sys->SetTime(10);
 		sys->Update(m_world, dt);
 	}
+	
 	
 		
 
@@ -163,10 +168,15 @@ void ResultScene::Draw()
 		const auto& V = m_followCamera->GetView();
 		const auto& P = m_followCamera->GetProj();
 
-		if (m_drawBackGround) 
-			m_drawBackGround->SetViewProj(V, P);
+		if (m_drawBackGround)
+		{
+			//m_drawBackGround->SetViewProj(V, P);
+
+		}
 		
 		if (m_drawSprite)     m_drawSprite->SetViewProj(V, P);
+		
+		
 		
 
 	
