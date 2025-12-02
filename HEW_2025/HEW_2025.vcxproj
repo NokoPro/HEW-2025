@@ -295,7 +295,6 @@
     <ClInclude Include="..\libs\imgui\imstb_textedit.h" />
     <ClInclude Include="..\libs\imgui\imstb_truetype.h" />
     <ClInclude Include="libs\nlohmann\json.hpp" />
-    <ClInclude Include="ResultUiRenderSystem.h" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h" />
@@ -343,6 +342,7 @@
     <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\TimerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />

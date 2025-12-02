@@ -15,7 +15,7 @@
 
 void RegisterResultUiPrefab(PrefabRegistry& registry)
 {
-    registry.Register("ResultBackGround",
+    registry.Register("ResultUI",
         [](World& w, const PrefabRegistry::SpawnParams& sp) -> EntityId
         {
             // ƒGƒ“ƒeƒBƒeƒB¶¬
@@ -27,10 +27,13 @@ void RegisterResultUiPrefab(PrefabRegistry& registry)
             tr.position.x = sp.position.x;
             tr.position.y = sp.position.y;  // yÀ•W’²®‚µ‚Ü‚µ‚½
             tr.scale = sp.scale;
-
+            const char* fileName[] = 
+            { "tex_w1920h2160" ,
+                "testui",
+            };
             // Sprite”wŒi
             auto& spb = w.Add<ResultUiComponent>(e);
-            spb.alias = "tex_w1920h2160"; // ”wŒi‰æ‘œ
+            spb.alias = fileName[(int)sp.scale.z]; // ”wŒi‰æ‘œ
 
             // ’Ç‰Á‚µ‚½”wŒi‰æ‘œ–¼‘O
             //"tex_newbackground" newBackGround.jpg

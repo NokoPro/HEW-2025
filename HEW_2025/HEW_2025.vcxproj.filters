@@ -719,7 +719,7 @@
     <ClInclude Include="Source\ECS\Components\Render\ResultUiComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
-    <ClInclude Include="ResultUiRenderSystem.h">
+    <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
   </ItemGroup>

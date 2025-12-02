@@ -52,15 +52,27 @@ ResultScene::ResultScene()
 	// -------------------------------------------------------
 	// 4. 固定エンティティ生成
 	// -------------------------------------------------------
-	// 背景
+	// 背景(test)
 	{
 		PrefabRegistry::SpawnParams sp;
 		sp.position = { 0.0f, 0.0f, 0.0f };
-		sp.scale = { 1.0f, 1.0f, 1.0f };
 		
+		sp.scale.x = 1.0f;
+		sp.scale.y = 1.0f;
+		sp.scale.z = 1.0f;//UI番号変数名気にしないで
 		
-		m_prefabs.Spawn("ResultBackGround", m_world, sp);
+		m_prefabs.Spawn("ResultUI", m_world, sp);
 	}
+	//UItest
+	{
+		PrefabRegistry::SpawnParams sp;
+		sp.position = { 1.0f,1.0f,1.0f };
+		sp.scale.x = 1.0f;
+		sp.scale.y = 1.0f;
+		sp.scale.z = 0.0f;//UI番号変数名気にしないで
+		m_prefabs.Spawn("ResultUI", m_world, sp);
+	}
+
 	// 5. カメラ生成
 	{
 		EntityId cam = m_world.Create();
