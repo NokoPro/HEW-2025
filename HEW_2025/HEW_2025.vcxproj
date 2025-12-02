@@ -226,6 +226,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabResultRankingUI.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultTimer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultUi.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Ranking\ResultRankingSystem.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\GameScene.cpp" />
@@ -314,6 +316,7 @@
     <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Ranking\RankingDigitUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />
@@ -333,6 +336,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabResultRankingUI.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h" />
@@ -366,6 +370,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Ranking\ResultRankingSystem.h" />
     <ClInclude Include="Source\ECS\Tag\Tag.h" />
     <ClInclude Include="Source\ECS\World.h" />
     <ClInclude Include="Source\Game.h" />

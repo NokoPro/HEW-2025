@@ -146,7 +146,7 @@ void GameScene::Initialize()
     m_sys.AddUpdate<TimerSystem>();
     m_sys.AddUpdate<AudioPlaySystem>();
 
-    RankingManager::Get().Load("Assets/Ranking.csv");
+    RankingManager::Get().Load("Assets/Save/ranking.json");
 
     m_drawBackGround = &m_sys.AddRender<BackGroundRenderSystem>();
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
@@ -346,6 +346,11 @@ void GameScene::Update()
     }
     else if (m_goalSystem && m_goalSystem->IsCleared())
     {
+        // ƒS[ƒ‹ŒŸoŒã:
+        RankingManager::Get().Submit(TimeAttackManager::Get().GetElapsed());
+        // ”CˆÓ‚Ì•Û‘¶æ
+        RankingManager::Get().Save("Assets/Save/ranking.json");
+
         ChangeScene<ResultScene>();
     }
 
