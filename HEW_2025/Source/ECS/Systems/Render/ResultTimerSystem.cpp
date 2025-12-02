@@ -3,8 +3,8 @@
  * @brief  タイマーの表示更新とカメラ追従を行うシステム
  * * - TimeAttackManagerから時間を取得して表示内容(UV)を更新
   * - カメラの位置を取得し、常に画面貞一に表示されるよう座標を更新
- * @author 川谷優真
- * @date   2025/11/25
+ * @author 清水光之介
+ * @date   2025/12/02
  *********************************************************************/
 #include "ECS/Systems/Render/TimerSystem.h"
 #include "ECS/World.h"
