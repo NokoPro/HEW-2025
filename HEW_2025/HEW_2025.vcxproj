@@ -238,6 +238,7 @@
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\ResultTimerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\TimerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SystemRegistry.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp" />
@@ -344,6 +345,7 @@
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Render\ResultTimerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\TimerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h" />
