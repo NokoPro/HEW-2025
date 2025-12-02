@@ -6,7 +6,7 @@
  * @author 清水光之介
  * @date   2025/12/02
  *********************************************************************/
-#include "ECS/Systems/Render/TimerSystem.h"
+#include "ECS/Systems/Render/ResultTimerSystem.h"
 #include "ECS/World.h"
 
  // コンポーネント群
@@ -14,7 +14,7 @@
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
-
+#include "System/RankingManager.h"
 // 時間管理マネージャー
 #include "System/TimeAttackManager.h"
 
@@ -29,11 +29,9 @@ static const float UI_OFFSET_Y = 15.0f;
 static const float UI_OFFSET_Z = 185.0f;
 static const float DIGIT_STEP_X = 4.0f;
 
-void TimerSystem::Update(World& world, float dt)
+void ResultTimerSystem::Update(World& world, float dt)
 {
-	TimeAttackManager::Get().Update();
-
-	float totalTime = TimeAttackManager::Get().GetElapsed();
+	float totalTime=m_Time;
 
 	// カンスト処理
 	if (totalTime > 5999.0f) totalTime = 5999.0f;
@@ -115,4 +113,11 @@ void TimerSystem::Update(World& world, float dt)
 			}
 		}
 	);
+}
+
+float ResultTimerSystem::SetTime(float Rank)
+{
+	m_Time = RankingManager::Get().GetTimeByRank(Rank);
+
+	return m_Time;
 }

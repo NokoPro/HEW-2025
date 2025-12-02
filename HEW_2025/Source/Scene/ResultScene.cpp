@@ -23,12 +23,13 @@
 #include "ResultScene.h"
 #include "Scene/TitleScene.h"
 #include "Scene/StageSelectScene.h"
-
 // ECSコンポーネント
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
+#include"ECS/Systems/Render/ResultTimerSystem.h"
+#include"ECS/Prefabs/PrefabTimer.h"
 
 // アセット
 #include "System/AssetManager.h"
@@ -43,11 +44,15 @@ ResultScene::ResultScene()
 	// 0. プレハブ登録
 	// -------------------------------------------------------
 	RegisterResultUiPrefab(m_prefabs);
+	RegisterTimerPrefab(m_prefabs);
+	
+	
 	// -------------------------------------------------------
    // 2. System登録
    // -------------------------------------------------------
 	m_drawBackGround = &m_sys.AddRender<ResultUiRenderSystem>();
 	m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
+	m_sys.AddUpdate<ResultTimerSystem>();
 	// カメラシステムを登録（Update用）
 	m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 	// -------------------------------------------------------
@@ -72,6 +77,21 @@ ResultScene::ResultScene()
 		sp.scale.y = 1.0f;
 		sp.scale.z = 0.0f;//UI番号変数名気にしないで
 		m_prefabs.Spawn("ResultUI", m_world, sp);
+	}
+	//3いのたいま
+
+	{
+		PrefabRegistry::SpawnParams sp;
+		sp.position = { 5.0f, 3.0f, 0.0f };
+		sp.scale = { 2.0f, 2.0f, 1.0f };
+		m_prefabs.Spawn("Timer", m_world, sp);
+	}
+
+	{
+		PrefabRegistry::SpawnParams sp;
+		sp.position = { 0.0f, 0.0f, 0.0f };
+		sp.scale = { 2.0f, 2.0f, 1.0f };
+		m_prefabs.Spawn("Timer", m_world, sp);
 	}
 
 	// 5. カメラ生成
@@ -115,10 +135,25 @@ void ResultScene::Update()
 {
 	const float dt = 1.0f / 60.0f;
 	m_sys.Tick(m_world, dt);
+	if (auto* sys = m_sys.GetUpdate<ResultTimerSystem>())
+	{
+		sys->SetTime(1);
+		sys->Update(m_world, dt);
+	}
+	if (auto* sys = m_sys.GetUpdate<ResultTimerSystem>())
+	{
+		sys->SetTime(2);
+		sys->Update(m_world, dt);
+	}
+	
+		
+
+
 	if (IsKeyPress(VK_ESCAPE))
 	{
 		ChangeScene<StageSelectScene>();
 	}
+	
 }
 
 void ResultScene::Draw()

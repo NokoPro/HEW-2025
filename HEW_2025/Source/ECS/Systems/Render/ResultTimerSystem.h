@@ -11,8 +11,11 @@
 #include "ECS/World.h"
 #include "ECS/Components/Render/DigitUIComponent.h"
 
-class TimerSystem : public IUpdateSystem
+class ResultTimerSystem : public IUpdateSystem
 {
+private:
+	float m_Time=0.0f;
 public:
 	void Update(World& world, float dt) override;
+	float SetTime(float Rank);
 };
