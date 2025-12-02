@@ -75,101 +75,101 @@
     <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Ranking">
       <UniqueIdentifier>{cd7555ca-3750-4348-96f7-0ba0db46b955}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル">
+    <Filter Include="Source\ヘッダー ファイル">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System">
+    <Filter Include="Source\ヘッダー ファイル\System">
       <UniqueIdentifier>{4d6892b7-53f7-4202-ba31-21a277d71946}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\DirectX">
+    <Filter Include="Source\ヘッダー ファイル\System\DirectX">
       <UniqueIdentifier>{eb85ee10-835a-4dea-89f3-2754fa6835da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\Work">
+    <Filter Include="Source\ヘッダー ファイル\System\Work">
       <UniqueIdentifier>{c3ff813b-b9aa-454c-ae89-fbdae6b9d52e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene">
+    <Filter Include="Source\ヘッダー ファイル\Scene">
       <UniqueIdentifier>{5c013c64-721b-4669-8ca8-5c5d4d1690e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS">
+    <Filter Include="Source\ヘッダー ファイル\ECS">
       <UniqueIdentifier>{c7fada58-475e-4376-ae22-739f2f7e5154}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems">
       <UniqueIdentifier>{f4d06a03-487a-4912-8de8-36e866f285d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Render">
       <UniqueIdentifier>{cef16003-61f7-4e8f-bb1b-1c48db5a22a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update">
       <UniqueIdentifier>{8c7f9a71-7148-4306-9c76-9c0eac2b241c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Core">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Core">
       <UniqueIdentifier>{cbdd3f87-3748-481a-8d7e-f08b45235026}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Input">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Input">
       <UniqueIdentifier>{f53e121d-8027-4fc1-b758-72574fe0253b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Physics">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Physics">
       <UniqueIdentifier>{026cb2e2-4a03-4cac-9828-d279722accae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Game">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Game">
       <UniqueIdentifier>{0baa0a8f-d6ea-4095-b3b0-3f85e3fc5493}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Audio">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Audio">
       <UniqueIdentifier>{f65e2b52-838a-458f-8ec9-00f754853625}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Gimick">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Gimick">
       <UniqueIdentifier>{bed1d36e-9858-41b6-98c1-c759d72de0e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Debug">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Debug">
       <UniqueIdentifier>{b989191f-3d96-4184-aef8-155cc51f1a5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Anim">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Anim">
       <UniqueIdentifier>{ea8ae3aa-d335-4ecf-95a9-2777963413a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Effect">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Effect">
       <UniqueIdentifier>{0e2d7542-5b78-4d48-9a8c-4864b1e6319d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Ranking">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\Ranking">
       <UniqueIdentifier>{3d8c6086-27df-40cc-a68a-2a3de38e0b9a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components">
       <UniqueIdentifier>{8c9de725-45a8-4a48-b269-8365d6f93746}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Physics">
       <UniqueIdentifier>{7e0be316-96a8-40fe-bb13-f73c518da75b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Gimick">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Gimick">
       <UniqueIdentifier>{bca44844-22e8-4ebe-94bd-997beefadbb2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Render">
       <UniqueIdentifier>{c18fce57-a6aa-431f-a858-0d2d04d1b92a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Core">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Core">
       <UniqueIdentifier>{7192b658-a09c-4de6-ae45-39ea3890dcd6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Input">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Input">
       <UniqueIdentifier>{da8d47f9-6e10-406e-9057-e39a3fa66723}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Audio">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Audio">
       <UniqueIdentifier>{f6fbbfb0-cd31-45d4-aabd-2a53e5e86716}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Effect">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Effect">
       <UniqueIdentifier>{896218e4-fce3-4850-bcb2-f7a89142010b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Ranking">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\Ranking">
       <UniqueIdentifier>{33ec2925-3f63-4d1b-b2f3-2259c271942b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Prefabs">
       <UniqueIdentifier>{ebc9abe9-8fb6-4321-8b8c-668b417fbf51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Tag">
+    <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
       <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\libs">
+    <Filter Include="Source\ヘッダー ファイル\libs">
       <UniqueIdentifier>{5811ae35-0628-48dc-b8dd-6fd7bdd484a8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\libs\nlohmann">
+    <Filter Include="Source\ヘッダー ファイル\libs\nlohmann">
       <UniqueIdentifier>{241a3a98-7736-4361-8616-5e3d334647c3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -411,196 +411,196 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\AssetManager.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Defines.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Geometory.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Input.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Model.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Sprite.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DirectX\DirectX.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DirectX\MeshBuffer.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DirectX\Shader.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DirectX\ShaderList.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DirectX\Texture.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System\DirectX</Filter>
+      <Filter>Source\ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\Scene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneManager.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\World.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\ECS.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\IUpdateSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\SystemRegistry.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\TestScene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Core</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\CameraMath.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\CameraHelper.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Core</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\PhysicsLayers.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\PhysicsMaterial.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\ColliderShape.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\Collider2DComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Gimick</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Gimick</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\CollisionEvents.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Input\MovementIntentComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Input</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Input</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Input\PlayerInputComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Input</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Input</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Input\PlayerInputSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Input</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Input</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Physics\CollisionHelpers.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Physics\Collision2DSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabGoal.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Tag\Tag.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Tag</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Tag</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Gimick\SlipPlatformSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Gimick</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Gimick</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Gimick</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="..\libs\imgui\imconfig.h">
       <Filter>libs\imgui</Filter>
@@ -627,139 +627,139 @@
       <Filter>libs\imgui\backends</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\PlayerUIComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollowerJump.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollowerBlink.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\TestStageScene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\ImGuiLayer.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="libs\nlohmann\json.hpp">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\libs\nlohmann</Filter>
+      <Filter>Source\ヘッダー ファイル\libs\nlohmann</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\DebugSettings.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\StageLoader.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Debug.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\TimeAttackManager.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\SceneAPI.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Main.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\GameplayConfig.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\TimerSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabTimer.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\RankingManager.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionAnimSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Effect</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\EffectRuntime.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\ResultScene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\TitleScene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\StageSelectScene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\BackGroundRenderSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Effect</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Effect\EffectSlotsComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Effect</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\GameCommon.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\System</Filter>
+      <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\Scene</Filter>
+      <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\ResultUiComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ResultTimerSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\RankComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Render</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Ranking\RankingDigitUIComponent.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Components\Ranking</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Ranking</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Ranking\ResultRankingSystem.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Systems\Update\Ranking</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Ranking</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultRankingUI.h">
-      <Filter>Source\ソース ファイル\ECS\Prefabs\ヘッダー ファイル\ECS\Prefabs</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
