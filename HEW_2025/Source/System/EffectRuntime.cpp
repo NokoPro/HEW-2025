@@ -48,6 +48,8 @@ namespace
         return ::Effekseer::Vector3D(v.x, v.y, v.z);
     }
 
+
+
     // 超シンプルな ASCII → UTF-16 変換（日本語パスを使わない前提）
     std::u16string ToUtf16Ascii(const char* src)
     {
@@ -348,4 +350,45 @@ bool EffectRuntime::IsFinished(Handle handle)
     // 8.x. Exists を使って終了チェック
     const bool exists = g_manager->Exists(static_cast<::Effekseer::Handle>(handle));
     return !exists;
+}
+
+// 位置・回転・スケールを一括で Effekseer インスタンスへ適用
+void EffectRuntime::SetTransform(Handle handle, const XMFLOAT3& position, const XMFLOAT3& rotationDeg, const XMFLOAT3& scale)
+{
+    if (!g_manager.Get() || handle < 0)
+    {
+        return;
+    }
+
+    // Effekseer は Matrix43（行列）で一括設定するのが確実
+    const float rx = XMConvertToRadians(rotationDeg.x);
+    const float ry = XMConvertToRadians(rotationDeg.y);
+    const float rz = XMConvertToRadians(rotationDeg.z);
+
+    // 回転行列を作成（Z*Y*X の順でも可。ここでは標準的な RollPitchYaw に対応）
+    DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(rx, ry, rz);
+    // スケール・回転を合成（行列の上位3x3が基底ベクトル）
+    DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+    DirectX::XMMATRIX SR = S * R;
+
+    // Effekseer::Matrix43 へ変換（行優先。各行の[0..2]に基底、[3]に平行移動）
+    ::Effekseer::Matrix43 efkM;
+    DirectX::XMFLOAT4X4 m44;
+    DirectX::XMStoreFloat4x4(&m44, SR);
+    efkM.Value[0][0] = m44.m[0][0];
+    efkM.Value[0][1] = m44.m[0][1];
+    efkM.Value[0][2] = m44.m[0][2];
+    efkM.Value[0][3] = position.x;
+
+    efkM.Value[1][0] = m44.m[1][0];
+    efkM.Value[1][1] = m44.m[1][1];
+    efkM.Value[1][2] = m44.m[1][2];
+    efkM.Value[1][3] = position.y;
+
+    efkM.Value[2][0] = m44.m[2][0];
+    efkM.Value[2][1] = m44.m[2][1];
+    efkM.Value[2][2] = m44.m[2][2];
+    efkM.Value[2][3] = position.z;
+
+    g_manager->SetMatrix(static_cast<::Effekseer::Handle>(handle), efkM);
 }

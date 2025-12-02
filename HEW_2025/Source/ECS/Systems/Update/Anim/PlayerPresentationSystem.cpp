@@ -3,6 +3,7 @@
 
 #include "ECS/Components/Effect/EffectComponent.h"
 #include "ECS/Components/Effect/EffectSlotsComponent.h"
+#include "ECS/Components/Input/MovementIntentComponent.h"
 
 // 前方宣言 or ヘッダから
 // enum class ModelAnimState;
@@ -23,14 +24,16 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
         ModelAnimationStateComponent,
         TransformComponent,
         EffectComponent,
-        EffectSlotsComponent
+        EffectSlotsComponent,
+        MovementIntentComponent
     >(
         [&](EntityId /*entity*/,
             PlayerStateComponent& state,
             ModelAnimationStateComponent& animState,
             TransformComponent& transform,
             EffectComponent& effect,
-            const EffectSlotsComponent& effectSlots)
+            const EffectSlotsComponent& effectSlots,
+            MovementIntentComponent& move)
         {
             // ============================================================
             // 1. 向きに応じてモデル回転を決める
@@ -116,27 +119,26 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
                             (state.m_facing == PlayerFacingState::Right) ? 1 : -1;
 
                         // X 方向だけ左右反転（オフセット & スケール）
-                        p.rotationDeg.y = (sign >= 0) ? 180.0f : -180.0f;
-
                         p.offset.x = (sign >= 0 ? std::fabs(p.offset.x) : -std::fabs(p.offset.x));
                         p.scale.x = (sign >= 0 ? std::fabs(p.scale.x) : -std::fabs(p.scale.x));
 
                         // Y 回転も左右で反転させる（モデル側の回転に合わせる）
-
+                        p.rotationDeg.y = (sign >= 0 ? 180.0f : -180.0f);
                         return p;
                     };
-
+                
                 // -------------------------
                 // 3-1. ジャンプ開始
                 // -------------------------
-                if (startedJump && effectSlots.onJump)
+                if (wasGround && effectSlots.onJump && move.jump)
                 {
                     EffectParams p = MakeParamsWithFacing(effectSlots.onJumpParams);
 
                     effect.effect = effectSlots.onJump;
                     effect.offset = p.offset;
+                    effect.offset.y = p.offset.y - 1.0f;
                     effect.rotationDeg = p.rotationDeg;
-                    effect.scale = p.scale;
+                    effect.scale = { p.scale.x / 2,p.scale.y / 2,p.scale.z / 2 };
                     effect.loop = false;
                     effect.playRequested = true;
                     // Player 本体なので autoDestroyEntity は false のまま
@@ -153,7 +155,7 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
                     effect.offset = p.offset;
                     effect.offset.y = p.offset.y - 1.0f;
                     effect.rotationDeg = p.rotationDeg;
-                    effect.scale = p.scale;
+                    effect.scale = { p.scale.x / 2,p.scale.y / 2,p.scale.z / 2 };
                     effect.loop = false;
                     effect.playRequested = true;
                 }

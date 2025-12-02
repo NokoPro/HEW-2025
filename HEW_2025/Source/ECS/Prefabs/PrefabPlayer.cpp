@@ -32,7 +32,7 @@ using AnimeNo = Model::AnimeNo;
 // Data.csv 側の aliases と対応
 static const char* kAnimIdleAlias = "anim_player_idle";
 static const char* kAnimRunAlias  = "anim_player_run";
-static const char* kAnimJumpAlias = "anim_player_jump";
+static const char* kAnimJumpAlias = "anim_player_walk";
 static const char* kAnimFallAlias = "anim_player_fall";
 static const char* kAnimWalkAlias = "anim_player_walk";
 
@@ -149,10 +149,10 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
 
             // エフェクトスロット登録（用途に応じたプリセット）
             auto& slots = w.Add<EffectSlotsComponent>(e);
-            slots.onJump  = AssetManager::GetEffect("vfx_player_jump");
+            slots.onJump  = AssetManager::GetEffect("vfx_landing");
             
             slots.onBlink = AssetManager::GetEffect("vfx_blink");
-            slots.onDash  = AssetManager::GetEffect("vfx_walk");
+            slots.onDash  = AssetManager::GetEffect("vfx_landing");
             slots.onLand  = AssetManager::GetEffect("vfx_landing");
 
             // 当たり判定は前回と同じ例
