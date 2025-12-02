@@ -28,7 +28,8 @@ void RegisterResultUiPrefab(PrefabRegistry& registry)
             tr.position.y = sp.position.y;  // yç¿ïWí≤êÆÇµÇ‹ÇµÇΩ
             tr.scale = sp.scale;
             const char* fileName[] = 
-            { "tex_w1920h2160" ,
+            { 
+                "tex_w1920h2160" ,
                 "testui",
             };
             // Spriteîwåi

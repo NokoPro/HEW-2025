@@ -47,6 +47,8 @@ public:
 	
 	void Save(const std::string& path);
 	
+	// w’è‚µ‚½‡ˆÊ‚ÌŠÔ‚ğ•Ô‚·i1ˆÊ1j
+	float GetTimeByRank(int rank) const;
 
 	void Reset(); 
 
