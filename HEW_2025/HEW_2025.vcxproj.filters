@@ -387,6 +387,9 @@
     <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\ResultTimerSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -720,6 +723,9 @@
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\ResultTimerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
   </ItemGroup>
