@@ -232,6 +232,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabTimer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabWarningFrame.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="..\libs\imgui\imstb_truetype.h" />
     <ClInclude Include="GameOverUIComponent.h" />
     <ClInclude Include="libs\nlohmann\json.hpp" />
+    <ClInclude Include="PrefabWarningFrame.h" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h" />
