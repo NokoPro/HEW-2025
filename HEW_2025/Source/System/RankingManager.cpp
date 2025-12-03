@@ -1,113 +1,142 @@
 #include "RankingManager.h"
 #include "System/TimeAttackManager.h"
-#include<Windows.h>
+#include "libs/nlohmann/json.hpp"
+#include <fstream>
+#include <algorithm>
+#include <Windows.h>
+
+using json = nlohmann::json;
 
 int RankingManager::AddRecord(float time)
 {
-	m_entries.push_back(time);
-	//小さいほうが上位
-	std::sort(m_entries.begin(), m_entries.end());
+    if (time <= 0.0f)
+    {
+        return -1;
+    }
 
-	if (m_entries.size() > MAX_RANK)
-	{
-		m_entries.resize(MAX_RANK);
+    // 追加して昇順維持（最大件数制限）
+    m_times.push_back(time);
+    std::sort(m_times.begin(), m_times.end());
+    if (m_times.size() > MAX_RANK)
+    {
+        m_times.resize(MAX_RANK);
+    }
 
-	}
-	Save(m_filePath);
-	return GetRank(time);
+    return GetRank(time);
 }
 
 int RankingManager::GetRank(float time) const
 {
-	//何位？
-	for (size_t i = 0; i < m_entries.size(); i++)
-	{
-		if (m_entries[i] == time)
-		{
-			return static_cast<int>(i) + 1;
-		}
-	}
-	return -1;
+    for (size_t i = 0; i < m_times.size(); i++)
+    {
+        if (m_times[i] == time)
+        {
+            return static_cast<int>(i) + 1;
+        }
+    }
+    return -1;
+}
+
+void RankingManager::Submit(float seconds)
+{
+    if (seconds <= 0.0f)
+    {
+        return;
+    }
+
+    m_times.push_back(seconds);
+    std::sort(m_times.begin(), m_times.end());
+    if (m_times.size() > MAX_RANK)
+    {
+        m_times.resize(MAX_RANK);
+    }
+}
+
+std::vector<float> RankingManager::GetTop(size_t count) const
+{
+    std::vector<float> out;
+    out.reserve((std::min)(count, m_times.size()));
+    for (size_t i = 0; i < m_times.size() && i < count; i++)
+    {
+        out.push_back(m_times[i]);
+    }
+    return out;
 }
 
 size_t RankingManager::GetCount() const
 {
-	//ランキングの数何個あるか確認
-	return m_entries.size();
+    return m_times.size();
 }
 
 float RankingManager::GetEntry(size_t i) const
 {
-	return m_entries[i];
+    return m_times[i];
 }
 
 void RankingManager::Load(const std::string& path)
 {
-	//Ranking.csv を読み込んでる
-	m_filePath = path;
-	Reset();
-	std::ifstream ifs(path);
-	if (!ifs) {
-		return;
-	}
-	float value;
+    m_filePath = path;
 
-	while (ifs >> value)
-	{
-		m_entries.push_back(value);
-		if (m_entries.size() > MAX_RANK)
-			break;
-	}
+    m_times.clear();
+    std::ifstream ifs(path, std::ios::in);
+    if (!ifs) return;
 
-	std::sort(m_entries.begin(), m_entries.end());
+    json j;
+    ifs >> j;
+    if (!j.is_object()) return;
+
+    if (j.contains("times") && j["times"].is_array())
+    {
+        for (auto& v : j["times"])
+        {
+            if (v.is_number())
+                m_times.push_back(v.get<float>());
+        }
+        std::sort(m_times.begin(), m_times.end());
+        if (m_times.size() > MAX_RANK) m_times.resize(MAX_RANK);
+    }
 }
 
-void RankingManager::Save(const std::string& path)
+void RankingManager::Save(const std::string& path) const
 {
-	//Ranking.csv に保存してる
-	if (m_entries.empty()) return;
+    // 次回の AddRecord のためにパスを覚えておく
+    const_cast<RankingManager*>(this)->m_filePath = path;
 
-	std::ofstream ofs(path, std::ios::trunc);
-	if (!ofs) return;
-	for (auto t : m_entries)
-	{
-		ofs << t << "\n";
-	}
+    json j;
+    j["times"] = m_times;
+
+    std::ofstream ofs(path, std::ios::out | std::ios::trunc);
+    if (!ofs) return;
+    ofs << j.dump(2);
 }
-
 
 float RankingManager::GetTimeByRank(int rank) const
 {
-	// rank は 1 ～ m_entries.size() の範囲
-	if (rank <= 0 || rank > static_cast<int>(m_entries.size()))
-	{
-		return -1.0f;  // 無効なら -1 を返す（お好みで変更可）
-	}
-
-	// m_entries は 0 始まりなので rank - 1
-	return m_entries[rank - 1];
+    if (rank <= 0 || rank > static_cast<int>(m_times.size()))
+    {
+        return -1.0f;
+    }
+    return m_times[rank - 1];
 }
 
 void RankingManager::Reset()
 {
-	//初期化
-	m_entries.clear();
+    m_times.clear();
 }
 
 void RankingManager::ShowRankingMessege() const
 {
-	//メッセージボックスを表示（仮）
-	if (m_entries.empty())
-	{
-		MessageBoxA(NULL,"ランキングデータがありません", "Ranking", MB_OK);
-		return;
-	}
-	std::string msg = "===Ranking===\n";
-	for (size_t i = 0; i < m_entries.size(); i++)
-	{
-		char buf[64];
-		sprintf_s(buf, "%2zu 位 :%.3f 秒\n", i + 1, m_entries[i]);
-		msg += buf;
-	}
-	MessageBoxA(NULL,msg.c_str(), "Ranking", MB_OK);
+    if (m_times.empty())
+    {
+        MessageBoxA(NULL, "ランキングデータがありません", "Ranking", MB_OK);
+        return;
+    }
+    std::string msg = "===Ranking===\n";
+    for (size_t i = 0; i < m_times.size(); i++)
+    {
+        char buf[64];
+        sprintf_s(buf, "%2zu 位 :%.3f 秒\n", i + 1, m_times[i]);
+        msg += buf;
+    }
+    MessageBoxA(NULL, msg.c_str(), "Ranking", MB_OK);
 }

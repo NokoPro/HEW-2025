@@ -11,8 +11,8 @@
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Render/DigitUIComponent.h"
 #include "System/TimeAttackManager.h"
-#include"ECS/Prefabs/PrefabResultTimer.h"
-#include"ECS/Components/Render/RankComponent.h"
+#include "ECS/Prefabs/PrefabResultTimer.h"
+#include "ECS/Components/Render/RankComponent.h"
 
 
 

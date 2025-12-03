@@ -31,92 +31,72 @@
 #include"ECS/Systems/Render/ResultTimerSystem.h"
 #include"ECS/Prefabs/PrefabTimer.h"
 #include"ECS/Prefabs/PrefabResultTimer.h"
+#include "ECS/Systems/Update/Ranking/ResultRankingSystem.h"
+#include "ECS/Systems/Update/Core/FollowCameraSystem.h"
+#include "ECS/Prefabs/PrefabResultRankingUI.h"
 
 // アセット
 #include "System/AssetManager.h"
 #include "System/DirectX/ShaderList.h" // ShaderList::SetL用
+#include "System/RankingManager.h"
 
 //背景
 #include "ECS/Prefabs/PrefabResultUi.h"
 
 ResultScene::ResultScene()
 {
-	// -------------------------------------------------------
-	// 0. プレハブ登録
-	// -------------------------------------------------------
-	RegisterResultUiPrefab(m_prefabs);
-	
-	RegisterResultTimerPrefab(m_prefabs);
-	
-	
-	
-	
-	// -------------------------------------------------------
-   // 2. System登録
-   // -------------------------------------------------------
-	m_drawBackGround = &m_sys.AddRender<ResultUiRenderSystem>();
-	m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
-	m_sys.AddUpdate<ResultTimerSystem>();
-	// カメラシステムを登録（Update用）
-	m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
-	// -------------------------------------------------------
-	// 4. 固定エンティティ生成
-	// -------------------------------------------------------
-	// 背景(test)
-	{
-		PrefabRegistry::SpawnParams sp;
-		sp.position = { 0.0f, 0.0f, 0.0f };
-		
-		sp.scale.x = 1.0f;
-		sp.scale.y = 1.0f;
-		sp.scale.z = 1.0f;//UI番号変数名気にしないで
-		
-		m_prefabs.Spawn("ResultUI", m_world, sp);
-	}
-	//UItest
-	{
-		PrefabRegistry::SpawnParams sp;
-		sp.position = { 1.0f,1.0f,1.0f };
-		sp.scale.x = 1.0f;
-		sp.scale.y = 1.0f;
-		sp.scale.z = 0.0f;//UI番号変数名気にしないで
-		m_prefabs.Spawn("ResultUI", m_world, sp);
-	}
-	//3いのたいま
+    // -------------------------------------------------------
+    // 0. プレハブ登録
+    // -------------------------------------------------------
+    RegisterResultUiPrefab(m_prefabs);
+    RegisterResultTimerPrefab(m_prefabs);
+    RegisterResultRankingUIPrefab(m_prefabs);
 
-	{
-		
-		PrefabRegistry::SpawnParams sp;
-		sp.position = { 0.0f, 0.0f, 0.0f };
-		sp.scale = { 2.0f, 2.0f, 10.0f };
-		m_prefabs.Spawn("ResultTimer", m_world, sp);
-	}
-	{
-		PrefabRegistry::SpawnParams sp;
-		sp.position = { 1.0f, 1.0f, 1.0f };
-		sp.scale = { 2.0f, 2.0f, 1.0f };
-		m_prefabs.Spawn("ResultTimer", m_world, sp);
-	}
+    // ランキングの読込（表示用）。空ならダミーを投入して可視化
+    {
+        // 任意の保存先（存在しなくてもOK）
+        const std::string rankingPath = "Assets/Save/ranking.json";
+        RankingManager::Get().Load(rankingPath);
 
-	
-	// 5. カメラ生成
-	{
-		EntityId cam = m_world.Create();
-		m_world.Add<ActiveCameraTag>(cam);
+        
+    }
 
-		// Fixedモードなので位置は固定
-		auto& tr = m_world.Add<TransformComponent>(cam);
-		tr.position = { 0.0f, 0.0f, -10.0f }; // 原点中心、手前に引く
+    // -------------------------------------------------------
+    // 2. System登録
+    // -------------------------------------------------------
+    m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
+    m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
+    m_sys.AddUpdate<ResultRankingSystem>();   // ランキング描画制御
 
-		auto& c3d = m_world.Add<Camera3DComponent>(cam);
-		c3d.mode = Camera3DComponent::Mode::Fixed; // Fixedモード
+    // -------------------------------------------------------
+    // 4. 固定エンティティ生成
+    // -------------------------------------------------------
+    // ランキングUI
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { -3.5f, -0.5f, 0.0f };
+        sp.scale    = { 1.0f, 1.0f, 1.0f };
+        m_prefabs.Spawn("ResultRankingUI", m_world, sp);
+    }
 
-		// 画面の高さ(720)を基準にする
-		// これで (0,0) が画面中央、Y範囲が -360～+360 になる
-		c3d.orthoHeight = 720.0f;
-		c3d.aspect = 1280.0f / 720.0f; // アスペクト比も設定推奨
-		c3d.nearZ = 0.1f;
-		c3d.farZ = 300.0f;
+    // 5. カメラ生成
+    {
+        EntityId cam = m_world.Create();
+        m_world.Add<ActiveCameraTag>(cam);
+
+        // Fixedモードなので位置は固定
+        auto& tr = m_world.Add<TransformComponent>(cam);
+        tr.position = { 0.0f, 0.0f, -10.0f }; // 原点中心、手前に引く
+
+        auto& c3d = m_world.Add<Camera3DComponent>(cam);
+        c3d.mode = Camera3DComponent::Mode::Fixed; // Fixedモード
+
+        // 画面の高さ(720)を基準にする
+        // これで (0,0) が画面中央、Y範囲が -360～+360 になる
+        c3d.orthoHeight = 720.0f;
+        c3d.aspect = 1280.0f / 720.0f; // アスペクト比も設定推奨
+        c3d.nearZ = 0.1f;
+        c3d.farZ = 300.0f;
 		
 		
 		c3d.fovY = 20.0f;
@@ -140,12 +120,7 @@ void ResultScene::Update()
 {
 	const float dt = 1.0f / 60.0f;
 	m_sys.Tick(m_world, dt);
-	if (auto* sys = m_sys.GetUpdate<ResultTimerSystem>())
-	{
-		
-		sys->Update(m_world, dt);
-	}
-	
+
 	
 
 
