@@ -24,7 +24,7 @@ void RegisterResultRankingUIPrefab(PrefabRegistry& registry)
                 RankingDigitUIComponent::Type::SecTens,
                 RankingDigitUIComponent::Type::SecOnes
             };
-
+            
             // 6çs Å~ 5åÖÇê∂ê¨
             for (int row = 0; row < 6; ++row)
             {
