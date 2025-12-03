@@ -376,13 +376,13 @@
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+      <Filter>Source\ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionStateSystem.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+      <Filter>Source\ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+      <Filter>Source\ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -647,6 +647,9 @@
     <ClInclude Include="Source\Scene\SceneAPI.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Main.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="Source\System\GameplayConfig.h">
       <Filter>Source\ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -701,12 +704,6 @@
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Core\PlayerStateComponent.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Main.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
@@ -715,6 +712,9 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Core\PlayerStateComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

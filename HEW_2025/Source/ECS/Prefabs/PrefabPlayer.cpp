@@ -32,9 +32,10 @@ using AnimeNo = Model::AnimeNo;
 // Data.csv 側の aliases と対応
 static const char* kAnimIdleAlias = "anim_player_idle";
 static const char* kAnimRunAlias  = "anim_player_run";
-static const char* kAnimJumpAlias = "anim_player_walk";
+static const char* kAnimJumpAlias = "anim_player_jump";
 static const char* kAnimFallAlias = "anim_player_fall";
 static const char* kAnimWalkAlias = "anim_player_walk";
+static const char* kAnimLandAlias = "anim_player_land";
 
 void RegisterPlayerPrefab(PrefabRegistry& registry)
 {
@@ -81,6 +82,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             AnimeNo jumpNo = Model::ANIME_NONE;
             AnimeNo fallNo = Model::ANIME_NONE;
             AnimeNo walkNo = Model::ANIME_NONE;
+            AnimeNo landNo = Model::ANIME_NONE;
 
             if (mr.model)
             {
@@ -93,14 +95,17 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 //const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
                 //runNo = mr.model->AddAnimation(runPath.c_str());
 
-                //const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
-                //jumpNo = mr.model->AddAnimation(jumpPath.c_str());
+                const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
+                jumpNo = mr.model->AddAnimation(jumpPath.c_str());
 
-                //const auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
-                //fallNo = mr.model->AddAnimation(fallPath.c_str());
+                const auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
+                fallNo = mr.model->AddAnimation(fallPath.c_str());
 
                 const auto walkPath = AssetManager::ResolveAnimationPath(kAnimWalkAlias);
                 walkNo = mr.model->AddAnimation(walkPath.c_str());
+
+                const auto landPath = AssetManager::ResolveAnimationPath(kAnimLandAlias);
+                landNo = mr.model->AddAnimation(landPath.c_str());
             }
 
             // アニメ制御コンポーネント
@@ -132,6 +137,27 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Walk)];
                 d.animeNo = static_cast<int>(walkNo);
                 d.loop = true;
+                d.speed = 1.0f;
+            }
+            if(jumpNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
+                d.animeNo = static_cast<int>(jumpNo);
+                d.loop = false;
+                d.speed = 1.0f;
+            }
+            if (fallNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
+                d.animeNo = static_cast<int>(fallNo);
+                d.loop = false;
+				d.speed = 1.0f;
+            }
+            if (landNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Land)];
+                d.animeNo = static_cast<int>(landNo);
+                d.loop = false;
                 d.speed = 1.0f;
             }
 

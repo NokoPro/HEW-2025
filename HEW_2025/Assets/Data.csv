@@ -1,8 +1,8 @@
-anim,Assets/Models/Player2P/ao_usagi_defo1.fbx,anim_player_idle,,,1,,,,,
-anim,Assets/Model/Player/SlowRun.fbx,anim_player_run,,,1,,,,,
-anim,Assets/Model/Player/Jump.fbx,anim_player_jump,,,1,,,,,
-anim,Assets/Model/Player/Fall.fbx,anim_player_fall,,,1,,,,,
-anim,Assets/Models/Player2P/ao_usagi_aruki1.fbx,anim_player_walk,0.25,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_defo1.fbx,anim_player_idle,,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_defo1.fbx,anim_player_run,,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_jump.fbx,anim_player_jump,,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_rakka.fbx,anim_player_fall,,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_aruki1.fbx,anim_player_walk,0.25,,1,,,,,
 audio,Assets/Audio/BGM.wav,bgm_main,,,1,,,,,テストシーンのBGM
 audio,Assets/Audio/jump.wav,se_jump_p1,,,1,,,,,1PのジャンプSE
 audio,Assets/Audio/jump1.wav,se_jump_p2,,,1,,,,,2PのジャンプSE
@@ -36,3 +36,4 @@ texture,Assets/Texture/UI/Stage/tex_ui_diff_normal.png,tex_ui_diff_normal,,,1,,,
 texture,Assets/Texture/UI/Stage/tex_ui_diff_hard.png,tex_ui_diff_hard,,,1,,,,,
 texture,Assets/Models/Player2P/aousagi_texture.png,tex_aousagi,,,1,,,,,
 texture,Assets/Texture/UI/GameOver/GameOver.png,tex_gameover,,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_tyakuti.fbx,anim_player_land,,,1,,,,,

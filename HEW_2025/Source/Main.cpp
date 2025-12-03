@@ -203,6 +203,15 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
             continue;
         }
 
+        // ウィンドウ破棄や終了要求がキューに入っている場合はフレーム処理を行わず終了する
+        {
+            MSG pending;
+            if (PeekMessage(&pending, nullptr, WM_QUIT, WM_QUIT, PM_NOREMOVE))
+            {
+                break;
+            }
+        }
+
         // 現在カウンタ値の取得
         LARGE_INTEGER cur;
         QueryPerformanceCounter(&cur);

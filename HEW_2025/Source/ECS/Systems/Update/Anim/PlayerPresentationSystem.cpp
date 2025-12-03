@@ -57,29 +57,28 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
             // ここは既存のまま（Idle / Walk / Jump / Fall など）
             animState.requested = ModelAnimState::None;
 
+            // 3 の着地優先要求で上書きする可能性があるため、基本割り当ては先に用意しておく
             switch (state.m_locomotion)
             {
             case PlayerLocomotionState::None:
             case PlayerLocomotionState::Idle:
-                // Idle アニメがないので、ここでは何も再生しない
                 animState.requested = ModelAnimState::Idle;
                 break;
-
             case PlayerLocomotionState::Walk:
                 animState.requested = ModelAnimState::Walk;
                 break;
-
             case PlayerLocomotionState::Jump:
-            case PlayerLocomotionState::Fall:
                 animState.requested = ModelAnimState::Jump;
                 break;
-
+            case PlayerLocomotionState::Fall:
+                animState.requested = ModelAnimState::Fall;
+                break;
             default:
                 break;
             }
 
             // ============================================================
-            // 3. 「状態が変わった瞬間」にエフェクトを鳴らす
+            // 3. 「状態が変わった瞬間」にエフェクトを鳴らす（着地時はアニメ優先）
             // ============================================================
             const bool locomotionChanged =
                 (state.m_locomotion != state.m_prevLocomotion);
@@ -114,26 +113,20 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
                     [&](const EffectParams& src) -> EffectParams
                     {
                         EffectParams p = src;
-
                         const int sign =
                             (state.m_facing == PlayerFacingState::Right) ? 1 : -1;
-
-                        // X 方向だけ左右反転（オフセット & スケール）
                         p.offset.x = (sign >= 0 ? std::fabs(p.offset.x) : -std::fabs(p.offset.x));
                         p.scale.x = (sign >= 0 ? std::fabs(p.scale.x) : -std::fabs(p.scale.x));
-
-                        // Y 回転も左右で反転させる（モデル側の回転に合わせる）
                         p.rotationDeg.y = (sign >= 0 ? 180.0f : -180.0f);
                         return p;
                     };
-                
+
                 // -------------------------
                 // 3-1. ジャンプ開始
                 // -------------------------
                 if (wasGround && effectSlots.onJump && move.jump)
                 {
                     EffectParams p = MakeParamsWithFacing(effectSlots.onJumpParams);
-
                     effect.effect = effectSlots.onJump;
                     effect.offset = p.offset;
                     effect.offset.y = p.offset.y - 1.0f;
@@ -141,30 +134,30 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
                     effect.scale = { p.scale.x / 2,p.scale.y / 2,p.scale.z / 2 };
                     effect.loop = false;
                     effect.playRequested = true;
-                    // Player 本体なので autoDestroyEntity は false のまま
                 }
 
                 // -------------------------
                 // 3-2. 着地（空中 → 地上）
                 // -------------------------
-                if (landed && effectSlots.onLand)
+                if (landed)
                 {
-                    EffectParams p = MakeParamsWithFacing(effectSlots.onLandParams);
+                    // アニメ: 着地アニメを優先要求し、このフレームは他の割り当てで上書きしない
+                    animState.requested = ModelAnimState::Land;
 
-                    effect.effect = effectSlots.onLand;
-                    effect.offset = p.offset;
-                    effect.offset.y = p.offset.y - 1.0f;
-                    effect.rotationDeg = p.rotationDeg;
-                    effect.scale = { p.scale.x / 2,p.scale.y / 2,p.scale.z / 2 };
-                    effect.loop = false;
-                    effect.playRequested = true;
+                    // エフェクト
+                    if (effectSlots.onLand)
+                    {
+                        EffectParams p = MakeParamsWithFacing(effectSlots.onLandParams);
+                        effect.effect = effectSlots.onLand;
+                        effect.offset = p.offset;
+                        effect.offset.y = p.offset.y - 1.0f;
+                        effect.rotationDeg = p.rotationDeg;
+                        effect.scale = { p.scale.x / 2,p.scale.y / 2,p.scale.z / 2 };
+                        effect.loop = false;
+                        effect.playRequested = true;
+                    }
+                    return; // このフレームは着地を最優先で確定
                 }
-
-                // 将来的に:
-                //   - Dash 状態に入った瞬間 → effectSlots.onDash
-                //   - Blink 状態に入った瞬間 → effectSlots.onBlink
-                //   - GoalPose 状態に入った瞬間 → Goal 用スロット
-                // という感じでここに case を足していけば OK。
             }
         }
     );
