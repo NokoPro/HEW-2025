@@ -65,20 +65,74 @@ ResultScene::ResultScene()
     // 2. System登録
     // -------------------------------------------------------
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
+    m_drawResultUI = &m_sys.AddRender<ResultUiRenderSystem>();
     m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
+   
     m_sys.AddUpdate<ResultRankingSystem>();   // ランキング描画制御
 
     // -------------------------------------------------------
     // 4. 固定エンティティ生成
     // -------------------------------------------------------
+    //背景
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.0f, 0.0f, 2.0f };
+        sp.scale = { 50.0f, 50.0f, 50.0f };
+        sp.modelAlias = "tex_resultbackground";
+        m_prefabs.Spawn("ResultUI", m_world, sp);
+
+    }
+    
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = {0.0f, 0.0f, 1.0f };
+        sp.scale = { 1.0f, 1.0f, 1.0f };
+        sp.modelAlias = "tex_1st";
+        m_prefabs.Spawn("ResultUI", m_world, sp);
+
+    } 
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.0f, 0.0f, 1.0f };
+        sp.scale = { 1.0f, 1.0f, 1.0f };
+        sp.modelAlias = "tex_2st";
+        m_prefabs.Spawn("ResultUI", m_world, sp);
+
+    }
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.0f, 0.0f, 1.0f };
+        sp.scale    = { 1.0f, 1.0f, 1.0f };
+        sp.modelAlias = "tex_3st";
+        m_prefabs.Spawn("ResultUI", m_world, sp);
+        
+    }
+
+    //セレクト画面にもどるUI
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { -0.5f, 1.0f, 1.0f };
+        sp.scale = { 1.0f, 1.0f, 1.0f };
+        sp.modelAlias = "tex_selectstage";
+        m_prefabs.Spawn("ResultUI", m_world, sp);
+
+    }
+    //リトライUI
+    {
+        PrefabRegistry::SpawnParams sp;
+        sp.position = { 0.5f, 1.0f, 1.0f };
+        sp.scale = { 1.0f, 1.0f, 1.0f };
+        sp.modelAlias = "tex_relrystage";
+        m_prefabs.Spawn("ResultUI", m_world, sp);
+
+    }
     // ランキングUI
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { -3.5f, -0.5f, 0.0f };
-        sp.scale    = { 1.0f, 1.0f, 1.0f };
+        sp.scale = { 1.0f, 1.0f, 1.0f };
         m_prefabs.Spawn("ResultRankingUI", m_world, sp);
     }
-
     // 5. カメラ生成
     {
         EntityId cam = m_world.Create();
@@ -138,14 +192,12 @@ void ResultScene::Draw()
 		const auto& V = m_followCamera->GetView();
 		const auto& P = m_followCamera->GetProj();
 
-		if (m_drawBackGround)
-		{
-			//m_drawBackGround->SetViewProj(V, P);
+		
 
-		}
+        if (m_drawResultUI)   m_drawResultUI->SetViewProj(V, P);
+
 		
 		if (m_drawSprite)     m_drawSprite->SetViewProj(V, P);
-		
 		
 		
 

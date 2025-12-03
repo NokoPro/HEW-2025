@@ -406,7 +406,7 @@
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Ranking</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultRankingUI.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -757,6 +757,9 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultRankingUI.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

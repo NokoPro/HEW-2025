@@ -67,7 +67,7 @@ private:
     
     // 描画システム
     SpriteRenderSystem* m_drawSprite = nullptr;
-    ResultUiRenderSystem* m_drawBackGround = nullptr;
+    ResultUiRenderSystem* m_drawResultUI = nullptr;
     
     // 更新システム
     FollowCameraSystem* m_followCamera = nullptr;
