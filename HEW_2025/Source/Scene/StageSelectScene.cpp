@@ -7,6 +7,8 @@
 /*
 /* @date      2025 / 11 / 25
 /*
+/* @author    川谷優真 (追記)
+ * @date      2025/12/02
 /* =============================================================================================
 /*  Progress Log  - 進捗ログ
 /* ---------------------------------------------------------------------------------------------
@@ -16,6 +18,7 @@
 /*	  - []	タイトルＵＩ表示
 /*
 /**********************************************************************************************/
+#include <DirectXMath.h>// 座標計算用:川谷(追記)
 #include "StageSelectScene.h"
 #include "GameScene.h" // 遷移先
 #include "Scene/SceneAPI.h"
@@ -23,12 +26,19 @@
 // ECSコンポーネント
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
+#include "ECS/Components/Render/ModelComponent.h"
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
+
+// ECSプレハブ
+#include "ECS/Prefabs/PrefabFloor.h"
+#include "ECS/Prefabs/PrefabPlayer.h"
 
 // アセット
 #include "System/AssetManager.h"
 #include "System/DirectX/ShaderList.h" // ShaderList::SetL用
+
+using namespace DirectX;
 
 // 便利なマクロ
 #define IS_DECIDE (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsPadTrigger(0, XINPUT_GAMEPAD_A))
@@ -40,46 +50,88 @@
 
 StageSelectScene::StageSelectScene()
 {
+    Initialize();
+}
+
+StageSelectScene::~StageSelectScene()
+{
+}
+
+void StageSelectScene::Initialize()
+{
     // 1. システム登録
-    // カメラシステムを登録（Update用）
+// カメラシステムを登録（Update用）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
     // UI描画システム（Render用）
     m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
+
+	// 3Dモデル描画システム:川谷(追記)
+    m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
+
+	// Prefab登録:川谷(追記)
+	RegisterFloorPrefab(m_prefabs);
+	RegisterPlayerPrefab(m_prefabs);
 
     // 2. カメラ生成
     {
         EntityId cam = m_world.Create();
         m_world.Add<ActiveCameraTag>(cam);
 
-        // Fixedモードなので位置は固定
-        auto& tr = m_world.Add<TransformComponent>(cam);
-        tr.position = { 0.0f, 0.0f, -10.0f }; // 原点中心、手前に引く
+		// Transformコンポーネント追加:川谷(追記)
+        m_world.Add<TransformComponent>(cam);
 
         auto& c3d = m_world.Add<Camera3DComponent>(cam);
-        c3d.mode = Camera3DComponent::Mode::Fixed; // Fixedモード
+        c3d.mode = Camera3DComponent::Mode::Orbit; // Orbit(透視投影)モード
 
-        // 画面の高さ(720)を基準にする
-        // これで (0,0) が画面中央、Y範囲が -360～+360 になる
-        c3d.orthoHeight = 720.0f;
+		// 斜め上から見下ろす視点設定:川谷(追記)
+        c3d.targetX = 0.0f; 
+        c3d.targetY = 0.0f; 
+        c3d.targetZ = 0.0f;
+
+		c3d.orbitDistance   = 35.0f; // カメラまでの距離:川谷(追加)
+		c3d.orbitPitchDeg   = 35.0f; // 見下ろす角度:川谷(追加)
+		c3d.orbitYawDeg     = -90.0f; // 横回転:川谷(追加)
+
+		// パース(遠近感)の設定:川谷(追記)
+        c3d.fovY = 45.0f;
         c3d.aspect = 1280.0f / 720.0f; // アスペクト比も設定推奨
         c3d.nearZ = 0.1f;
         c3d.farZ = 100.0f;
+
     }
 
-    // 3. UIエンティティ生成
-    // 背景
+	// ステージ環境構築:川谷(追記)
+    InitStages();
+
+    // プレイヤー生成:川谷(追記)
     {
-        EntityId e = m_world.Create();
-        // 原点(0,0)中心に表示したいので位置は0,0でOK (画面サイズ1280x720なら中央に来る)
-        // ※座標系注意: Transform{0,0} = 画面中央
-        m_world.Add<TransformComponent>(e, DirectX::XMFLOAT3{ 0.0f, 0.0f, 10.0f });
-        auto& sp = m_world.Add<Sprite2DComponent>(e);
-        sp.alias = "tex_select_bg";
-        sp.width = 1280.0f;
-        sp.height = 720.0f;
-        sp.layer = -10;
-    }
+        PrefabRegistry::SpawnParams sp;
+        sp.padIndex = 0;
+		sp.modelAlias = "mdl_2Pplayer";
+
+		// 初期位置計算:川谷(追記)
+        if (!m_stagePoints.empty())
+        {
+            sp.position = m_stagePoints[0];
+            sp.position.y += 1.0f; // 床に埋まらないように
+        }
+		sp.rotationDeg = { 0.0f, 135.0f, 0.0f }; // カメラの方を向く角度:川谷(追記)
+        sp.scale = { 1.0f, 1.0f, 1.0f };
+
+        m_playerEntity = m_prefabs.Spawn("Player", m_world, sp);
+
+        // アニメーションシステムが無い場面なので、シェーダを静適用に上書き
+        if (auto* mr = m_world.TryGet<ModelRendererComponent>(m_playerEntity))
+        {
+            if (mr->model)
+            {
+                mr->model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+            }
+        }
+	}
+
+    // 3. UIエンティティ生成
 
     // ステージ選択アイコン (位置調整: 中央0,0基準)
     {
@@ -106,8 +158,63 @@ StageSelectScene::StageSelectScene()
     }
 }
 
-StageSelectScene::~StageSelectScene()
+// ステージ環境の配置:川谷(追記)
+void StageSelectScene::InitStages()
 {
+    m_stagePoints.clear();
+
+    // 座標定義(左、中央、右)
+	m_stagePoints.push_back({ -8.0f, 0.0f, 0.0f });
+    m_stagePoints.push_back({  0.0f, 0.0f, 0.0f });
+    m_stagePoints.push_back({  8.0f, 0.0f, 0.0f });
+
+    for (const auto& pos : m_stagePoints)
+    {
+        // 床
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = pos;
+            sp.scale = { 2.0f, 1.0f, 2.0f };
+            sp.modelAlias = "mdl_ground";
+            m_prefabs.Spawn("Floor", m_world, sp);
+        }
+
+        // 塔
+        {
+            EntityId tower = m_world.Create();
+            auto& tr = m_world.Add<TransformComponent>(tower);
+            tr.position = { pos.x, pos.y + 1.5f, pos.z + 1.5f };
+            tr.scale = { 0.8f, 3.0f, 0.8f };
+
+			auto& mr = m_world.Add<ModelRendererComponent>(tower);
+            mr.model = AssetManager::GetModel("mdl_ground"); // 代用モデル
+            mr.visible = true;
+			mr.layer = 0;
+
+
+            if (mr.model)
+            {
+                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+                mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+            }
+        }
+    }
+}
+
+// プレイヤー移動関数:川谷(追記)
+void StageSelectScene::SyncPlayerPosition()
+{
+    // m_currentStageは1～3なので-1して配列アクセス
+    int idx = m_currentStage - 1;
+    if (idx >= 0 && idx < (int)m_stagePoints.size())
+    {
+        if (auto* tr = m_world.TryGet<TransformComponent>(m_playerEntity))
+        {
+			DirectX::XMFLOAT3 targetPos = m_stagePoints[idx];
+            targetPos.y += 1.0f;
+            tr->position = targetPos;
+        }
+    }
 }
 
 void StageSelectScene::Update()
@@ -124,16 +231,28 @@ void StageSelectScene::UpdateInput()
     // ... (入力ロジックは変更なし) ...
     if (m_state == State::SelectStage)
     {
+		// 川谷(追記)
+        bool changed = false;
+
         if (IS_RIGHT)
         {
             m_currentStage++;
             if (m_currentStage > m_maxStages) m_currentStage = 1;
+			changed = true; // :川谷(追記)
         }
         else if (IS_LEFT)
         {
             m_currentStage--;
             if (m_currentStage < 1) m_currentStage = m_maxStages;
+			changed = true; // :川谷(追記)
         }
+
+        // 変更があったらプレイヤー位置を更新
+        if (changed)
+        {
+            SyncPlayerPosition();
+        }
+
 
         if (IS_DECIDE)
         {
@@ -172,11 +291,36 @@ void StageSelectScene::UpdateUI()
     // テクスチャエイリアスの切り替え等
     if (auto* sp = m_world.TryGet<Sprite2DComponent>(m_entStageIcon))
     {
+        // アイコンの画像切り替え:川谷(追記)
+        sp->alias = "tex_ui_stage" + std::to_string(m_currentStage);
+
         if (m_state == State::SelectStage)
         {
             sp->visible = true;
             sp->width = 420.0f;
             sp->height = 120.0f;
+
+			// 座標計算用:川谷(追記)
+            if (m_followCamera)
+            {
+                // 1.対象の塔の座標を取得
+                int idx = m_currentStage - 1;
+                // 安全策:インデックス範囲チェック
+                if (idx >= 0 && idx < (int)m_stagePoints.size())
+                {
+                    XMFLOAT3 targetPos = m_stagePoints[idx];
+
+                    // 塔の高さ文だけ上にずらす
+                    targetPos.y += 4.5f;
+
+                    // 2.カメラ行列を取得
+                    XMFLOAT4X4 view = m_followCamera->GetView();
+                    XMFLOAT4X4 proj = m_followCamera->GetProj();
+
+                    XMMATRIX V = XMLoadFloat4x4(&view);
+                    XMMATRIX P = XMLoadFloat4x4(&proj);
+                }
+            }
         }
         else
         {
@@ -220,6 +364,12 @@ void StageSelectScene::Draw()
         {
             m_drawSprite->SetViewProj(V, P);
             // 他の描画システムがあれば同様にセット
+        }
+
+		// 3Dモデル描画システムにも行列を渡す:川谷(追記)
+        if (m_drawModel)
+        {
+            m_drawModel->SetViewProj(V, P);
         }
 
         // 必要に応じてシェーダ側にもセット（ライト等）
