@@ -1,5 +1,5 @@
 anim,Assets/Models/Player2P/anim/ao_usagi_defo1.fbx,anim_player_idle,,,1,,,,,
-anim,Assets/Models/Player2P/anim/ao_usagi_defo1.fbx,anim_player_run,,,1,,,,,
+anim,Assets/Models/Player2P/anim/ao_usagi_yokojump.fbx,anim_player_run,,,1,,,,,
 anim,Assets/Models/Player2P/anim/ao_usagi_jump.fbx,anim_player_jump,,,1,,,,,
 anim,Assets/Models/Player2P/anim/ao_usagi_rakka.fbx,anim_player_fall,,,1,,,,,
 anim,Assets/Models/Player2P/anim/ao_usagi_aruki1.fbx,anim_player_walk,0.25,,1,,,,,

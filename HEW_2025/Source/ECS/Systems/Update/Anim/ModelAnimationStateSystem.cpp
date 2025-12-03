@@ -24,7 +24,6 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                         anim.loop = false;
                         anim.speed = 0.0f;
                         anim.playRequested = true;
-
                         state.current = ModelAnimState::None;
                     }
                     return;
@@ -41,9 +40,23 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                     }
                 }
 
-                // 同じステートなら何もしない（Playの多重呼び出し防止）
+                // 要求と現在が同じ場合の扱い（非ループは再再生許可）
                 if (state.requested == state.current)
                 {
+                    const size_t idxSame = static_cast<size_t>(state.current);
+                    const ModelAnimationClipDesc& curDesc = table.table[idxSame];
+                    // 非ループの場合、現在そのクリップが再生されていなければ再生を再要求する
+                    if (!curDesc.loop && curDesc.animeNo >= 0 && mr.model)
+                    {
+                        const bool playingSame = mr.model->IsPlay(curDesc.animeNo);
+                        if (!playingSame)
+                        {
+                            anim.animeNo = curDesc.animeNo;
+                            anim.loop = curDesc.loop;
+                            anim.speed = curDesc.speed;
+                            anim.playRequested = true;
+                        }
+                    }
                     return;
                 }
 

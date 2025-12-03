@@ -54,27 +54,42 @@ void PlayerPresentationSystem::Update(World& world, float /*dt*/)
             // ============================================================
             // 2. LocomotionState -> モデルアニメの指定
             // ============================================================
-            // ここは既存のまま（Idle / Walk / Jump / Fall など）
             animState.requested = ModelAnimState::None;
 
-            // 3 の着地優先要求で上書きする可能性があるため、基本割り当ては先に用意しておく
-            switch (state.m_locomotion)
+            // Lボタンブリンク中は横ジャンプアニメを優先（ただし落下中は Fall を優先）
+            const bool isBlinkingNow = move.isBlinking || move.blinkRequested;
+            if (isBlinkingNow)
             {
-            case PlayerLocomotionState::None:
-            case PlayerLocomotionState::Idle:
-                animState.requested = ModelAnimState::Idle;
-                break;
-            case PlayerLocomotionState::Walk:
-                animState.requested = ModelAnimState::Walk;
-                break;
-            case PlayerLocomotionState::Jump:
-                animState.requested = ModelAnimState::Jump;
-                break;
-            case PlayerLocomotionState::Fall:
-                animState.requested = ModelAnimState::Fall;
-                break;
-            default:
-                break;
+                if (state.m_locomotion == PlayerLocomotionState::Fall)
+                {
+                    animState.requested = ModelAnimState::Fall;
+                }
+                else
+                {
+                    // 横ジャンプ扱いで Run を要求
+                    animState.requested = ModelAnimState::Run;
+                }
+            }
+            else
+            {
+                switch (state.m_locomotion)
+                {
+                case PlayerLocomotionState::None:
+                case PlayerLocomotionState::Idle:
+                    animState.requested = ModelAnimState::Idle;
+                    break;
+                case PlayerLocomotionState::Walk:
+                    animState.requested = ModelAnimState::Walk;
+                    break;
+                case PlayerLocomotionState::Jump:
+                    animState.requested = ModelAnimState::Jump;
+                    break;
+                case PlayerLocomotionState::Fall:
+                    animState.requested = ModelAnimState::Fall;
+                    break;
+                default:
+                    break;
+                }
             }
 
             // ============================================================

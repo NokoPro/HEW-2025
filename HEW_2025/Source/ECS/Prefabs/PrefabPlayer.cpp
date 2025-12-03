@@ -92,8 +92,8 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
                 idleNo = mr.model->AddAnimation(idlePath.c_str());
 
-                //const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
-                //runNo = mr.model->AddAnimation(runPath.c_str());
+                const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
+                runNo = mr.model->AddAnimation(runPath.c_str());
 
                 const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
                 jumpNo = mr.model->AddAnimation(jumpPath.c_str());
@@ -139,7 +139,14 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 d.loop = true;
                 d.speed = 1.0f;
             }
-            if(jumpNo != Model::ANIME_NONE)
+            if (runNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
+                d.animeNo = static_cast<int>(runNo);
+                d.loop = false;
+                d.speed = 1.0f;
+            }
+            if (jumpNo != Model::ANIME_NONE)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Jump)];
                 d.animeNo = static_cast<int>(jumpNo);
@@ -151,7 +158,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Fall)];
                 d.animeNo = static_cast<int>(fallNo);
                 d.loop = false;
-				d.speed = 1.0f;
+                d.speed = 1.0f;
             }
             if (landNo != Model::ANIME_NONE)
             {
