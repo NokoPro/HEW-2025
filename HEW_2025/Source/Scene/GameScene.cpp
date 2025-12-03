@@ -22,6 +22,9 @@
 #include "ECS/Components/Render/FollowerComponent.h"
 #include "ECS/Components/Render/BackGroundComponent.h"
 
+// 背景ワープ
+#include "ECS/Components/Game/BackGroundScrollComponent.h"
+
 // システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
 #include "ECS/Systems/Update/Game/GoalSystem.h"
@@ -37,6 +40,9 @@
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
+
+// 背景ワープ
+#include "ECS/Systems/Update/Game/BackGroundScrollSystem.h"
 
 // その他ツール
 #include "System/CameraHelper.h"
@@ -143,6 +149,10 @@ void GameScene::Initialize()
     m_sys.AddUpdate<EffectSystem>();
     m_sys.AddUpdate<FollowerSystem>();
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
+
+    // 背景ワープシステム
+    m_sys.AddUpdate<BackGroundScrollSystem>();
+
     m_sys.AddUpdate<TimerSystem>();
     m_sys.AddUpdate<AudioPlaySystem>();
 

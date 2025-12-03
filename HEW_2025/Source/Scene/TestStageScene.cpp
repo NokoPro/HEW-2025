@@ -30,6 +30,9 @@
 #include "ECS/Components/Render/FollowerComponent.h"
 #include "ECS/Components/Render/BackGroundComponent.h"
 
+//背景スクロール
+#include "ECS/Components/Game/BackGroundScrollComponent.h"
+
 /// ECS システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
 #include "ECS/Systems/Update/Game/GoalSystem.h"
@@ -43,6 +46,9 @@
 #include "ECS/Systems/Render/BackGroundRenderSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
+
+// 背景スクロール
+#include "ECS/Systems/Update/Game/BackGroundScrollSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -152,6 +158,9 @@ TestStageScene::TestStageScene()
 
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
+
+    // 背景スクロールシステム
+    m_sys.AddUpdate<BackGroundScrollSystem>();
 
     // タイマーシステム追加
     m_sys.AddUpdate<TimerSystem>();
