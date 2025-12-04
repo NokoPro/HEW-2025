@@ -372,6 +372,12 @@
     <ClCompile Include="Source\Scene\GameScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabResultUi.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Game</Filter>
     </ClCompile>
@@ -713,9 +719,6 @@
     <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Effect</Filter>
     </ClInclude>
@@ -727,6 +730,18 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\ResultUiComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Game\BackGroundScrollComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Game</Filter>
