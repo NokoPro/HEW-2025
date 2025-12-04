@@ -448,7 +448,7 @@
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabUIOverlay.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -770,9 +770,6 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Render\ResultUiComponent.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
@@ -790,9 +787,6 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultRankingUI.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
@@ -842,13 +836,16 @@
     <ClInclude Include="Source\ECS\Components\Render\CountdownUIComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Prefabs\PrefabCountdownUI.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabUIOverlay.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabResultTimer.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabCountdownUI.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
