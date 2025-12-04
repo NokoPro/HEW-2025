@@ -109,10 +109,17 @@ void ResultRankingSystem::Update(World& world, float /*dt*/)
 
 			if (row == 3)
 			{
-				m_posY = 0.7f;
+				m_posY =0.7f;
 			}
-
-			if (row <= 2)
+			if (row == 4)
+			{
+				m_posY =1.1f;
+			}
+			if (row == 5)
+			{
+				m_posY =1.3f;
+			}
+			else if (row <= 2)
 			{
 				m_posY = 0;
 			}
@@ -120,10 +127,12 @@ void ResultRankingSystem::Update(World& world, float /*dt*/)
 			if(foundCam)
 			{
 				const float x = camPos.x + (xUnit * DIGIT_STEP_X);
-				const float y = camPos.y + BASE_OFFSET_Y + ((ROW_STEP_Y+m_posY) * static_cast<float>(row));
+				const float y = camPos.y + BASE_OFFSET_Y  + ((ROW_STEP_Y + m_posY) * static_cast<float>(row));
 				const float z = camPos.z + BASE_OFFSET_Z;
 				tr.position = { x,y,z };
 			}
+			
+
 		}
 	);
 }
