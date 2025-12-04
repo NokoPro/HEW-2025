@@ -80,15 +80,6 @@ void RegisterBackGroundPrefab(PrefabRegistry& registry)
             w.Add<BackGroundScrollComponent>(e2);//e2Ç…BackGroundScrollComponentí«â¡
 
             return e1;
-            
-            spb.width = 76.8f;     //76.8f  ,64.0f
-            spb.height = 86.4f;    //172.8f ,86.4f   64.0f
-            spb.originX = 0.5f;
-            spb.originY = 0.5f;
-            spb.layer = -10;      // îwåiå„ñ 
-            spb.visible = true;   // ï\é¶
-			spb.color = { 1.0f,1.0f,1.0f,1.0f };
-            return e;
         }
     );
 
