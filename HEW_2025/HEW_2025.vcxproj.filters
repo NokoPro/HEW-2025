@@ -384,6 +384,9 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabFailure.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabWarningFrame.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
@@ -726,6 +729,9 @@
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabWhiteUI.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="PrefabWarningFrame.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\GameOverUISystem.h">

@@ -30,6 +30,12 @@ private:
     Collision2DSystem* m_colSys = nullptr;  /// 死亡ゾーンの当たり判定システム
     bool m_triggered = false;               /// 死亡ゾーンに触れたかどうか
     float m_riseSpeed = 1.0f;               /// 上昇速度（デフォルト値）
+
+    //追加 堤翔
+    const float m_warningDistance = 25.0f;    ///  デスゾーンとプレイヤーの間の距離
+    bool m_warningActive = false;              ///  警告処理が実行されているか
+    float m_dis;                               ///  計算格納用
+    float m_oldDis = m_warningDistance * m_warningDistance;                            ///  古い計算格納用
     bool m_sceneSwitch = true;             /// シーン切り替え
    
 };

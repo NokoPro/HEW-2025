@@ -130,6 +130,65 @@ void DeathZoneSystem::GameOverUpdate()
         
     }
 
+    //プレイヤーとDeathゾーンの間の距離を検出
+    std::vector<EntityId> players;
+    world.View<PlayerInputComponent>(
+        [&](EntityId e, const PlayerInputComponent& pic)
+        {
+            players.push_back(e);
+        });
+
+    std::vector<EntityId> deathZones;
+    world.View<Collider2DComponent>(
+        [&](EntityId e, const Collider2DComponent& col)
+        {
+            if (col.layer == Physics::LAYER_DESU_ZONE)
+                deathZones.push_back(e);
+        });
+
+    for (EntityId player : players)
+    {
+        auto* trPlayer = world.TryGet<TransformComponent>(player);
+        if (!trPlayer) continue;
+
+        for (EntityId deathZone : deathZones)
+        {
+            auto* trDeathZone = world.TryGet<TransformComponent>(deathZone);
+            if (!trDeathZone) continue;
+
+            //縦の方向のデスゾーンとプレイヤーの間の距離計算
+            float dy = trPlayer->position.y - trDeathZone->position.y;
+            m_dis = dy * dy;
+
+            if (m_dis <= m_warningDistance * m_warningDistance)
+            {
+                m_warningActive = true;
+                break;
+            }
+            else
+            {
+                m_warningActive = false;
+                m_oldDis = m_warningDistance * m_warningDistance;
+                break;
+            }
+        }
+
+            
+       
+    }
+
+    // 警告演出
+    if (m_warningActive)
+    {
+
+        if (m_oldDis > m_dis)
+        {   
+            m_oldDis = m_dis;
+        }
+    }
+
+}
+
     if (IS_DECIDE)
     {
         if (m_sceneSwitch == true)
