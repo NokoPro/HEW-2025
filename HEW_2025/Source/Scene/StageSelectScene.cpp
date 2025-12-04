@@ -63,11 +63,11 @@ void StageSelectScene::Initialize()
 // カメラシステムを登録（Update用）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
 
-    // UI描画システム（Render用）
-    m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>();
+    // 3Dモデル描画システム:川谷(追記)
+    m_drawModel = &m_sys.AddRender<ModelRenderSystem>(); // 先に描画
 
-	// 3Dモデル描画システム:川谷(追記)
-    m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
+    // UI描画システム（Render用）
+    m_drawSprite = &m_sys.AddRender<SpriteRenderSystem>(); // 後に描画(UIを重ねるため)
 
 	// Prefab登録:川谷(追記)
 	RegisterFloorPrefab(m_prefabs);
@@ -82,18 +82,18 @@ void StageSelectScene::Initialize()
         m_world.Add<TransformComponent>(cam);
 
         auto& c3d = m_world.Add<Camera3DComponent>(cam);
-        c3d.mode = Camera3DComponent::Mode::Orbit; // Orbit(透視投影)モード
+        c3d.mode = Camera3DComponent::Mode::Orbit; // Fixed(平衡投影)モード
 
 		// 斜め上から見下ろす視点設定:川谷(追記)
         c3d.targetX = 0.0f; 
         c3d.targetY = 0.0f; 
         c3d.targetZ = 0.0f;
 
-		c3d.orbitDistance   = 35.0f; // カメラまでの距離:川谷(追加)
-		c3d.orbitPitchDeg   = 35.0f; // 見下ろす角度:川谷(追加)
-		c3d.orbitYawDeg     = -90.0f; // 横回転:川谷(追加)
+		c3d.orbitDistance    =  35.0f; // カメラまでの距離:川谷(追加)
+		c3d.orbitPitchDeg    =  30.0f; // 見下ろす角度:川谷(追加)
+		c3d.orbitYawDeg      = -90.0f; // 横回転:川谷(追加)
 
-		// パース(遠近感)の設定:川谷(追記)
+		// ズーム具合:縦に何メートル分映すか:川谷(追記)
         c3d.fovY = 45.0f;
         c3d.aspect = 1280.0f / 720.0f; // アスペクト比も設定推奨
         c3d.nearZ = 0.1f;
@@ -287,11 +287,10 @@ void StageSelectScene::UpdateInput()
 
 void StageSelectScene::UpdateUI()
 {
-    // ... (UI更新ロジックは変更なし) ...
-    // テクスチャエイリアスの切り替え等
-    if (auto* sp = m_world.TryGet<Sprite2DComponent>(m_entStageIcon))
+    if(auto * sp = m_world.TryGet<Sprite2DComponent>(m_entStageIcon))
     {
-        // アイコンの画像切り替え:川谷(追記)
+
+        // 画像切り替え
         sp->alias = "tex_ui_stage" + std::to_string(m_currentStage);
 
         if (m_state == State::SelectStage)
@@ -300,35 +299,21 @@ void StageSelectScene::UpdateUI()
             sp->width = 420.0f;
             sp->height = 120.0f;
 
-			// 座標計算用:川谷(追記)
-            if (m_followCamera)
+            if (auto* tr = m_world.TryGet<TransformComponent>(m_entStageIcon))
             {
-                // 1.対象の塔の座標を取得
-                int idx = m_currentStage - 1;
-                // 安全策:インデックス範囲チェック
-                if (idx >= 0 && idx < (int)m_stagePoints.size())
-                {
-                    XMFLOAT3 targetPos = m_stagePoints[idx];
-
-                    // 塔の高さ文だけ上にずらす
-                    targetPos.y += 4.5f;
-
-                    // 2.カメラ行列を取得
-                    XMFLOAT4X4 view = m_followCamera->GetView();
-                    XMFLOAT4X4 proj = m_followCamera->GetProj();
-
-                    XMMATRIX V = XMLoadFloat4x4(&view);
-                    XMMATRIX P = XMLoadFloat4x4(&proj);
-                }
+                // UI座標系: (0,0)が画面中央
+                // Y=50.0f くらいにして、キャラの少し上に表示
+                tr->position = { 0.0f, 120.0f, 0.0f };
             }
         }
         else
         {
-            sp->width = 400.0f;
-            sp->height = 100.0f;
+            sp->width  = 420.0f;
+            sp->height = 120.0f;
         }
-        sp->alias = "tex_ui_stage" + std::to_string(m_currentStage);
-    }
+	}
+
+
 
     if (auto* sp = m_world.TryGet<Sprite2DComponent>(m_entDiffIcon))
     {
@@ -343,6 +328,14 @@ void StageSelectScene::UpdateUI()
             case Difficulty::Normal: sp->alias = "tex_ui_diff_normal"; break;
             case Difficulty::Hard:   sp->alias = "tex_ui_diff_hard"; break;
             }
+
+            // 画面中央へ配置
+            if (auto* tr = m_world.TryGet<TransformComponent>(m_entDiffIcon))
+            {
+                // UI座標系では(0, 0)が画面中央
+                tr->position = { 0.0f, 0.0f, -1.0f };
+            }
+
         }
         else
         {
@@ -353,27 +346,27 @@ void StageSelectScene::UpdateUI()
 
 void StageSelectScene::Draw()
 {
-    // 修正: 手計算をやめ、FollowCameraSystem から行列をもらう
-    if (m_followCamera)
+    // 3Dモデル描画
+    if (m_followCamera && m_drawModel)
     {
         const auto& V = m_followCamera->GetView();
-        const auto& P = m_followCamera->GetProj();
+		const auto& P = m_followCamera->GetProj();
 
-        // 描画システムに行列をセット
-        if (m_drawSprite)
-        {
-            m_drawSprite->SetViewProj(V, P);
-            // 他の描画システムがあれば同様にセット
-        }
+        m_drawModel->SetViewProj(V, P);
+        ShaderList::SetL(V, P); // ライティングも3D基準
+    }
 
-		// 3Dモデル描画システムにも行列を渡す:川谷(追記)
-        if (m_drawModel)
-        {
-            m_drawModel->SetViewProj(V, P);
-        }
+    // 2Dスプライト描画
+    if (m_drawSprite)
+    {
+        // 2Dスプライト描画
+        DirectX::XMFLOAT4X4 view2D;
+        DirectX::XMStoreFloat4x4(&view2D, DirectX::XMMatrixIdentity());
 
-        // 必要に応じてシェーダ側にもセット（ライト等）
-        ShaderList::SetL(V, P);
+        DirectX::XMFLOAT4X4 proj2D;
+        DirectX::XMStoreFloat4x4(&proj2D, DirectX::XMMatrixOrthographicLH(1280.0f, 720.0f, 0.0f, 100.0f));
+
+        m_drawSprite->SetViewProj(view2D, proj2D);
     }
 
     // 描画実行
