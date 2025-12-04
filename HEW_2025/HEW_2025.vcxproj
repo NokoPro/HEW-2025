@@ -252,6 +252,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Core\CountdownUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\GoalSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="Source\ECS\Components\Core\PlayerStateComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectSlotsComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Game\BackGroundScrollComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\MovingPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Gimick\SlipPlatformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Input\MovementIntentComponent.h" />
@@ -365,6 +367,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\GoalSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Gimick\MovingPlatformSystem.h" />
