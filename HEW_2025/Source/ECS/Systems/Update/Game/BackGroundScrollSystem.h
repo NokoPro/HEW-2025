@@ -1,6 +1,6 @@
 /*****************************************************************//**
  * @file   BackGronudScrollSystem.h
- * @brief  背景をスクロールさせるSystem
+ * @brief  背景をスクロール(ワープ)させるSystem
  *
  * @author 土本蒼翔
  * @date   2025/11/25
@@ -27,6 +27,7 @@ class BackGroundScrollSystem: public IUpdateSystem
 {
 
 public:
+	// ワープ
 	void Update(class World& world, float dt) override;
 
 private:

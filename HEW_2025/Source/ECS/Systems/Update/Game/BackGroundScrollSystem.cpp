@@ -1,4 +1,11 @@
-// BackGroundScrollSystem.cpp
+/*********************************************************************/
+/* @file   BackGroundScrollSystem.cpp
+ * @brief  背景ワープシステム実装
+ *		   2枚の背景画像を交互に判定とります
+ * 
+ * @author 土本蒼翔
+ * @date   2025/11/25
+ *********************************************************************/
 
 #include "BackGroundScrollSystem.h"
 
@@ -19,17 +26,16 @@ void BackGroundScrollSystem::Update(World& world, float dt)
 		[&](EntityId e, TransformComponent& tr,BackGroundComponent& bg,
 			BackGroundScrollComponent& warp)
 		{
-			
-			float h = bg.height * tr.scale.y;	// 背景の高さ
+			float h = 0.0f;
+			h = bg.height * tr.scale.y;	// 背景の高さ
 
-			//背景の位置がカメラから見て見切れるラインにあったら
-			//ワープ
-			if ( tr.position.y > camY + h)
+			//背景の位置から見て見切れるラインにあったらワープ
+			if (tr.position.y < camY - h)
 			{
 				warp.UpWarp = true;
 			}
- 
-			if (tr.position.y < camY - h)
+
+			if (tr.position.y > camY + h)
 			{
 				warp.DownWarp = true;
 			}
@@ -38,15 +44,15 @@ void BackGroundScrollSystem::Update(World& world, float dt)
 			if (warp.UpWarp)
 			{
 				// 上に背景の位置をずらす
-				tr.position.y -= h * 2.0f;	//画像2枚分ずらすので * 2.0f
+				tr.position.y += h * 2.0f;//画像2枚分ずらすので * 2.0f
 				warp.UpWarp = false;
 			}
 
 			// カメラワープ下
-			if (warp.DownWarp)
-			{
-				// 下に背景の位置をずらす
-				tr.position.y += h * 2.0f;
+ 			if (warp.DownWarp)
+ 			{
+ 				// 下に背景の位置をずらす
+				tr.position.y -= h * 2.0f;
 				warp.DownWarp = false;
 			}
 		});

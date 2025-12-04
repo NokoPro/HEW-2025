@@ -49,7 +49,7 @@ void RegisterBackGroundPrefab(PrefabRegistry& registry)
             spb1.layer = -10;      // îwåiå„ñ 
             spb1.visible = true;   // ï\é¶
 
-            w.Add<BackGroundScrollComponent>(e1);
+            w.Add<BackGroundScrollComponent>(e1);//e1Ç…BackGroundScrollComponentí«â¡
 
             // îwåi2
             EntityId e2 = w.Create();   // 2Ç¬ñ⁄ÇÃÉGÉìÉeÉBÉeÉBê∂ê¨
@@ -68,10 +68,16 @@ void RegisterBackGroundPrefab(PrefabRegistry& registry)
 
             auto& spb2 = w.Add<BackGroundComponent>(e2);
             // îwåi1Ç∆ìØÇ∂ê›íËÇ…Ç∑ÇÈ
-            spb2 = spb1;
-            spb2.visible = true;
+          //  spb2 = spb1;
+            spb2.alias = spb1.alias;
+            spb2.width = spb1.width; 
+            spb2.height = spb1.height; 
+            spb2.originX = spb1.originX;
+            spb2.originY = spb1.originY;
+            spb2.layer = spb1.layer;      // îwåiå„ñ 
+            spb2.visible = spb1.visible;
 
-            w.Add<BackGroundScrollComponent>(e2);
+            w.Add<BackGroundScrollComponent>(e2);//e2Ç…BackGroundScrollComponentí«â¡
 
             return e1;
             
