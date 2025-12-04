@@ -38,6 +38,7 @@
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerPresentationSystem.h"
+#include "ECS/Systems/Update/Core/CountdownUISystem.h"
 
 // その他ツール
 #include "System/CameraHelper.h"
@@ -62,6 +63,7 @@
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
 #include "ECS/Prefabs/PrefabTimer.h"
 #include "ECS/Prefabs/PrefabBackGround.h"
+#include "ECS/Prefabs/PrefabCountdownUI.h"
 
 #include <cstdio>
 #include <string>
@@ -96,6 +98,7 @@ void GameScene::Initialize()
     RegisterFollowerBlinkPrefab(m_prefabs);
     RegisterTimerPrefab(m_prefabs);
     RegisterBackGroundPrefab(m_prefabs);
+	RegisterCountdownUIPrefab(m_prefabs);
 
     // -------------------------------------------------------
     // 1. アセット取得
@@ -145,6 +148,7 @@ void GameScene::Initialize()
     m_sys.AddUpdate<FollowerSystem>();
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
     m_sys.AddUpdate<TimerSystem>();
+	m_sys.AddUpdate<CountdownUISystem>();
     m_sys.AddUpdate<AudioPlaySystem>();
 
     RankingManager::Get().Load("Assets/Ranking.csv");
@@ -333,6 +337,16 @@ void GameScene::Initialize()
 
      AudioManager::LoadAudioAlias("se_jump_p1");
 
+
+     // 4. 固定エンティティ生成 へ追記（UIの位置・スケールは好みで）
+     {
+         PrefabRegistry::SpawnParams sp;
+         sp.position = { 35.0f, 10.0f, -50.0f };
+         sp.rotationDeg = { 0,0,0 };
+         sp.scale = { 4.0f, 4.0f, 1.0f };
+         m_prefabs.Spawn("CountdownUI", m_world, sp);
+     }
+
 }
 
 void GameScene::Update()
@@ -376,6 +390,7 @@ void GameScene::Update()
         if (auto* sys = m_sys.GetUpdate<TimerSystem>())             sys->Update(m_world, dt);
 		if (auto* sys = m_sys.GetUpdate<Collision2DSystem>())      sys->Update(m_world, dt);
 		if (auto* sys = m_sys.GetUpdate<PhysicsStepSystem>())        sys->Update(m_world, dt);
+		if (auto* sys = m_sys.GetUpdate<CountdownUISystem>())    sys->Update(m_world, dt);
 
         // ステート系も回さないとアイドル状態が反映されない可能性があるなら追加
         if (auto* sys = m_sys.GetUpdate<ModelAnimationStateSystem>()) sys->Update(m_world, dt);

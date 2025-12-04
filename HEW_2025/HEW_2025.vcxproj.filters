@@ -375,14 +375,20 @@
     <ClCompile Include="Source\Scene\GameScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+    <ClCompile Include="Source\ECS\Systems\Update\Core\CountdownUISystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionStateSystem.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Anim</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabCountdownUI.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -718,6 +724,12 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Render\CountdownUIComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabCountdownUI.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

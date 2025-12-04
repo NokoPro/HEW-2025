@@ -218,6 +218,7 @@
     <ClCompile Include="..\libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabBackGround.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabCountdownUI.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabDeathZone.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabFollowerBlink.cpp" />
@@ -244,6 +245,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Core\CountdownUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
@@ -321,6 +323,7 @@
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabCountdownUI.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFollower.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabDeathZone.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFloor.h" />
@@ -350,6 +353,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioManagerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />
