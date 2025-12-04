@@ -87,6 +87,7 @@ namespace ImGuiLayer
     // --- Entity î•ñ•\Ž¦ƒwƒ‹ƒp ---
     static void DrawPlayerList(TestStageScene* scene)
     {
+#if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_WIN32) && defined(IMGUI_HAS_DX11)
         if (!scene) { ImGui::TextDisabled("Scene not available"); return; }
         World& w = scene->GetWorld();
 
@@ -178,6 +179,7 @@ namespace ImGuiLayer
         {
             ImGui::TextDisabled("No player entities");
         }
+#endif
     }
 
     void BeginFrame()
