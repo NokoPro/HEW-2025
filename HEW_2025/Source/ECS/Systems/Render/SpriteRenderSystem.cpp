@@ -43,6 +43,9 @@ void SpriteRenderSystem::Render(const World& world)
 			SortableSprite spriteData;
 			spriteData.layer	= sp.layer;
 			spriteData.zDepth	= tr.position.z;
+			spriteData.hTex		= hTex;
+			spriteData.size		= XMFLOAT2(sp.width, sp.height);
+			spriteData.color	= sp.color;
             spriteData.hTex		= hTex;
             spriteData.size		= XMFLOAT2(sp.width, sp.height);
 
@@ -87,6 +90,7 @@ void SpriteRenderSystem::Render(const World& world)
 		Sprite::SetTexture(s.hTex);
 		Sprite::SetUVPos(s.uvOffset);
 		Sprite::SetUVScale(s.uvSize);
+		Sprite::SetColor(s.color);
 		Sprite::Draw();
 	}
 }

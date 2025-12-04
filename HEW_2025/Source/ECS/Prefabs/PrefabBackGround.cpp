@@ -42,7 +42,7 @@ void RegisterBackGroundPrefab(PrefabRegistry& registry)
             spb.originY = 0.5f;
             spb.layer = -10;      // îwåiå„ñ 
             spb.visible = true;   // ï\é¶
-
+			spb.color = { 1.0f,1.0f,1.0f,1.0f };
             return e;
         }
     );
