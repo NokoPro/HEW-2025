@@ -107,13 +107,20 @@ void ResultRankingSystem::Update(World& world, float /*dt*/)
 			sprite.uvSize.y = sizeTexY;
 			sprite.visible = true;
 
-			
+			if (row == 3)
+			{
+				m_posY = 0.7f;
+			}
 
+			if (row <= 2)
+			{
+				m_posY = 0;
+			}
 			// ”z’u
 			if(foundCam)
 			{
 				const float x = camPos.x + (xUnit * DIGIT_STEP_X);
-				const float y = camPos.y + BASE_OFFSET_Y + (ROW_STEP_Y * static_cast<float>(row));
+				const float y = camPos.y + BASE_OFFSET_Y + ((ROW_STEP_Y+m_posY) * static_cast<float>(row));
 				const float z = camPos.z + BASE_OFFSET_Z;
 				tr.position = { x,y,z };
 			}
