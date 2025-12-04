@@ -38,4 +38,5 @@ struct BackGroundComponent
      * @details true のときのみ描画処理とテクスチャ取得を行います。
      */
     bool visible = true;
+    DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; ///< R, G, B, A (テクスチャに掛け合わせる色)
 };

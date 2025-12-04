@@ -37,6 +37,7 @@
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
+#include"ECS/Systems/Render/GameOverUISystem.h"
 
 // その他ツール
 #include "System/CameraHelper.h"
@@ -53,7 +54,7 @@
 #include "ECS/Prefabs/PrefabFloor.h"
 #include "ECS/Prefabs/PrefabWall.h"
 #include "ECS/Prefabs/PrefabStaticBlock.h"
-#include"ECS/Prefabs/PrefabGameOver.h"
+#include "ECS/Prefabs/PrefabGameOver.h"
 #include "ECS/Prefabs/PrefabGoal.h"
 #include "ECS/Prefabs/PrefabDeathZone.h"
 #include "ECS/Prefabs/PrefabMovingPlatform.h"
@@ -62,6 +63,7 @@
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
 #include "ECS/Prefabs/PrefabTimer.h"
 #include "ECS/Prefabs/PrefabBackGround.h"
+#include "ECS/Prefabs/PrefabWhiteUI.h"
 
 #include <cstdio>
 #include <string>
@@ -88,7 +90,7 @@ void GameScene::Initialize()
     RegisterFloorPrefab(m_prefabs);
     RegisterWallPrefab(m_prefabs);
     RegisterStaticBlockPrefab(m_prefabs);
-	RegisterGameOverPrefab(m_prefabs);
+    RegisterGameOverPrefab(m_prefabs);
     RegisterGoalPrefab(m_prefabs);
     RegisterDeathZonePrefab(m_prefabs);
     RegisterMovingPlatformPrefab(m_prefabs);
@@ -96,7 +98,7 @@ void GameScene::Initialize()
     RegisterFollowerBlinkPrefab(m_prefabs);
     RegisterTimerPrefab(m_prefabs);
     RegisterBackGroundPrefab(m_prefabs);
-
+    RegisteWhiteUIPrefab(m_prefabs);
     // -------------------------------------------------------
     // 1. アセット取得
     // -------------------------------------------------------
@@ -222,6 +224,8 @@ void GameScene::Initialize()
         m_prefabs.Spawn("DeathZone", m_world, sp);
     }
 
+
+
     // --- プレイヤー生成 ---
     // 1P
     {
@@ -269,14 +273,28 @@ void GameScene::Initialize()
         m_prefabs.Spawn("Timer", m_world, sp);
     }
 
-	// GameoverUI
-	{
-		PrefabRegistry::SpawnParams sp;
-		sp.position = { 35.0f, 6.0f, 0.0f };
-		sp.scale = { 1.0f, 1.0f, 1.0f };
-		m_prefabs.Spawn("GameOver", m_world, sp);
-	}
+    // GameOverUI
+    {
+        if (m_deathSystem)
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 35.0f, 10.0f, 0.0f };
+            sp.scale = { 1.0f, 1.0f, 1.0f };
+            m_prefabs.Spawn("GameOver", m_world, sp);
+        }
+    }
 
+    //白いぼかしUI
+    {
+       
+        if (m_deathSystem)
+        {
+            PrefabRegistry::SpawnParams sp;
+            sp.position = { 35.0f, 8.0f, 0.0f };
+            sp.scale = { 2.0f, 2.0f, 1.0f };
+            m_prefabs.Spawn("WhiteUI", m_world, sp);
+        }
+    }
 
     // -------------------------------------------------------
     // 5. カメラ設定
@@ -350,15 +368,21 @@ void GameScene::Update()
     }
 
     // シーン遷移ロジック
-    if (m_deathSystem && m_deathSystem->IsDead())
-    {
-		// リトライ
-        ChangeScene<StageSelectScene>();
-    }
-    else if (m_goalSystem && m_goalSystem->IsCleared())
-    {
+	if (m_deathSystem && m_deathSystem->IsDead())
+	{
+        
+        m_deathSystem->GameOverUpdate();
+        
+		return;
+	}
+	if (m_goalSystem && m_goalSystem->IsCleared())
+	{
         ChangeScene<ResultScene>();
-    }
+		return;
+	}
+
+   
+   
 
     EffectRuntime::Update(dt);
 }

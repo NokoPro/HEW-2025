@@ -249,9 +249,6 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabFloor.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
-      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
@@ -386,6 +383,15 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabFailure.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabWhiteUI.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Render\GameOverUISystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -713,14 +719,17 @@
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="GameOverUIComponent.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabGameOver.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabFailure.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabWhiteUI.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Render\GameOverUISystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

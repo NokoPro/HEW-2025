@@ -64,6 +64,9 @@ public:
     void Update() override;
     void Draw() override;
 
+    int GetStageNo() const { return m_stageNo; }
+    Difficulty GetDifficulty() const { return m_difficulty; }
+
     World& GetWorld() { return m_world; }
     const World& GetWorld() const { return m_world; }
 

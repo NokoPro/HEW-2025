@@ -47,10 +47,10 @@ void RegisterTimerPrefab(PrefabRegistry& registry)
 				auto& spr = w.Add<Sprite2DComponent>(digitEnt);
 				spr.alias = "tex_number";
 				spr.visible = true;
-				spr.layer = 101;
+				spr.layer = 103;
 				spr.width = 5.0f;
 				spr.height = 5.0f;
-
+				
 				auto& dig = w.Add<DigitUIComponent>(digitEnt);
 				dig.type = types[i]; // –ğŠ„‚ğİ’è
 			}

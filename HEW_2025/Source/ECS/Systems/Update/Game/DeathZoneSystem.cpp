@@ -5,17 +5,31 @@
  * @date   2025/11/13
  *********************************************************************/
 #include "DeathZoneSystem.h"
-#include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Physics/Collider2DComponent.h"
 #include "ECS/Components/Physics/PhysicsLayers.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
-
+#include "ECS/Tag/Tag.h"
+#include "ECS/Prefabs/PrefabGameOver.h"
+#include "ECS/Components/Render/Sprite2DComponent.h"
 #include "System/Defines.h"
 #include "System/DebugSettings.h"
 #include "System/TimeAttackManager.h"
 
 #include <Windows.h> // MessageBox
+#include <Scene/GameScene.h>
+#include <Scene/ResultScene.h>
+#include <Scene/StageSelectScene.h>
+#include <Scene/TestStageScene.h>
+
+ // 便利なマクロ
+#define IS_DECIDE (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsPadTrigger(0, XINPUT_GAMEPAD_A))
+#define IS_CANCEL (IsKeyTrigger(VK_BACK)  || IsPadTrigger(0, XINPUT_GAMEPAD_B))
+#define IS_RIGHT  (IsKeyTrigger(VK_RIGHT) || IsPadTrigger(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetPadLX(0) > 0.5f)
+#define IS_LEFT   (IsKeyTrigger(VK_LEFT)  || IsPadTrigger(0, XINPUT_GAMEPAD_DPAD_LEFT)  || GetPadLX(0) < -0.5f)
+#define IS_UP     (IsKeyTrigger(VK_UP)    || IsPadTrigger(0, XINPUT_GAMEPAD_DPAD_UP)    || GetPadLY(0) > 0.5f)
+#define IS_DOWN   (IsKeyTrigger(VK_DOWN)  || IsPadTrigger(0, XINPUT_GAMEPAD_DPAD_DOWN)  || GetPadLY(0) < -0.5f)
+
 
 void DeathZoneSystem::Update(World& world, float dt)
 {
@@ -51,6 +65,10 @@ void DeathZoneSystem::Update(World& world, float dt)
             else if (player2 == 0) player2 = e;
         });
 
+
+
+	
+
     // 衝突イベントバッファからプレイヤーとDeathゾーンの接触を検出
     for (const auto& ev : eventBuffer->events)
     {
@@ -64,9 +82,73 @@ void DeathZoneSystem::Update(World& world, float dt)
                 DebugSettings::Get().gameDead = true;
                 DebugSettings::Get().gameTimerRunning = false; // 停止
                 TimeAttackManager::Get().NotifyDeath();
+
                 MessageBoxA(nullptr, "Deathゾーンに接触しました!", "Game Over", MB_OK | MB_ICONEXCLAMATION);
+                world.View<GameOverMenu, Sprite2DComponent>(
+                    [&](EntityId e, const GameOverMenu& gom, Sprite2DComponent& sprite)
+                    {
+                        sprite.visible = true;
+                    });
                 break;
             }
         }
     }
+}
+void DeathZoneSystem::GameOverUpdate()
+{
+   
+
+	//現在のシーンを取得
+    GameScene* currentScene = dynamic_cast<GameScene*>(CurrentScene());
+    // GameSceneのゲッターを使ってステージ番号と難易度を取得
+  
+        int stageNo = currentScene->GetStageNo();
+        Difficulty difficulty = currentScene->GetDifficulty();
+        
+
+  
+	//continueかStageSelectに戻るか選択させる
+    if (IS_RIGHT || IS_UP)
+    {//コンティニュー
+        if (currentScene)
+        {
+           
+            m_sceneSwitch = true;
+            
+        }
+        else
+        {
+            // ダウンキャスト失敗時など、StageSelectSceneへ遷移（安全策）
+            ChangeScene<StageSelectScene>();
+        }
+
+    }
+    else if (IS_LEFT || IS_DOWN)
+	{//ステージセレクトへ戻る
+               // シーン遷移処理
+        m_sceneSwitch = false;
+        
+    }
+
+    if (IS_DECIDE)
+    {
+        if (m_sceneSwitch == true)
+        {
+            // 現在のステージ・難易度でGameSceneを再生成（リロード）
+            ChangeScene<GameScene>(stageNo, difficulty);
+        }
+        else
+        {
+            ChangeScene<StageSelectScene>();
+        }
+       
+    }
+
+ 
+    
+   
+   
+
+   
+    
 }

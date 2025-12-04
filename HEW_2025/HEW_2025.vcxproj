@@ -232,9 +232,11 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabTimer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabWhiteUI.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\FollowerSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Render\GameOverUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
@@ -294,7 +296,6 @@
     <ClInclude Include="..\libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\libs\imgui\imstb_textedit.h" />
     <ClInclude Include="..\libs\imgui\imstb_truetype.h" />
-    <ClInclude Include="GameOverUIComponent.h" />
     <ClInclude Include="libs\nlohmann\json.hpp" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
@@ -336,11 +337,13 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabTimer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabWhiteUI.h" />
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\IUpdateSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\BackGroundRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\FollowerSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Render\GameOverUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />

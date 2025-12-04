@@ -45,7 +45,7 @@ void SpriteRenderSystem::Render(const World& world)
 			spriteData.zDepth	= tr.position.z;
 			spriteData.hTex		= hTex;
 			spriteData.size		= XMFLOAT2(sp.width, sp.height);
-
+			spriteData.color	= sp.color;
 			// オフセット計算(Render時に行わないでここで計算)
 			spriteData.offset.x = tr.position.x + (0.5f - sp.originX) * sp.width;
 			spriteData.offset.y = tr.position.y + (0.5f - sp.originY) * sp.height;
@@ -87,6 +87,7 @@ void SpriteRenderSystem::Render(const World& world)
 		Sprite::SetTexture(s.hTex);
 		Sprite::SetUVPos(s.uvOffset);
 		Sprite::SetUVScale(s.uvSize);
+		Sprite::SetColor(s.color);
 		Sprite::Draw();
 	}
 }

@@ -14,20 +14,22 @@ class DeathZoneSystem : public IUpdateSystem
 public:
     DeathZoneSystem(Collision2DSystem* colSys) : m_colSys(colSys) {}
     void Update(class World& world, float dt) override;
-
+	void GameOverUpdate();
     // 外部(チート/リトライ)用インターフェイス
     void ForceDeath() { m_triggered = true; }
     void ResetDeathFlag() { m_triggered = false; }
     bool IsDead() const { return m_triggered; }
-
+    
     /**
      * @brief デスゾーンの上昇速度を設定する
      * @param speed 毎秒の上昇量(World単位/sec)
      */
     void SetRiseSpeed(float speed) { m_riseSpeed = speed; }
-
+    
 private:
     Collision2DSystem* m_colSys = nullptr;  /// 死亡ゾーンの当たり判定システム
     bool m_triggered = false;               /// 死亡ゾーンに触れたかどうか
     float m_riseSpeed = 1.0f;               /// 上昇速度（デフォルト値）
+    bool m_sceneSwitch = true;             /// シーン切り替え
+   
 };
