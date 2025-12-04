@@ -14,7 +14,7 @@ static const int ANIM_SCORE_SPLIT_Y = 5;
 
 // 配置
 static const float BASE_OFFSET_Y	= 8.0f;
-static const float ROW_STEP_Y		= -5.0f;
+static const float ROW_STEP_Y		= -7.0f;
 static const float BASE_OFFSET_Z	= 20.0f;
 static const float DIGIT_STEP_X		= 4.0f;
 
@@ -106,6 +106,8 @@ void ResultRankingSystem::Update(World& world, float /*dt*/)
 			sprite.uvSize.x = sizeTexX;
 			sprite.uvSize.y = sizeTexY;
 			sprite.visible = true;
+
+			
 
 			// 配置
 			if(foundCam)

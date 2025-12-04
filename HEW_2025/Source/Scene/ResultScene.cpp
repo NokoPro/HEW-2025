@@ -101,8 +101,8 @@ ResultScene::ResultScene()
     }
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { -1.0f, -0.15f, 0.0f };
-        sp.scale    = { 1.0f, 1.0f, 1.0f };
+        sp.position = { -0.65f, 0.0f, 0.0f };
+        sp.scale    = { 13.0f, 8.0f, 1.0f };
         sp.modelAlias = "tex_3st";
         m_prefabs.Spawn("ResultUI", m_world, sp);
         
@@ -130,7 +130,7 @@ ResultScene::ResultScene()
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { -4.0f, -1.0f, 0.0f };
-        sp.scale = { 0.7f, 0.7f, 0.7f };
+        sp.scale = { 0.5f, 0.5f, 0.5f };
         m_prefabs.Spawn("ResultRankingUI", m_world, sp);
     }
     // 5. ÉJÉÅÉâê∂ê¨

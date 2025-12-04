@@ -21,4 +21,6 @@ class ResultRankingSystem final : public IUpdateSystem
 {
 public:
     void Update(World& world, float dt) override;
+private:
+    float m_posY = 0;
 };
