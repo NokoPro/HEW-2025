@@ -202,7 +202,7 @@ void StageSelectScene::InitStages()
 }
 
 // プレイヤー移動関数:川谷(追記)
-void StageSelectScene::SyncPlayerPosition()
+void StageSelectScene::UpdatePlayerMove()
 {
     // m_currentStageは1～3なので-1して配列アクセス
     int idx = m_currentStage - 1;
@@ -210,18 +210,51 @@ void StageSelectScene::SyncPlayerPosition()
     {
         if (auto* tr = m_world.TryGet<TransformComponent>(m_playerEntity))
         {
-			DirectX::XMFLOAT3 targetPos = m_stagePoints[idx];
-            targetPos.y += 1.0f;
-            tr->position = targetPos;
+            // 目標座標
+            DirectX::XMFLOAT3 targetPos = m_stagePoints[idx];
+			targetPos.y += 1.0f; // 床に埋まらないように
+
+			//-----滑らかに移動させる処理(Lerp:線形補間)-----
+			// 補間係数(0.0f～1.0f)大きいほど早い
+            float SmoothTime = 0.15f;
+
+            // 現在地 += (目標 - 現在地) * 係数
+            tr->position.x += (targetPos.x - tr->position.x) * SmoothTime;
+            tr->position.y += (targetPos.y - tr->position.y) * SmoothTime;
+            tr->position.z += (targetPos.z - tr->position.z) * SmoothTime;
+
+            //-----向きの制御(オプション)-----
+            float diffX = targetPos.x - tr->position.x;
+            if (fabs(diffX) > 0.1f)
+            {
+                // 右へ移動中なら45度、左へ移動中なら-45度を向く(都度調整)
+                if (diffX > 0)
+                {
+                    tr->rotationDeg.y = 45.0f; 
+                }
+                else
+                {
+                    tr->rotationDeg.y = -45.0f;
+                }
+            }
+            else
+            {
+                // ほぼ到着したら正面を向く
+                tr->rotationDeg.y = 180.0f;
+            }
         }
     }
 }
+
+
+
 
 void StageSelectScene::Update()
 {
     // システム全体の更新 (これで FollowCameraSystem::Update が呼ばれる)
     m_sys.Tick(m_world, 1.0f / 60.0f);
 
+	UpdatePlayerMove(); // プレイヤー位置更新:川谷(追記)
     UpdateUI();
     UpdateInput();
 }
@@ -231,27 +264,21 @@ void StageSelectScene::UpdateInput()
     // ... (入力ロジックは変更なし) ...
     if (m_state == State::SelectStage)
     {
-		// 川谷(追記)
-        bool changed = false;
 
         if (IS_RIGHT)
         {
             m_currentStage++;
             if (m_currentStage > m_maxStages) m_currentStage = 1;
-			changed = true; // :川谷(追記)
+
         }
         else if (IS_LEFT)
         {
             m_currentStage--;
             if (m_currentStage < 1) m_currentStage = m_maxStages;
-			changed = true; // :川谷(追記)
+
         }
 
-        // 変更があったらプレイヤー位置を更新
-        if (changed)
-        {
-            SyncPlayerPosition();
-        }
+
 
 
         if (IS_DECIDE)

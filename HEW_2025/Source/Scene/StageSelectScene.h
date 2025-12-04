@@ -60,7 +60,7 @@ private:
     void UpdateUI();      // UIの見た目更新
 	void InitStages();    // ステージ環境(床・塔)の初期位置:川谷(追記)
 
-	void SyncPlayerPosition(); // プレイヤーの位置を更新するヘルパー関数:川谷(追記)
+	void UpdatePlayerMove(); // プレイヤーの位置を更新するヘルパー関数:川谷(追記)
 
     // ECS
     World m_world;
