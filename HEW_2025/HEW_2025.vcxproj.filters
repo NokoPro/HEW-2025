@@ -414,6 +414,9 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabCountdownUI.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabUIOverlay.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -783,7 +786,10 @@
       <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabUIOverlay.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

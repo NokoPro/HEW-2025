@@ -40,7 +40,7 @@ void RegisterGoalPrefab(PrefabRegistry& registry)
             // Model (Œ©‚½–Ú‚Í’n–Ê‚Æ“¯‚¶‚É‚µ‚Ä‚¨‚­)
             auto& mr = world.Add<ModelRendererComponent>(e);
             const char* mdlName =
-                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
+                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_door_close";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
             mr.layer = 1;
@@ -49,7 +49,9 @@ void RegisterGoalPrefab(PrefabRegistry& registry)
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
-            mr.overrideTexture = AssetManager::GetTexture("tex_block");
+			mr.localOffset = { 1.1f, 0.0f, 0.0f };
+			mr.localScale = { 0.4f, 0.4f, 2.0f };
+            //mr.overrideTexture = AssetManager::GetTexture("tex_block");
 
             return e;
         }

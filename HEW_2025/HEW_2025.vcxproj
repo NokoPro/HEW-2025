@@ -233,6 +233,7 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabTimer.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabUIOverlay.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWhiteUI.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabStaticBlock.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabTimer.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabUIOverlay.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabWall.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabWhiteUI.h" />
     <ClInclude Include="Source\ECS\Systems\IRenderSystem.h" />

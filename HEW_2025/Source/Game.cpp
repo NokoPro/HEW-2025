@@ -31,7 +31,7 @@ SceneManager& GetSceneManager()
 bool Game_Init(HWND /*hWnd*/, unsigned int /*width*/, unsigned int /*height*/)
 {
     // 最初にテストステージへ遷移
-    g_SceneManager.Change<StageSelectScene>();
+    g_SceneManager.Change<TitleScene>();
     // レコード読み込み (タイムアタック用)
     TimeAttackManager::Get().LoadRecord("time_record.dat");
 

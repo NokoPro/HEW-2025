@@ -54,3 +54,5 @@ anim,Assets/Models/Player2P/anim/ao_usagi_yokojump_right.fbx,anim_player2P_run_l
 texture,Assets/Texture/UI/GameScene/CountdownUI.png,tex_countdown_digits,,,1,,,,,
 texture,Assets/Texture/UI/GameScene/GameStart.png,tex_countdown_start,,,1,,,,,
 model,Assets/Models/Goal/doa2.fbx,mdl_door_close,0.25,1,1,,,,,
+texture,Assets/Texture/UI/Title/PressA.png,tex_title_overlay,,,1,,,,,
+texture,Assets/Texture/UI/Title/TitleLogo.png,tex_title_ui,,,1,,,,,

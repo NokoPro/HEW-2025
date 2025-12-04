@@ -55,6 +55,7 @@
 #include "System/RankingManager.h"
 #include "System/TimeAttackManager.h"
 #include "SceneAPI.h"
+#include "StageSelectScene.h"
 #include "ResultScene.h"
 
 // ƒvƒŒƒnƒuŒQ
@@ -78,7 +79,6 @@
 #include <string>
 #include <DirectXMath.h>
 #include <Windows.h>
-#include "StageSelectScene.h"
 
 GameScene::GameScene(int stageNo, Difficulty difficulty)
     : m_stageNo(stageNo), m_difficulty(difficulty)
