@@ -1,9 +1,9 @@
 /*****************************************************************//**
-* @file   PrefabBackGround.h
+* @file   PrefabGameOver.h
 * @brief  ”wŒi‚ğ¶¬‚·‚éƒvƒŒƒnƒu
 *
-* @author “y–{‘“ãÄ
-* @date   2025/11/25
+* @author ‰œ“cC–ç
+* @date   2025/12/2
 * ********************************************************************/
 #pragma once
 #include "PrefabRegistry.h"

@@ -6,13 +6,13 @@
  * @date   2025/12/4
  *********************************************************************/
 #include "PrefabWhiteUI.h"
-#include <ECS/Components/Physics/TransformComponent.h>
-#include <ECS/Components/Render/Sprite2DComponent.h>
+#include "ECS/Components/Physics/TransformComponent.h"
+#include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/World.h"
 #include "ECS/Components/Render/DigitUIComponent.h"
-#include <ECS/Systems/Render/SpriteRenderSystem.h>
-#include <ECS/Systems/Render/BackGroundRenderSystem.h>
-#include <ECS/Systems/Render/ModelRenderSystem.h>
+#include "ECS/Systems/Render/SpriteRenderSystem.h"
+#include "ECS/Systems/Render/BackGroundRenderSystem.h"
+#include "ECS/Systems/Render/ModelRenderSystem.h"
 #include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 #include "ECS/Tag/Tag.h"
 
@@ -37,7 +37,7 @@ void RegisteWhiteUIPrefab(PrefabRegistry& registry)
 			spw.originX = 0.5f;
 			spw.originY = 0.5f;
 			spw.layer = 99; // UIの前面に表示
-			spw.color = { 1.0f,1.0f,1.0f,0.5f }; // 半透明
+			spw.color = { 1.0f,1.0f,1.0f,0.75f }; // 半透明
 
 			w.Add<GameOverMenu>(e); // ゲームオーバーメニュータグ追加
 

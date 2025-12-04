@@ -37,7 +37,7 @@
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
-#include"ECS/Systems/Render/GameOverUISystem.h"
+#include "ECS/Systems/Render/GameOverUISystem.h"
 
 // ÇªÇÃëºÉcÅ[Éã
 #include "System/CameraHelper.h"
@@ -290,8 +290,8 @@ void GameScene::Initialize()
         if (m_deathSystem)
         {
             PrefabRegistry::SpawnParams sp;
-            sp.position = { 35.0f, 8.0f, 0.0f };
-            sp.scale = { 2.0f, 2.0f, 1.0f };
+            sp.position = { 35.0f, 18.0f, 0.0f };
+            sp.scale = { 4.0f, 4.0f, 1.0f };
             m_prefabs.Spawn("WhiteUI", m_world, sp);
         }
     }

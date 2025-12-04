@@ -5,15 +5,15 @@
  * @author âúìcèCñÁ
  * @date   2025/12/2
  *********************************************************************/
-#include"PrefabGameOver.h"
+#include "PrefabGameOver.h"
 #include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
 #include "ECS/Components/Render/DigitUIComponent.h"
-#include <ECS/Systems/Render/SpriteRenderSystem.h>
-#include <ECS/Systems/Render/BackGroundRenderSystem.h>
-#include <ECS/Systems/Render/ModelRenderSystem.h>
-#include"ECS/Systems/Update/Game/DeathZoneSystem.h"
+#include "ECS/Systems/Render/SpriteRenderSystem.h"
+#include "ECS/Systems/Render/BackGroundRenderSystem.h"
+#include "ECS/Systems/Render/ModelRenderSystem.h"
+#include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 #include "ECS/Tag/Tag.h"
 
 void RegisterGameOverPrefab(PrefabRegistry& registry)
