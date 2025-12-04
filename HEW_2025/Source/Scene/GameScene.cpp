@@ -36,7 +36,6 @@
 #include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
-#include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
 #include "ECS/Systems/Render/GameOverUISystem.h"
 #include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerPresentationSystem.h"
@@ -432,23 +431,13 @@ void GameScene::Update()
         
 		return;
 	}
-	if (m_goalSystem && m_goalSystem->IsCleared())
-	{
-    if (m_deathSystem && m_deathSystem->IsDead())
-    {
-		// ƒŠƒgƒ‰ƒC
-        AudioManager::StopBGM();
-        ChangeScene<StageSelectScene>();
-    }
-    else if (m_goalSystem && m_goalSystem->IsCleared())
+	
+    if (m_goalSystem && m_goalSystem->IsCleared())
     {
         AudioManager::StopBGM();
         ChangeScene<ResultScene>();
 		return;
 	}
-
-   
-   
 
     EffectRuntime::Update(dt);
 }
