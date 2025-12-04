@@ -312,6 +312,7 @@
     <ClInclude Include="Source\ECS\Components\Physics\Rigidbody2DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\TransformComponent.h" />
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Render\CountdownUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />

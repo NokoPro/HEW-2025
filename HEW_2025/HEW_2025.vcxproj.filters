@@ -716,6 +716,9 @@
     <ClInclude Include="Source\ECS\Components\Core\PlayerStateComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\CountdownUIComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Config\gameplay.csv" />
