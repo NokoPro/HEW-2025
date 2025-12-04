@@ -14,7 +14,7 @@ class DeathZoneSystem : public IUpdateSystem
 public:
     DeathZoneSystem(Collision2DSystem* colSys) : m_colSys(colSys) {}
     void Update(class World& world, float dt) override;
-	void GameOverUpdate();
+	void GameOverUpdate(World& world);
     // 外部(チート/リトライ)用インターフェイス
     void ForceDeath() { m_triggered = true; }
     void ResetDeathFlag() { m_triggered = false; }

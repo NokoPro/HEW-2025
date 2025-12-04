@@ -371,7 +371,7 @@ void GameScene::Update()
 	if (m_deathSystem && m_deathSystem->IsDead())
 	{
         
-        m_deathSystem->GameOverUpdate();
+        m_deathSystem->GameOverUpdate(m_world);
         
 		return;
 	}

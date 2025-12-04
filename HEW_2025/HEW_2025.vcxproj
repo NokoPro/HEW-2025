@@ -232,7 +232,6 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabStaticBlock.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabTimer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWall.cpp" />
-    <ClCompile Include="Source\ECS\Prefabs\PrefabWarningFrame.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabWhiteUI.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\BackGroundRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\CollisionDebugRenderSystem.cpp" />

@@ -94,7 +94,7 @@ void DeathZoneSystem::Update(World& world, float dt)
         }
     }
 }
-void DeathZoneSystem::GameOverUpdate()
+void DeathZoneSystem::GameOverUpdate(World& world)
 {
    
 
@@ -187,7 +187,6 @@ void DeathZoneSystem::GameOverUpdate()
         }
     }
 
-}
 
     if (IS_DECIDE)
     {
@@ -202,12 +201,4 @@ void DeathZoneSystem::GameOverUpdate()
         }
        
     }
-
- 
-    
-   
-   
-
-   
-    
 }

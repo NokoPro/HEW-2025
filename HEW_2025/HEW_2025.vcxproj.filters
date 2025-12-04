@@ -384,9 +384,6 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabFailure.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Prefabs\PrefabWarningFrame.cpp">
-      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
