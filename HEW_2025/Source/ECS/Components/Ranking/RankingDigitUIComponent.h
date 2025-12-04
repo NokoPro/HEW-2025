@@ -1,18 +1,7 @@
 /**********************************************************************************************
  * @file      RankingDigitUIComponent.h
- * @brief     数字用UIコンポーネント
- *
- * @author    浅野勇生
- * @date      2025/12/2
- *
- * =============================================================================================
- *  Progress Log  - 進捗ログ
- * ---------------------------------------------------------------------------------------------
- *  [ @date 2025/12/2 ]
- * 
- *    - [◎] RankingDigitUIComponent作成
- *
- **********************************************************************************************/
+ * @brief     ランキング用タイム表示の桁指定コンポーネント
+ */
 #pragma once
 
 struct RankingDigitUIComponent
@@ -22,10 +11,13 @@ struct RankingDigitUIComponent
 
     enum class Type
     {
-        MinTens,
-        MinOnes,
-        Separator, // コロン用 (= インデックス10)
-        SecTens,
-        SecOnes,
+        MinTens,      // 分10の位
+        MinOnes,      // 分1の位
+        Separator,    // コロン（:）
+        SecTens,      // 秒10の位
+        SecOnes,      // 秒1の位
+        Dot,          // 小数点（.)
+        MsTens,       // 1/100秒10の位
+        MsOnes,       // 1/100秒1の位
     } type = Type::MinTens;
 };

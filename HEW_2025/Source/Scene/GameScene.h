@@ -71,6 +71,10 @@ public:
     World& GetWorld() { return m_world; }
     const World& GetWorld() const { return m_world; }
 
+    // チート用インターフェイス
+    void ForceClearCheat();
+    void ForceGameOverCheat();
+
 private:
     /**
      * @brief 初期化処理（コンストラクタから呼ばれる）

@@ -40,7 +40,7 @@
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Render/GameOverUISystem.h"
-#include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h"
+#include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h";
 #include "ECS/Systems/Update/Anim/PlayerPresentationSystem.h"
 #include "ECS/Systems/Update/Core/CountdownUISystem.h"
 
@@ -57,6 +57,10 @@
 #include "SceneAPI.h"
 #include "StageSelectScene.h"
 #include "ResultScene.h"
+
+// 追加: チート実装用
+#include "ECS/Systems/Update/Game/GoalSystem.h"
+#include "ECS/Systems/Update/Game/DeathZoneSystem.h"
 
 // プレハブ群
 #include "ECS/Prefabs/PrefabPlayer.h"
@@ -412,13 +416,11 @@ void GameScene::Update()
     // 2. システム更新の選別
     // カウントダウン中 (State::Countdown) または 待機中 (Ready) は
     // ゲームプレイに関わるシステムを止める
-    bool isPlaying = (state == TimeAttackManager::State::Running);
-
-    if (isPlaying)
+    if (state == TimeAttackManager::State::Running)
     {
         m_sys.Tick(m_world, dt);
     }
-    else
+    else if(state == TimeAttackManager::State::Countdown)
     {
         // アニメーション、カメラ、タイマー、オーディオのみ更新
         if (auto* sys = m_sys.GetUpdate<FollowCameraSystem>())      sys->Update(m_world, dt);
@@ -436,7 +438,6 @@ void GameScene::Update()
     // シーン遷移ロジック
 	if (m_deathSystem && m_deathSystem->IsDead())
 	{
-        
         m_deathSystem->GameOverUpdate(m_world);
         
 		return;
@@ -475,4 +476,14 @@ void GameScene::Draw()
 
     m_sys.Render(m_world);
     EffectRuntime::Render();
+}
+
+// チート: Force Clear / Force Game Over
+void GameScene::ForceClearCheat()
+{
+    if (m_goalSystem) m_goalSystem->ForceClear();
+}
+void GameScene::ForceGameOverCheat()
+{
+    if (m_deathSystem) m_deathSystem->ForceDeath();
 }

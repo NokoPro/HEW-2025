@@ -244,7 +244,6 @@
     <ClCompile Include="Source\ECS\Systems\Render\GameOverUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ModelRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\PlayerUISystem.cpp" />
-    <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\SpriteRenderSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\ResultTimerSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Render\TimerSystem.cpp" />
@@ -368,7 +367,6 @@
     <ClInclude Include="Source\ECS\Systems\Render\GameOverUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ModelRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\PlayerUISystem.h" />
-    <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\SpriteRenderSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\ResultTimerSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Render\TimerSystem.h" />

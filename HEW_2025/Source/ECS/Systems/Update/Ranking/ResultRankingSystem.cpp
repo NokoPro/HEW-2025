@@ -13,8 +13,8 @@ static const int ANIM_SCORE_SPLIT_X = 5;
 static const int ANIM_SCORE_SPLIT_Y = 5;
 
 // 配置
-static const float BASE_OFFSET_Y	= 8.0f;
-static const float ROW_STEP_Y		= -7.0f;
+static const float BASE_OFFSET_Y	= 7.0f;
+static const float ROW_STEP_Y		= -7.5f;
 static const float BASE_OFFSET_Z	= 20.0f;
 static const float DIGIT_STEP_X		= 4.0f;
 
@@ -45,7 +45,7 @@ void ResultRankingSystem::Update(World& world, float /*dt*/)
 	);
 
 	// 上位6件取得
-	const auto times = RankingManager::Get().GetTop(6);
+	const auto times = RankingManager::Get().GetTop(5);
 
 	const float sizeTexX = 1.0f / static_cast<float>(ANIM_SCORE_SPLIT_X);
 	const float sizeTexY = 1.0f / static_cast<float>(ANIM_SCORE_SPLIT_Y);
@@ -107,22 +107,22 @@ void ResultRankingSystem::Update(World& world, float /*dt*/)
 			sprite.uvSize.y = sizeTexY;
 			sprite.visible = true;
 
-			if (row == 3)
-			{
-				m_posY =0.7f;
-			}
-			if (row == 4)
-			{
-				m_posY =1.1f;
-			}
-			if (row == 5)
-			{
-				m_posY =1.3f;
-			}
-			else if (row <= 2)
-			{
-				m_posY = 0;
-			}
+			//if (row == 3)
+			//{
+			//	m_posY =0.7f;
+			//}
+			//if (row == 4)
+			//{
+			//	m_posY =1.1f;
+			//}
+			//if (row == 5)
+			//{
+			//	m_posY =1.3f;
+			//}
+			//else if (row <= 2)
+			//{
+			//	m_posY = 0;
+			//}
 			// 配置
 			if(foundCam)
 			{

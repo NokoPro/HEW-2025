@@ -59,6 +59,10 @@ public:
 
     void ShowRankingMessege() const;
 
+    // 追加: 前回クリアタイムの保持/取得
+    void SetLastClearTime(float seconds) { m_lastClear = seconds; }
+    float GetLastClearTime() const { return m_lastClear; }
+
 private:
     RankingManager() {}
     ~RankingManager() {}
@@ -72,4 +76,7 @@ private:
 
     // 直近の保存/読込パス（AddRecord の保存先に利用）
     std::string m_filePath;
+
+    // 直近クリアタイム（未設定: -1）
+    float m_lastClear = -1.0f;
 };

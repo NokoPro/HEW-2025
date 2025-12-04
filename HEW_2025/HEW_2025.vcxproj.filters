@@ -166,9 +166,6 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Prefabs">
       <UniqueIdentifier>{ebc9abe9-8fb6-4321-8b8c-668b417fbf51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ヘッダー ファイル\ECS\Tag">
-      <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\ヘッダー ファイル\libs">
       <UniqueIdentifier>{5811ae35-0628-48dc-b8dd-6fd7bdd484a8}</UniqueIdentifier>
     </Filter>
@@ -386,9 +383,6 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene.cpp">
       <Filter>Source\ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ECS\Systems\Render\ResultUiRenderSystem.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Render\ResultTimerSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
@@ -767,9 +761,6 @@
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>Source\ヘッダー ファイル\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Systems\Render\ResultUiRenderSystem.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Render\ResultTimerSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Render</Filter>
     </ClInclude>
@@ -818,9 +809,6 @@
     <ClInclude Include="Source\ECS\Systems\Update\Anim\ModelAnimationStateSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionStateSystem.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerPresentationSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
@@ -844,6 +832,9 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Anim\PlayerLocomotionStateSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Anim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

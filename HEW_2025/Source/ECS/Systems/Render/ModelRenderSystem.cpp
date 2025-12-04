@@ -144,9 +144,9 @@ void ModelRenderSystem::Render(const World& world)
         // オーバーライドテクスチャ付きで描画
         s.model->Draw(-1, s.overrideTexture);
 
-#ifdef _DEBUG
-        s.model->DrawBone();
-#endif
+//#ifdef _DEBUG
+//        s.model->DrawBone();
+//#endif
     }
 
     SetDepthTest(false);

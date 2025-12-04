@@ -12,15 +12,18 @@
 #include "ECS/Tag/Tag.h"
 #include "ECS/Prefabs/PrefabGameOver.h"
 #include "ECS/Components/Render/Sprite2DComponent.h"
+#include "ECS/Components/Render/FollowerComponent.h"
+
 #include "System/Defines.h"
 #include "System/DebugSettings.h"
 #include "System/TimeAttackManager.h"
 
+#include "Scene/GameScene.h"
+#include "Scene/ResultScene.h"
+#include "Scene/StageSelectScene.h"
+#include "Scene/TestStageScene.h"
+
 #include <Windows.h> // MessageBox
-#include <Scene/GameScene.h>
-#include <Scene/ResultScene.h>
-#include <Scene/StageSelectScene.h>
-#include <Scene/TestStageScene.h>
 
  // 便利なマクロ
 #define IS_DECIDE (IsKeyTrigger(VK_SPACE) || IsKeyTrigger(VK_RETURN) || IsPadTrigger(0, XINPUT_GAMEPAD_A))
@@ -65,10 +68,6 @@ void DeathZoneSystem::Update(World& world, float dt)
             else if (player2 == 0) player2 = e;
         });
 
-
-
-	
-
     // 衝突イベントバッファからプレイヤーとDeathゾーンの接触を検出
     for (const auto& ev : eventBuffer->events)
     {
@@ -84,37 +83,69 @@ void DeathZoneSystem::Update(World& world, float dt)
                 TimeAttackManager::Get().NotifyDeath();
 
                 MessageBoxA(nullptr, "Deathゾーンに接触しました!", "Game Over", MB_OK | MB_ICONEXCLAMATION);
-                world.View<GameOverMenu, Sprite2DComponent>(
-                    [&](EntityId e, const GameOverMenu& gom, Sprite2DComponent& sprite)
+
+                // カメラエンティティと位置取得（ActiveCameraTag）
+                EntityId camEntity = kInvalidEntity;
+                TransformComponent* camTr = nullptr;
+                world.View<ActiveCameraTag>([&](EntityId e, const ActiveCameraTag&) { camEntity = e; });
+                if (camEntity != kInvalidEntity && world.Has<TransformComponent>(camEntity))
+                {
+                    camTr = &world.Get<TransformComponent>(camEntity);
+                }
+
+                // ゲームオーバーUIを表示し、死亡時点のカメラ位置に合わせる
+                world.View<GameOverMenu, Sprite2DComponent, TransformComponent>(
+                    [&](EntityId e, const GameOverMenu& gom, Sprite2DComponent& sprite, TransformComponent& tr)
                     {
                         sprite.visible = true;
+                        if (camTr)
+                        {
+                            tr.position.x = camTr->position.x;
+                            tr.position.y = camTr->position.y;
+                            // UIは前面にするため僅かに手前へ（必要なら固定Z）
+                            tr.position.z = camTr->position.z + 0.0f;
+                        }
+                    });
+
+                // 以降も追従させたい場合はフォロワーを付与
+                world.View<GameOverMenu>(
+                    [&](EntityId e, const GameOverMenu&)
+                    {
+                        if (camEntity != kInvalidEntity)
+                        {
+                            if (!world.Has<FollowerComponent>(e))
+                            {
+                                auto& fol = world.Add<FollowerComponent>(e);
+                                fol.targetId = camEntity;
+                                fol.offset = { 0.0f, 0.0f };
+                            }
+                            else
+                            {
+                                world.Get<FollowerComponent>(e).targetId = camEntity;
+                            }
+                        }
                     });
                 break;
             }
         }
     }
 }
+
 void DeathZoneSystem::GameOverUpdate(World& world)
 {
-   
-
 	//現在のシーンを取得
     GameScene* currentScene = dynamic_cast<GameScene*>(CurrentScene());
     // GameSceneのゲッターを使ってステージ番号と難易度を取得
   
-        int stageNo = currentScene->GetStageNo();
-        Difficulty difficulty = currentScene->GetDifficulty();
+    int stageNo = currentScene->GetStageNo();
+    Difficulty difficulty = currentScene->GetDifficulty();
         
-
-  
 	//continueかStageSelectに戻るか選択させる
     if (IS_RIGHT || IS_UP)
     {//コンティニュー
         if (currentScene)
         {
-           
             m_sceneSwitch = true;
-            
         }
         else
         {
@@ -123,9 +154,9 @@ void DeathZoneSystem::GameOverUpdate(World& world)
         }
 
     }
-    else if (IS_LEFT || IS_DOWN)
-	{//ステージセレクトへ戻る
-               // シーン遷移処理
+    else if (IS_LEFT || IS_DOWN)        //ステージセレクトへ戻る
+	{           
+        // シーン遷移処理
         m_sceneSwitch = false;
         
     }
@@ -172,15 +203,11 @@ void DeathZoneSystem::GameOverUpdate(World& world)
                 break;
             }
         }
-
-            
-       
     }
 
     // 警告演出
     if (m_warningActive)
     {
-
         if (m_oldDis > m_dis)
         {   
             m_oldDis = m_dis;
