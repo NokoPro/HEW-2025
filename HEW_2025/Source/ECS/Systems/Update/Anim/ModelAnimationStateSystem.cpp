@@ -1,18 +1,21 @@
 #include "ModelAnimationStateSystem.h"
 #include "ECS/World.h"
 #include "ECS/Components/Render/ModelComponent.h"
+#include "ECS/Components/Core/PlayerStateComponent.h"
 
 void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
 {
     world.View<ModelAnimationComponent,
         ModelAnimationStateComponent,
         ModelAnimationTableComponent,
-        ModelRendererComponent>(
+        ModelRendererComponent,
+        PlayerStateComponent>(
             [&](EntityId /*e*/,
                 ModelAnimationComponent& anim,
                 ModelAnimationStateComponent& state,
                 ModelAnimationTableComponent& table,
-                ModelRendererComponent& mr)
+                ModelRendererComponent& mr,
+                const PlayerStateComponent& pstate)
             {
                 // まだ何も要求されていない
                 if (state.requested == ModelAnimState::None)
@@ -60,7 +63,17 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                     return;
                 }
 
-                const size_t idx = static_cast<size_t>(state.requested);
+                // Facing に応じて Run を左右で差し替え
+                ModelAnimState requested = state.requested;
+                if (requested == ModelAnimState::Run)
+                {
+                    if (pstate.m_facing == PlayerFacingState::Left)
+                        requested = ModelAnimState::RunLeft;
+                    else if (pstate.m_facing == PlayerFacingState::Right)
+                        requested = ModelAnimState::RunRight;
+                }
+
+                const size_t idx = static_cast<size_t>(requested);
                 if (idx >= table.table.size())
                 {
                     return;
@@ -80,6 +93,6 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                 anim.playRequested = true;  // 次の ModelAnimationSystem で Play される
 
                 // 現在ステートを更新
-                state.current = state.requested;
+                state.current = requested;
             });
 }

@@ -29,13 +29,15 @@
 
 using AnimeNo = Model::AnimeNo;
 
-// Data.csv 側の aliases と対応
-static const char* kAnimIdleAlias = "anim_player_idle";
-static const char* kAnimRunAlias  = "anim_player_run";
-static const char* kAnimJumpAlias = "anim_player_jump";
-static const char* kAnimFallAlias = "anim_player_fall";
-static const char* kAnimWalkAlias = "anim_player_walk";
-static const char* kAnimLandAlias = "anim_player_land";
+// Data.csv 側のデフォルト aliases
+static const char* kDefaultAnimIdleAlias = "anim_player_idle";
+static const char* kDefaultAnimRunAlias  = "anim_player_run";
+static const char* kDefaultAnimRunLeftAlias  = "anim_player_run_left";
+static const char* kDefaultAnimRunRightAlias = "anim_player_run_right";
+static const char* kDefaultAnimJumpAlias = "anim_player_jump";
+static const char* kDefaultAnimFallAlias = "anim_player_fall";
+static const char* kDefaultAnimWalkAlias = "anim_player_walk";
+static const char* kDefaultAnimLandAlias = "anim_player_land";
 
 void RegisterPlayerPrefab(PrefabRegistry& registry)
 {
@@ -74,11 +76,23 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
             mr.localOffset = { 0.f, -0.15f, 0.f }; // 足元を原点に合わせる
-            mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
-            
+
+            if(sp.padIndex == 0)
+            {
+                // 1P用モデル
+                mr.overrideTexture = AssetManager::GetTexture("tex_pinkusagi");
+            }
+            else if(sp.padIndex == 1)
+            {
+                // 2P用モデル
+                mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
+            }
+			
             // このモデルインスタンスに対して個別にアニメを追加
             AnimeNo idleNo = Model::ANIME_NONE;
             AnimeNo runNo  = Model::ANIME_NONE;
+            AnimeNo runLeftNo  = Model::ANIME_NONE;
+            AnimeNo runRightNo = Model::ANIME_NONE;
             AnimeNo jumpNo = Model::ANIME_NONE;
             AnimeNo fallNo = Model::ANIME_NONE;
             AnimeNo walkNo = Model::ANIME_NONE;
@@ -89,22 +103,37 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-                const auto idlePath = AssetManager::ResolveAnimationPath(kAnimIdleAlias);
+                // 個別指定があればそちらを優先
+                const std::string idleAlias = sp.animIdleAlias.empty() ? std::string(kDefaultAnimIdleAlias) : sp.animIdleAlias;
+                const auto idlePath = AssetManager::ResolveAnimationPath(idleAlias);
                 idleNo = mr.model->AddAnimation(idlePath.c_str());
 
-                const auto runPath = AssetManager::ResolveAnimationPath(kAnimRunAlias);
+                const std::string runAlias = sp.animRunAlias.empty() ? std::string(kDefaultAnimRunAlias) : sp.animRunAlias;
+                const auto runPath = AssetManager::ResolveAnimationPath(runAlias);
                 runNo = mr.model->AddAnimation(runPath.c_str());
 
-                const auto jumpPath = AssetManager::ResolveAnimationPath(kAnimJumpAlias);
+                const std::string runLeftAlias = sp.animRunLeftAlias.empty() ? std::string(kDefaultAnimRunLeftAlias) : sp.animRunLeftAlias;
+                const auto runLeftPath = AssetManager::ResolveAnimationPath(runLeftAlias);
+                runLeftNo = mr.model->AddAnimation(runLeftPath.c_str());
+
+                const std::string runRightAlias = sp.animRunRightAlias.empty() ? std::string(kDefaultAnimRunRightAlias) : sp.animRunRightAlias;
+                const auto runRightPath = AssetManager::ResolveAnimationPath(runRightAlias);
+                runRightNo = mr.model->AddAnimation(runRightPath.c_str());
+
+                const std::string jumpAlias = sp.animJumpAlias.empty() ? std::string(kDefaultAnimJumpAlias) : sp.animJumpAlias;
+                const auto jumpPath = AssetManager::ResolveAnimationPath(jumpAlias);
                 jumpNo = mr.model->AddAnimation(jumpPath.c_str());
 
-                const auto fallPath = AssetManager::ResolveAnimationPath(kAnimFallAlias);
+                const std::string fallAlias = sp.animFallAlias.empty() ? std::string(kDefaultAnimFallAlias) : sp.animFallAlias;
+                const auto fallPath = AssetManager::ResolveAnimationPath(fallAlias);
                 fallNo = mr.model->AddAnimation(fallPath.c_str());
 
-                const auto walkPath = AssetManager::ResolveAnimationPath(kAnimWalkAlias);
+                const std::string walkAlias = sp.animWalkAlias.empty() ? std::string(kDefaultAnimWalkAlias) : sp.animWalkAlias;
+                const auto walkPath = AssetManager::ResolveAnimationPath(walkAlias);
                 walkNo = mr.model->AddAnimation(walkPath.c_str());
 
-                const auto landPath = AssetManager::ResolveAnimationPath(kAnimLandAlias);
+                const std::string landAlias = sp.animLandAlias.empty() ? std::string(kDefaultAnimLandAlias) : sp.animLandAlias;
+                const auto landPath = AssetManager::ResolveAnimationPath(landAlias);
                 landNo = mr.model->AddAnimation(landPath.c_str());
             }
 
@@ -143,6 +172,20 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             {
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Run)];
                 d.animeNo = static_cast<int>(runNo);
+                d.loop = false;
+                d.speed = 1.0f;
+            }
+            if (runLeftNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::RunLeft)];
+                d.animeNo = static_cast<int>(runLeftNo);
+                d.loop = false;
+                d.speed = 1.0f;
+            }
+            if (runRightNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::RunRight)];
+                d.animeNo = static_cast<int>(runRightNo);
                 d.loop = false;
                 d.speed = 1.0f;
             }

@@ -80,6 +80,8 @@ enum class ModelAnimState
     Idle,
     Walk,
     Run,
+    RunLeft,
+    RunRight,
     Jump,
     Fall,
     Land,
