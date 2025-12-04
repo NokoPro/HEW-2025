@@ -82,7 +82,7 @@ void StageSelectScene::Initialize()
         m_world.Add<TransformComponent>(cam);
 
         auto& c3d = m_world.Add<Camera3DComponent>(cam);
-        c3d.mode = Camera3DComponent::Mode::Orbit; // Fixed(平衡投影)モード
+        c3d.mode = Camera3DComponent::Mode::Orbit; // Orbitモード
 
 		// 斜め上から見下ろす視点設定:川谷(追記)
         c3d.targetX = 0.0f; 

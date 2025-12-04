@@ -25,12 +25,6 @@
 //key入力
 #include"System/Input.h"
 
- // ECS関連
-#include "ECS/World.h"
-#include "ECS/Systems/SystemRegistry.h"
-#include "ECS/Systems/Render/SpriteRenderSystem.h"
-#include "ECS/Systems/Update/Core/FollowCameraSystem.h"
-#include "ECS/Prefabs/PrefabRegistry.h"
 
 class TitleScene : public Scene
 {
@@ -42,19 +36,4 @@ public:
     void Draw();
 
 private:
-	void Initialize(); //初期化処理
-
-    // ECS
-    World m_world;
-    SystemRegistry m_sys;
-    PrefabRegistry m_prefabs;
-
-    // システムへの参照
-    SpriteRenderSystem* m_drawSprite = nullptr;
-    FollowCameraSystem* m_followCamera = nullptr;
-
-    // UI用エンティティID
-    EntityId m_entStageIcon = 0;
-    EntityId m_entDiffIcon = 0;
-    EntityId m_entGuide = 0;
 };

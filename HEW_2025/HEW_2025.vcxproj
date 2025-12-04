@@ -225,7 +225,6 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
-    <ClCompile Include="Source\ECS\Prefabs\PrefabPreesA.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultUi.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabSlipPlarform.cpp" />
@@ -318,7 +317,6 @@
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\ModelComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\PlayerUIComponent.h" />
-    <ClInclude Include="Source\ECS\Components\Render\PreesAComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\ResultUiComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />
@@ -331,7 +329,6 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabGoal.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />
-    <ClInclude Include="Source\ECS\Prefabs\PrefabPreesA.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultUi.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabSlipPlatform.h" />
