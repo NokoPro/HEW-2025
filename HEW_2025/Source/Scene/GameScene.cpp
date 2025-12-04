@@ -239,15 +239,14 @@ void GameScene::Initialize()
         sp.rotationDeg = { 0.0f, 180.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 0;
-        sp.modelAlias = "mdl_1Pplayer";
-		sp.animIdleAlias = "anim_player1P_idle";
-		sp.animRunLeftAlias = "anim_player1P_run_left";
+        sp.modelAlias        = "mdl_1Pplayer";
+		sp.animIdleAlias     = "anim_player1P_idle";
+		sp.animRunLeftAlias  = "anim_player1P_run_left";
 		sp.animRunRightAlias = "anim_player1P_run_right";
-		sp.animJumpAlias = "anim_player1P_jump";
-		sp.animFallAlias = "anim_player1P_fall";
-		sp.animWalkAlias = "anim_player1P_walk";
-		sp.animLandAlias = "anim_player1P_land";
-
+		sp.animJumpAlias     = "anim_player1P_jump";
+		sp.animFallAlias     = "anim_player1P_fall";
+		sp.animWalkAlias     = "anim_player1P_walk";
+		sp.animLandAlias     = "anim_player1P_land";
 
         m_playerEntity1 = m_prefabs.Spawn("Player", m_world, sp);
 
@@ -266,14 +265,14 @@ void GameScene::Initialize()
         sp.rotationDeg = { 0.0f, 180.0f, 0.0f };
         sp.scale = { 1.f, 2.f, 1.f };
         sp.padIndex = 1;
-        sp.modelAlias = "mdl_2Pplayer";
-		sp.animIdleAlias = "anim_player2P_idle";
-		sp.animRunLeftAlias = "anim_player2P_run_left";
+        sp.modelAlias        = "mdl_2Pplayer";
+		sp.animIdleAlias     = "anim_player2P_idle";
+		sp.animRunLeftAlias  = "anim_player2P_run_left";
 		sp.animRunRightAlias = "anim_player2P_run_right";
-		sp.animJumpAlias = "anim_player2P_jump";
-		sp.animFallAlias = "anim_player2P_fall";
-		sp.animWalkAlias = "anim_player2P_walk";
-		sp.animLandAlias = "anim_player2P_land";
+		sp.animJumpAlias     = "anim_player2P_jump";
+		sp.animFallAlias     = "anim_player2P_fall";
+		sp.animWalkAlias     = "anim_player2P_walk";
+		sp.animLandAlias     = "anim_player2P_land";
 
         m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
 
@@ -337,7 +336,6 @@ void GameScene::Initialize()
 
      AudioManager::LoadAudioAlias("se_jump_p1");
 
-
      // 4. 固定エンティティ生成 へ追記（UIの位置・スケールは好みで）
      {
          PrefabRegistry::SpawnParams sp;
@@ -346,7 +344,6 @@ void GameScene::Initialize()
          sp.scale = { 4.0f, 4.0f, 1.0f };
          m_prefabs.Spawn("CountdownUI", m_world, sp);
      }
-
 }
 
 void GameScene::Update()

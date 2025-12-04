@@ -44,13 +44,11 @@ void SpriteRenderSystem::Render(const World& world)
 			spriteData.layer	= sp.layer;
 			spriteData.zDepth	= tr.position.z;
             spriteData.hTex		= hTex;
-            const float scaledW = sp.width * tr.scale.x;
-            const float scaledH = sp.height * tr.scale.y;
-            spriteData.size		= XMFLOAT2(scaledW, scaledH);
+            spriteData.size		= XMFLOAT2(sp.width, sp.height);
 
 			// オフセット計算(Render時に行わないでここで計算)
-            spriteData.offset.x = tr.position.x + (0.5f - sp.originX) * scaledW;
-            spriteData.offset.y = tr.position.y + (0.5f - sp.originY) * scaledH;
+            spriteData.offset.x = tr.position.x + (0.5f - sp.originX) * spriteData.size.x;
+            spriteData.offset.y = tr.position.y + (0.5f - sp.originY) * spriteData.size.y;
 
 			// ワールド行列(Zレベルだけ反映。XYはオフセットで表現)
 			XMMATRIX W = XMMatrixTranslation(0.0f, 0.0f, tr.position.z);
