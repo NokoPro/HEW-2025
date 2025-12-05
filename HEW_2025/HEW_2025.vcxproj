@@ -227,6 +227,8 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabGameOver.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabGoal.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabMovingPlatform.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP1.cpp" />
+    <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP2.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabRegistry.cpp" />
     <ClCompile Include="Source\ECS\Prefabs\PrefabResultRankingUI.cpp" />
@@ -268,6 +270,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Ranking\ResultRankingSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorSystem.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Scene\GameScene.cpp" />
@@ -338,6 +341,7 @@
     <ClInclude Include="Source\ECS\Components\Render\PlayerUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\RankComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\Sprite2DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorComponent.h" />
     <ClInclude Include="Source\ECS\ECS.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabBackGround.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabFailure.h" />
@@ -350,6 +354,8 @@
     <ClInclude Include="Source\ECS\Prefabs\PrefabGameOver.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabGoal.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabMovingPlatform.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP1.h" />
+    <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP2.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabPlayer.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabRegistry.h" />
     <ClInclude Include="Source\ECS\Prefabs\PrefabResultRankingUI.h" />
@@ -393,6 +399,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Physics\MovementApplySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Physics\PhysicsStepSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Ranking\ResultRankingSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorSystem.h" />
     <ClInclude Include="Source\ECS\Tag\Tag.h" />
     <ClInclude Include="Source\ECS\World.h" />
     <ClInclude Include="Source\Game.h" />

@@ -17,6 +17,12 @@
 #include "ECS/Components/Core/GameStateComponent.h"
 #include "ECS/Systems/Update/Core/GameStateSystem.h"
 
+// 追加: 画面下端インジケータ
+#include "ECS/Prefabs/PrefabOffscreenIndicatorP1.h"
+#include "ECS/Prefabs/PrefabOffscreenIndicatorP2.h"
+#include "ECS/Systems/Update/UI/PlayerOffscreenIndicatorSystem.h"
+#include "ECS/Components/UI/OffscreenIndicatorComponent.h"
+
 // コンポーネント群
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/ModelComponent.h"
@@ -44,7 +50,7 @@
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
 #include "ECS/Systems/Render/GameOverUISystem.h"
-#include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h";
+#include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerPresentationSystem.h"
 #include "ECS/Systems/Update/Core/CountdownUISystem.h"
 
@@ -118,6 +124,9 @@ void GameScene::Initialize()
     RegisterBackGroundPrefab(m_prefabs);
     RegisteWhiteUIPrefab(m_prefabs);
 	RegisterCountdownUIPrefab(m_prefabs);
+    // 追加: インジケータUI
+    RegisterOffscreenIndicatorP1Prefab(m_prefabs);
+    RegisterOffscreenIndicatorP2Prefab(m_prefabs);
 
     // -------------------------------------------------------
     // 1. アセット取得
@@ -150,6 +159,9 @@ void GameScene::Initialize()
 
     auto* colSys = &m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
     m_goalSystem = &m_sys.AddUpdate<GoalSystem>(colSys);
+
+    // 追加: インジケータUIシステム
+    m_sys.AddUpdate<PlayerOffscreenIndicatorSystem>();
 
     // DeathZoneSystem登録と難易度パラメータ設定
     m_deathSystem = &m_sys.AddUpdate<DeathZoneSystem>(colSys);
@@ -285,6 +297,13 @@ void GameScene::Initialize()
 
         EntityId blinkUI = m_prefabs.Spawn("FollowerBlink", m_world, spF);
         if (m_world.Has<FollowerComponent>(blinkUI)) m_world.Get<FollowerComponent>(blinkUI).targetId = m_playerEntity1;
+
+        // 1P用インジケータUI生成
+        {
+            PrefabRegistry::SpawnParams spI; spI.position = { 0.0f, 0.0f, -20.0f }; spI.scale = { 1.0f, 1.0f, 1.0f };
+            EntityId ind1 = m_prefabs.Spawn("OffscreenIndicatorP1", m_world, spI);
+            if (auto* ind = m_world.TryGet<OffscreenIndicatorComponent>(ind1)) { ind->targetId = m_playerEntity1; }
+        }
     }
 
     // 2P
@@ -311,6 +330,13 @@ void GameScene::Initialize()
 
         EntityId blinkUI = m_prefabs.Spawn("FollowerBlink", m_world, spF);
         if (m_world.Has<FollowerComponent>(blinkUI)) m_world.Get<FollowerComponent>(blinkUI).targetId = m_playerEntity2;
+
+        // 2P用インジケータUI生成
+        {
+            PrefabRegistry::SpawnParams spI; spI.position = { 0.0f, 0.0f, -20.0f }; spI.scale = { 1.0f, 1.0f, 1.0f };
+            EntityId ind2 = m_prefabs.Spawn("OffscreenIndicatorP2", m_world, spI);
+            if (auto* ind = m_world.TryGet<OffscreenIndicatorComponent>(ind2)) { ind->targetId = m_playerEntity2; }
+        }
     }
 
     // タイマーUI

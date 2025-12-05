@@ -444,6 +444,15 @@
     <ClCompile Include="Source\ECS\Systems\Update\Core\GameStateSystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorSystem.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP1.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP2.cpp">
+      <Filter>Source\ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\System\AssetCatalog.h">
@@ -838,6 +847,18 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Core\GameStateComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorComponent.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorSystem.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP1.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP2.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
