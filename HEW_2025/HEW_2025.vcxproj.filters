@@ -881,14 +881,14 @@
     <ClInclude Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorFaceSystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorFaceComponent.h">
-      <Filter>Source\ヘッダー ファイル\ECS\Components\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP1.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP2.h">
       <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorFaceComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
