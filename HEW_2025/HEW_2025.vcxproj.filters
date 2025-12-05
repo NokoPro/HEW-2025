@@ -178,6 +178,15 @@
     <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Tag">
       <UniqueIdentifier>{aabde346-27e1-45eb-a7f4-ba77767ebec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Components\UI">
+      <UniqueIdentifier>{c861a515-f0d1-4f85-867a-572d2a7c73f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\UI">
+      <UniqueIdentifier>{b3205194-2c52-4a59-a401-0d463999db5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\UI">
+      <UniqueIdentifier>{b23b1adc-2d24-4c04-85ab-8a15ac2e8958}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -445,13 +454,22 @@
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorSystem.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\UI</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP1.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP2.cpp">
-      <Filter>Source\ソース ファイル</Filter>
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorFaceSystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP1.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP2.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -849,16 +867,28 @@
       <Filter>Source\ヘッダー ファイル\ECS\Components\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorComponent.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Components\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorSystem.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP1.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorP2.h">
-      <Filter>Source\ヘッダー ファイル</Filter>
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\UI\PlayerOffscreenIndicatorFaceSystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorFaceComponent.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP1.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP2.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Prefabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

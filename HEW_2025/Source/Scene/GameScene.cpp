@@ -18,10 +18,11 @@
 #include "ECS/Systems/Update/Core/GameStateSystem.h"
 
 // 追加: 画面下端インジケータ
-#include "ECS/Prefabs/PrefabOffscreenIndicatorP1.h"
-#include "ECS/Prefabs/PrefabOffscreenIndicatorP2.h"
+
 #include "ECS/Systems/Update/UI/PlayerOffscreenIndicatorSystem.h"
 #include "ECS/Components/UI/OffscreenIndicatorComponent.h"
+#include "ECS/Components/UI/OffscreenIndicatorFaceComponent.h"
+#include "ECS/Systems/Update/UI/PlayerOffscreenIndicatorFaceSystem.h"
 
 // コンポーネント群
 #include "ECS/Components/Physics/TransformComponent.h"
@@ -68,10 +69,6 @@
 #include "StageSelectScene.h"
 #include "ResultScene.h"
 
-// 追加: チート実装用
-#include "ECS/Systems/Update/Game/GoalSystem.h"
-#include "ECS/Systems/Update/Game/DeathZoneSystem.h"
-
 // プレハブ群
 #include "ECS/Prefabs/PrefabPlayer.h"
 #include "ECS/Prefabs/PrefabFloor.h"
@@ -88,6 +85,10 @@
 #include "ECS/Prefabs/PrefabBackGround.h"
 #include "ECS/Prefabs/PrefabWhiteUI.h"
 #include "ECS/Prefabs/PrefabCountdownUI.h"
+#include "ECS/Prefabs/PrefabOffscreenIndicatorFaceP1.h"
+#include "ECS/Prefabs/PrefabOffscreenIndicatorFaceP2.h"
+#include "ECS/Prefabs/PrefabOffscreenIndicatorP1.h"
+#include "ECS/Prefabs/PrefabOffscreenIndicatorP2.h"
 
 #include <cstdio>
 #include <string>
@@ -124,9 +125,12 @@ void GameScene::Initialize()
     RegisterBackGroundPrefab(m_prefabs);
     RegisteWhiteUIPrefab(m_prefabs);
 	RegisterCountdownUIPrefab(m_prefabs);
-    // 追加: インジケータUI
+    
+    // インジケータUI
     RegisterOffscreenIndicatorP1Prefab(m_prefabs);
     RegisterOffscreenIndicatorP2Prefab(m_prefabs);
+    RegisterOffscreenIndicatorFaceP1Prefab(m_prefabs);
+    RegisterOffscreenIndicatorFaceP2Prefab(m_prefabs);
 
     // -------------------------------------------------------
     // 1. アセット取得
@@ -147,7 +151,7 @@ void GameScene::Initialize()
     // -------------------------------------------------------
     // 2. System登録
     // -------------------------------------------------------
-    // 追加: シーン状態システム
+    // シーン状態システム
     auto& gameStateSys = m_sys.AddUpdate<GameStateSystem>();
     gameStateSys.Initialize(m_world);
 
@@ -160,8 +164,9 @@ void GameScene::Initialize()
     auto* colSys = &m_sys.AddUpdate<Collision2DSystem>(&m_colBuf);
     m_goalSystem = &m_sys.AddUpdate<GoalSystem>(colSys);
 
-    // 追加: インジケータUIシステム
+    // インジケータUIシステム
     m_sys.AddUpdate<PlayerOffscreenIndicatorSystem>();
+    m_sys.AddUpdate<PlayerOffscreenIndicatorFaceSystem>();
 
     // DeathZoneSystem登録と難易度パラメータ設定
     m_deathSystem = &m_sys.AddUpdate<DeathZoneSystem>(colSys);
@@ -304,6 +309,18 @@ void GameScene::Initialize()
             EntityId ind1 = m_prefabs.Spawn("OffscreenIndicatorP1", m_world, spI);
             if (auto* ind = m_world.TryGet<OffscreenIndicatorComponent>(ind1)) { ind->targetId = m_playerEntity1; }
         }
+        {
+            PrefabRegistry::SpawnParams spI;
+            spI.position = { 0.0f, 0.0f, -20.0f };
+            spI.scale    = { 1.0f, 1.0f, 1.0f };
+            EntityId face1 = m_prefabs.Spawn("OffscreenIndicatorFaceP1", m_world, spI);
+
+            // 追従先はプレイヤー
+            if (auto* indFace = m_world.TryGet<OffscreenIndicatorComponent>(face1))
+            {
+                indFace->targetId = m_playerEntity1;
+            }
+        }
     }
 
     // 2P
@@ -336,6 +353,17 @@ void GameScene::Initialize()
             PrefabRegistry::SpawnParams spI; spI.position = { 0.0f, 0.0f, -20.0f }; spI.scale = { 1.0f, 1.0f, 1.0f };
             EntityId ind2 = m_prefabs.Spawn("OffscreenIndicatorP2", m_world, spI);
             if (auto* ind = m_world.TryGet<OffscreenIndicatorComponent>(ind2)) { ind->targetId = m_playerEntity2; }
+        }
+        {
+            PrefabRegistry::SpawnParams spI;
+            spI.position = { 0.0f, 0.0f, -20.0f };
+            spI.scale = { 1.0f, 1.0f, 1.0f };
+            EntityId face2 = m_prefabs.Spawn("OffscreenIndicatorFaceP2", m_world, spI);
+
+            if (auto* indFace = m_world.TryGet<OffscreenIndicatorComponent>(face2))
+            {
+                indFace->targetId = m_playerEntity2;
+            }
         }
     }
 

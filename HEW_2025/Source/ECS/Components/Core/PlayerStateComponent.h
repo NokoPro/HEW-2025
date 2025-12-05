@@ -47,4 +47,12 @@ struct PlayerStateComponent
     // 前フレームの状態（遷移検知用）
     PlayerLocomotionState m_prevLocomotion = PlayerLocomotionState::None;
     PlayerFacingState     m_prevFacing = PlayerFacingState::Right;
+
+    // -----------------------------------------------------------------------------
+    // 相手コマンド実行フラグ（1フレーム限定）
+    //  - 相手の R / L ボタンによって「このプレイヤー」が強制ジャンプ／ブリンク
+    //    させられたフレームだけ true にする
+    // -----------------------------------------------------------------------------
+    bool m_remoteCommandJumpThisFrame = false;   ///< 強制ジャンプが実行されたフレーム
+    bool m_remoteCommandBlinkThisFrame = false;  ///< 強制ブリンクが実行されたフレーム
 };
