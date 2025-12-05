@@ -6,6 +6,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/material.h> 
+#include "System/AssetManager.h"
 
 #ifdef _DEBUG
 #include "Geometory.h"
@@ -204,6 +205,8 @@ bool Model::Load(const char* file, float scale, Flip flip)
 	int flag = 0;
 	flag |= aiProcess_Triangulate;
 	flag |= aiProcess_FlipUVs;
+	// 左手系(DirectX)へ一括変換。Z反転や面の向き、UVなども整合。
+	flag |= aiProcess_ConvertToLeftHanded;
 	//flag |= aiProcess_MakeLeftHanded;
 
 	// assimpで読み込み
@@ -263,21 +266,21 @@ void Model::Draw(int meshNo, Texture* overrideTex)
 	m_pVS->Bind();
 	m_pPS->Bind();
 
-	const bool isAllMesh = (meshNo == -1);
+    const bool isAllMesh = (meshNo == -1);
 
-	size_t drawStart = 0;
-	size_t drawEnd = m_meshes.size();
-	if (!isAllMesh)
-	{
-		drawStart = static_cast<size_t>(meshNo);
-		drawEnd = meshNo + 1;
-	}
+    size_t drawStart = 0;
+    size_t drawEnd = m_meshes.size();
+    if (!isAllMesh)
+    {
+        drawStart = static_cast<size_t>(meshNo);
+        drawEnd = meshNo + 1;
+    }
 
-	for (size_t i = drawStart; i < drawEnd; ++i)
-	{
-		Mesh& mesh = m_meshes[i];
+    for (size_t i = drawStart; i < drawEnd; ++i)
+    {
+        Mesh& mesh = m_meshes[i];
 
-		// -----------------------------
+        // -----------------------------
 		// 1. マテリアル決定
 		// -----------------------------
 		Material matToUse{};
@@ -303,12 +306,20 @@ void Model::Draw(int meshNo, Texture* overrideTex)
 		{
 			matToUse.pTexture = overrideTex;
 		}
+		
 		// overrideTex == nullptr の場合は、
 		// matToUse.pTexture に残っている「モデル内蔵テクスチャ」（埋め込み or 外部）がそのまま使われる
 
 		// Lambert 等の PS 用にマテリアル＆テクスチャを設定
 		ShaderList::SetMaterial(matToUse);
-
+		// 念のため現在使用中のPSにも直接テクスチャをセット（オーバーライドの反映を保証）
+		if (m_pPS && matToUse.pTexture)
+		{
+			m_pPS->SetTexture(0, matToUse.pTexture);
+			// テクスチャ設定後に再バインドして即反映
+			m_pPS->Bind();
+		}
+		
 		// -----------------------------
 		// 3. スキニング用 Bone 配列作成
 		// -----------------------------
@@ -439,7 +450,9 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 	int flag = 0;
 	flag |= aiProcess_Triangulate;
 	flag |= aiProcess_FlipUVs;
-	if (m_loadFlip == Flip::XFlip)  flag |= aiProcess_MakeLeftHanded;
+	// 左手系(DirectX)へ一括変換。モデル読み込み時と揃える。
+	flag |= aiProcess_ConvertToLeftHanded;
+	//if (m_loadFlip == Flip::XFlip)  flag |= aiProcess_MakeLeftHanded;
 
 	// assimpで読み込み
 	const aiScene* pScene = importer.ReadFile(file, flag);
@@ -531,7 +544,7 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 		{
 			// 現状の参照位置で一番小さい時間を取得
 			float time = anime.totalTime;
-			for (int i = 0; i < 3; ++i)
+			for (int i = 0; i < 3; i++)
 			{
 				if (it[i] != keys[i].end())
 				{
@@ -557,7 +570,7 @@ Model::AnimeNo Model::AddAnimation(const char* file)
 				// キー同士に挟まれた時間であれば、補間値を計算
 				else
 				{
-					// 参照している時間と同じであれば、次の参照へキーを進める
+					// 参照している時間と同じであれば、次の参refer to i
 					if (it[i]->first <= time)
 					{
 						++it[i];
@@ -1003,7 +1016,7 @@ void Model::MakeWeight(const void* ptr, int meshIdx)
 				for (int j = 0; j < 4; ++j)
 					total += weights[i][j].weight;
 				for (int j = 0; j < 4; ++j)
-					weights[i][j].weight /= total;
+				weights[i][j].weight /= total;
 			}
 			for (int j = 0; j < weights[i].size() && j < 4; ++j)
 			{

@@ -31,7 +31,7 @@ void RegisterCountdownUIPrefab(PrefabRegistry& registry)
 				{
 					EntityId e = w.Create();
 					out = e;
-					w.Add<TransformComponent>(e, ui.position, DirectX::XMFLOAT3{ 0,0,180 }, ui.scale);
+					w.Add<TransformComponent>(e, ui.position, DirectX::XMFLOAT3{ 0,0,0 }, ui.scale);
 					auto& spc = w.Add<Sprite2DComponent>(e);
 					spc.alias = texAlias;
 					spc.visible = false;

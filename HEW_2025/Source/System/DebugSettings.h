@@ -7,6 +7,8 @@
  *********************************************************************/
 #pragma once
 
+#include <string>
+
 /**
  * @brief デバッグ用のランタイム設定を一元管理するシングルトン
  * @details
@@ -47,6 +49,12 @@ struct DebugSettings
     bool  gameCleared      = false;   // クリア済みか
     bool  gameDead         = false;   // 死亡(ゲームオーバー)か
     float gameElapsedSeconds = 0.0f;  // 経過秒
+
+    // --- Death override selection ---
+    // Render時にどのプレイヤーのテクスチャを上書きするかの指定
+    int   deathOverridePlayerId = 0;               // 対象EntityId（0で未指定）
+    std::string deathOverrideTextureAlias;         // 使うテクスチャのエイリアス
+    bool  deathOverrideEnabled = false;            // 上書きを有効にするか
 
     /**
      * @brief シングルトン取得

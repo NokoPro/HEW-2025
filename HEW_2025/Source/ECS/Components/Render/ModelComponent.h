@@ -19,7 +19,8 @@
 struct ModelRendererComponent
 {
     AssetHandle<Model> model;  ///< 描画するモデル
-    AssetHandle<Texture> overrideTexture;   ///< モデルに持たせるテクスチャ
+    AssetHandle<Texture> baseTexture;      // 1P/2Pの色違い用
+    AssetHandle<Texture> overrideTexture;  // 表情用（なければ baseTexture or モデルデフォルト）
     bool visible = true;
 
     DirectX::XMFLOAT3 localOffset{ 0.f,0.f,0.f };
@@ -87,6 +88,7 @@ enum class ModelAnimState
     Land,
     Blink,
     Goal,
+	Death,
 
     Count,  // 配列サイズ用
 };

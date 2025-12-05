@@ -43,7 +43,7 @@ struct CountdownUIComponent
     bool startTriggered = false;
 
     /** 数字の回転速度（度/秒）と拡大演出の設定 */
-    float digitSpinSpeedDeg = 360.0f;   ///< 数字の回転速度（Z回り）
+    float digitSpinSpeedDeg = 0.0f;   ///< 数字の回転速度（Z回り）
     float digitPopScaleFrom = 0.5f;     ///< 数字の拡大開始倍率
     float digitPopScaleTo   = 8.0f;     ///< 数字の拡大終了倍率
     float digitPopDuration  = 0.45f;    ///< 数字の拡大演出時間（秒）

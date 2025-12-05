@@ -338,6 +338,7 @@
     <ClInclude Include="Source\ECS\Components\Physics\Velocity2DComponent.h" />
     <ClInclude Include="Source\ECS\Components\Ranking\RankingDigitUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\CountdownUIComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Render\DeathTextureOverrideComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\DigitUIComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\BackGroundComponent.h" />
     <ClInclude Include="Source\ECS\Components\Render\FollowerComponent.h" />

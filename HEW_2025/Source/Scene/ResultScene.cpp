@@ -70,7 +70,6 @@ ResultScene::ResultScene()
         m_prefabs.Spawn("ResultUI", m_world, sp);
     }
     
-    
     // 3ˆÊ
     {
         PrefabRegistry::SpawnParams sp;

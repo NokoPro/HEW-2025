@@ -38,6 +38,7 @@ static const char* kDefaultAnimJumpAlias = "anim_player_jump";
 static const char* kDefaultAnimFallAlias = "anim_player_fall";
 static const char* kDefaultAnimWalkAlias = "anim_player_walk";
 static const char* kDefaultAnimLandAlias = "anim_player_land";
+static const char* kDefaultAnimGameOverAlias = "anim_player_gameOver";
 
 void RegisterPlayerPrefab(PrefabRegistry& registry)
 {
@@ -76,16 +77,17 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             mr.model = AssetManager::CreateModelInstance(modelAlias);
             mr.localScale = { .7f, 0.35f, .7f }; // スケール調整
             mr.localOffset = { 0.f, -0.15f, 0.f }; // 足元を原点に合わせる
+			mr.localRotationDeg = { 0.f, 180.f, 0.f }; // モデルの向きを調整
 
-            if(sp.padIndex == 0)
+            if (sp.padIndex == 0)
             {
-                // 1P用モデル
-                mr.overrideTexture = AssetManager::GetTexture("tex_pinkusagi");
+                // 1P用のベース色
+                mr.baseTexture = AssetManager::GetTexture("tex_pinkusagi");
             }
-            else if(sp.padIndex == 1)
+            else if (sp.padIndex == 1)
             {
-                // 2P用モデル
-                mr.overrideTexture = AssetManager::GetTexture("tex_aousagi");
+                // 2P用のベース色
+                mr.baseTexture = AssetManager::GetTexture("tex_aousagi");
             }
 			
             // このモデルインスタンスに対して個別にアニメを追加
@@ -97,6 +99,7 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
             AnimeNo fallNo = Model::ANIME_NONE;
             AnimeNo walkNo = Model::ANIME_NONE;
             AnimeNo landNo = Model::ANIME_NONE;
+			AnimeNo gameOverNo = Model::ANIME_NONE;
 
             if (mr.model)
             {
@@ -135,6 +138,10 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 const std::string landAlias = sp.animLandAlias.empty() ? std::string(kDefaultAnimLandAlias) : sp.animLandAlias;
                 const auto landPath = AssetManager::ResolveAnimationPath(landAlias);
                 landNo = mr.model->AddAnimation(landPath.c_str());
+
+                const std::string gameOverAlias = sp.animGameOverAlias.empty() ? std::string(kDefaultAnimGameOverAlias) : sp.animGameOverAlias;
+                const auto gameOverPath = AssetManager::ResolveAnimationPath(gameOverAlias);
+                gameOverNo = mr.model->AddAnimation(gameOverPath.c_str());
             }
 
             // アニメ制御コンポーネント
@@ -208,6 +215,13 @@ void RegisterPlayerPrefab(PrefabRegistry& registry)
                 auto& d = table.table[static_cast<size_t>(ModelAnimState::Land)];
                 d.animeNo = static_cast<int>(landNo);
                 d.loop = false;
+                d.speed = 1.0f;
+            }
+            if (gameOverNo != Model::ANIME_NONE)
+            {
+                auto& d = table.table[static_cast<size_t>(ModelAnimState::Death)];
+                d.animeNo = static_cast<int>(gameOverNo);
+                d.loop = true;
                 d.speed = 1.0f;
             }
 

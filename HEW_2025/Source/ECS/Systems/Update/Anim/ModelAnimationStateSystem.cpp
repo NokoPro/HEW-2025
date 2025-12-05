@@ -2,6 +2,7 @@
 #include "ECS/World.h"
 #include "ECS/Components/Render/ModelComponent.h"
 #include "ECS/Components/Core/PlayerStateComponent.h"
+#include "System/DebugSettings.h"
 
 void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
 {
@@ -17,12 +18,18 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                 ModelRendererComponent& mr,
                 const PlayerStateComponent& pstate)
             {
-                // まだ何も要求されていない
+                // ゲームオーバー中は常にDeathアニメを要求
+                if (DebugSettings::Get().gameDead)
+                {
+                    state.requested = ModelAnimState::Death;
+                }
+
+                // まず何も要求されていない
                 if (state.requested == ModelAnimState::None)
                 {
                     if (state.current != ModelAnimState::None)
                     {
-                        // 停止をリクエスト（animeNo < 0 の約束）
+                        // 停止のリクエスト（animeNo < 0 の特殊値）
                         anim.animeNo = -1;
                         anim.loop = false;
                         anim.speed = 0.0f;
@@ -32,23 +39,23 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                     return;
                 }
 
-                // 「着地アニメ再生中」は Idle への遷移だけを抑止
+                // 着地アニメ再生中から Idle への遷移は少し抑制
                 if (state.current == ModelAnimState::Land && state.requested == ModelAnimState::Idle)
                 {
                     const int landClipNo = table.table[static_cast<size_t>(ModelAnimState::Land)].animeNo;
                     if (landClipNo >= 0 && mr.model && mr.model->IsPlay(landClipNo))
                     {
-                        // Idle への切り替えをスキップ（他のリクエストは通す）
+                        // Idle への切替をスキップ（今のリクエストは無視）
                         return;
                     }
                 }
 
-                // 要求と現在が同じ場合の扱い（非ループは再再生許可）
+                // 今と同じリクエストの場合（非ループは都度再生する）
                 if (state.requested == state.current)
                 {
                     const size_t idxSame = static_cast<size_t>(state.current);
                     const ModelAnimationClipDesc& curDesc = table.table[idxSame];
-                    // 非ループの場合、現在そのクリップが再生されていなければ再生を再要求する
+                    // 非ループの場合、現在のクリップが再生していなければ再生を要求
                     if (!curDesc.loop && curDesc.animeNo >= 0 && mr.model)
                     {
                         const bool playingSame = mr.model->IsPlay(curDesc.animeNo);
@@ -63,7 +70,7 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                     return;
                 }
 
-                // Facing に応じて Run を左右で差し替え
+                // Facing に合わせて Run を左右へ分岐
                 ModelAnimState requested = state.requested;
                 if (requested == ModelAnimState::Run)
                 {
@@ -82,15 +89,15 @@ void ModelAnimationStateSystem::Update(World& world, float /*dt*/)
                 const ModelAnimationClipDesc& desc = table.table[idx];
                 if (desc.animeNo < 0)
                 {
-                    // 対応するクリップが登録されていない
+                    // 対応クリップが登録されていない
                     return;
                 }
 
-                // ModelAnimationComponent に反映
+                // ModelAnimationComponent へ反映
                 anim.animeNo = desc.animeNo;
                 anim.loop = desc.loop;
                 anim.speed = desc.speed;
-                anim.playRequested = true;  // 次の ModelAnimationSystem で Play される
+                anim.playRequested = true;  // 後段 ModelAnimationSystem が Play する
 
                 // 現在ステートを更新
                 state.current = requested;

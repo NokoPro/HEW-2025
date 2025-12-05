@@ -56,6 +56,7 @@ public:
         std::string       animFallAlias;                  ///< 例: "anim_player1_fall"
         std::string       animWalkAlias;                  ///< 例: "anim_player1_walk"
         std::string       animLandAlias;                  ///< 例: "anim_player1_land"
+        std::string       animGameOverAlias;              ///< 例: "anim_player1_land"
 
 		float spriteWidth = 0.f;                          ///< スプライト幅（UI用などで指定したい場合）
 		float spriteHeight = 0.f;                         ///< スプライト高さ（UI用などで指定したい場合）

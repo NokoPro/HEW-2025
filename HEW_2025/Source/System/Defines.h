@@ -48,7 +48,7 @@ static const char* APP_TITLE = "DX22_2PGame";
 /** @name DeathZone 関連定数 */
 //@{
 constexpr static float kDeathZoneSpeedY = 0.5f; ///< DeathZoneのY速度
-constexpr static float kDeathZoneHalfHeight = METER(15.f); ///< DeathZone高さ半分
+constexpr static float kDeathZoneHalfHeight = METER(30.f); ///< DeathZone高さ半分
 //@}
 
 /** @name 画面サイズ */

@@ -420,9 +420,6 @@
     <ClCompile Include="Source\ECS\Prefabs\PrefabFailure.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
-      <Filter>Source\ソース ファイル\ECS\Systems\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabWhiteUI.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
@@ -473,6 +470,9 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Systems\Update\Core\GameOverUIDelaySystem.cpp">
       <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Prefabs\PrefabPlayer.cpp">
+      <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -895,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Systems\Update\Core\GameOverUIDelaySystem.h">
       <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Render\DeathTextureOverrideComponent.h">
+      <Filter>Source\ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

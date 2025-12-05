@@ -69,6 +69,7 @@
 #include "SceneAPI.h"
 #include "StageSelectScene.h"
 #include "ResultScene.h"
+#include "System/DebugSettings.h"
 
 // プレハブ群
 #include "ECS/Prefabs/PrefabPlayer.h"
@@ -109,6 +110,14 @@ GameScene::~GameScene()
 
 void GameScene::Initialize()
 {
+    // --- 新規ゲーム開始時にデバッグ状態を初期化（前シーンのGameOver状態を引きずらない）
+    {
+        auto& dbg = DebugSettings::Get();
+        dbg.gameDead = false;
+        dbg.gameCleared = false;
+        dbg.gameTimerRunning = false;
+    }
+
     // -------------------------------------------------------
     // 0. プレハブ登録
     // -------------------------------------------------------
@@ -271,7 +280,7 @@ void GameScene::Initialize()
     // --- DeathZone ---
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 35.0f, -30.0f, -40.0f };
+        sp.position = { 35.0f, -60.0f, -40.0f };
         sp.scale = { 60.0f, kDeathZoneHalfHeight, 4.0f };
         sp.rotationDeg = { 0.f,180.f,0.f };
         m_prefabs.Spawn("DeathZone", m_world, sp);
@@ -340,6 +349,7 @@ void GameScene::Initialize()
 		sp.animFallAlias     = "anim_player2P_fall";
 		sp.animWalkAlias     = "anim_player2P_walk";
 		sp.animLandAlias     = "anim_player2P_land";
+		sp.animGameOverAlias = "anim_player2P_gameOver";
 
         m_playerEntity2 = m_prefabs.Spawn("Player", m_world, sp);
 
@@ -389,8 +399,7 @@ void GameScene::Initialize()
     }
 
     //白いぼかしUI
-    {
-       
+    {  
         if (m_deathSystem)
         {
             PrefabRegistry::SpawnParams sp;
@@ -517,7 +526,13 @@ void GameScene::Update()
 
     case GamePlayState::GameOver:
         // 敗北演出更新（既存のデスゾーンシステムを活用）
+		// if (auto* sys = m_sys.GetUpdate<FollowCameraSystem>())        sys->Update(m_world, dt);
         if (m_deathSystem) m_deathSystem->GameOverUpdate(m_world);
+		if (auto* sys = m_sys.GetUpdate<DeathZoneSystem>())       sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<PlayerLocomotionStateSystem>()) sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<ModelAnimationSystem>())     sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<ModelAnimationStateSystem>())sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<PlayerPresentationSystem>()) sys->Update(m_world, dt);
         // GameOver UI 遅延制御を更新
         if (auto* sys = m_sys.GetUpdate<GameOverUIDelaySystem>()) sys->Update(m_world, dt);
         break;
@@ -547,6 +562,24 @@ void GameScene::Update()
     if (playState == GamePlayState::PostGoal && gs && gs->IsPostGoalFinished(m_world))
     {
         ChangeScene<ResultScene>();
+        return;
+    }
+
+    // フレーム最後に、デスシステムの遅延シーン遷移要求を処理
+    if (m_deathSystem && m_deathSystem->HasPendingSceneChange())
+    {
+        const bool cont = m_deathSystem->PendingContinue();
+        const int stageNo = m_deathSystem->PendingStageNo();
+        const Difficulty diff = m_deathSystem->PendingDifficulty();
+        m_deathSystem->ClearPendingSceneChange();
+        if (cont)
+        {
+            ChangeScene<GameScene>(stageNo, diff);
+        }
+        else
+        {
+            ChangeScene<StageSelectScene>();
+        }
         return;
     }
 
