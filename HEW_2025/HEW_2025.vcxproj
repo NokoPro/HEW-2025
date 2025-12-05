@@ -260,6 +260,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\CountdownUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Core\GameOverUIDelaySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\GameStateSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.cpp" />
@@ -393,6 +394,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Core\GameOverUIDelaySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\GameStateSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.h" />

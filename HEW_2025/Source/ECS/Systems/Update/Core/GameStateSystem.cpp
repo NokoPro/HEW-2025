@@ -11,6 +11,7 @@
 #include "ECS/ECS.h"
 #include "ECS/Components/Input/MovementIntentComponent.h"
 #include "ECS/Components/Physics/Rigidbody2DComponent.h"
+#include "ECS/Components/Render/ModelComponent.h"
 
 /**
  * @brief 状態保持用のエンティティを確保（未作成なら作成）
@@ -104,6 +105,30 @@ void GameStateSystem::OnDeath(World& world)
     auto& st = world.Get<GameStateComponent>(m_stateEntity);
     st.state = GamePlayState::GameOver;
     st.elapsedInStateSec = 0.0f;
+
+    // 入力停止と落下維持（ゴール時と同様）
+    world.View<MovementIntentComponent, Rigidbody2DComponent>(
+        [&](EntityId, MovementIntentComponent& intent, Rigidbody2DComponent& rb)
+        {
+            intent.moveX = 0.0f;
+            intent.jump = false;
+            intent.forceJumpRequested = false;
+            intent.blinkRequested = false;
+            intent.isBlinking = false;
+            rb.velocity.x = 0.0f;
+            rb.useGravity = true;
+        }
+    );
+
+    // 演出用: モデルのテクスチャ差し替えやアニメ状態変更（例: 倒れアニメ）
+    world.View<ModelRendererComponent, ModelAnimationStateComponent>(
+        [&](EntityId, ModelRendererComponent& mr, ModelAnimationStateComponent& animState)
+        {
+            // ここで敗北表現に差し替え（テクスチャエイリアスはアセット側の命名に合わせる）
+            mr.overrideTexture = AssetManager::GetTexture("tex_player_gameover");
+            RequestModelAnimation(animState, ModelAnimState::Fall);
+        }
+    );
 }
 
 /**
@@ -135,6 +160,11 @@ void GameStateSystem::Update(World& world, float dt)
         break;
     case GamePlayState::GameOver:
         // ゲームオーバー演出（遷移はScene/DeathSystem側）
+        // GameOver演出のバッファ時間が経過したら（シーン側で遷移を許可）
+        if (st.elapsedInStateSec >= st.postDeathDelaySec)
+        {
+            // 必要ならここでフラグを立てるなど
+        }
         break;
     }
 }

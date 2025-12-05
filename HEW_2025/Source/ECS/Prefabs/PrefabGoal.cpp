@@ -26,6 +26,12 @@ void RegisterGoalPrefab(PrefabRegistry& registry)
 
             // Transform
             auto& tr = world.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
+			tr.position.y += 5.f; // ゴール判定を少し下げる
+			tr.position.x -= 0.5f; // ゴール判定を少し左にずらす
+
+            tr.scale.x = 3.0f;
+            tr.scale.y = 3.0f;
+
 
             // Collider2D (AABB)
             auto& col = world.Add<Collider2DComponent>(e);
@@ -35,7 +41,6 @@ void RegisterGoalPrefab(PrefabRegistry& registry)
             col.layer = Physics::LAYER_GOAL;
             col.hitMask = Physics::LAYER_PLAYER;
 			col.isTrigger = true; // 当たり判定はトリガーにする
-
 
             // Model (見た目は地面と同じにしておく)
             auto& mr = world.Add<ModelRendererComponent>(e);

@@ -32,9 +32,6 @@
     <Filter Include="Source\ソース ファイル\ECS\Systems\Update">
       <UniqueIdentifier>{a0b213a1-0ed5-4adf-8118-865dd167623d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Core">
-      <UniqueIdentifier>{54be7958-134e-46ca-ab85-e7ad9e0ac20e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Input">
       <UniqueIdentifier>{4f259214-f0e1-4c18-83e4-50a2493e4b98}</UniqueIdentifier>
     </Filter>
@@ -186,6 +183,9 @@
     </Filter>
     <Filter Include="Source\ヘッダー ファイル\ECS\Systems\Update\UI">
       <UniqueIdentifier>{b23b1adc-2d24-4c04-85ab-8a15ac2e8958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ソース ファイル\ECS\Systems\Update\Core">
+      <UniqueIdentifier>{54be7958-134e-46ca-ab85-e7ad9e0ac20e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -470,6 +470,9 @@
     </ClCompile>
     <ClCompile Include="Source\ECS\Prefabs\PrefabOffscreenIndicatorFaceP2.cpp">
       <Filter>Source\ソース ファイル\ECS\Prefabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECS\Systems\Update\Core\GameOverUIDelaySystem.cpp">
+      <Filter>Source\ソース ファイル\ECS\Systems\Update\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -889,6 +892,9 @@
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\UI\OffscreenIndicatorFaceComponent.h">
       <Filter>Source\ヘッダー ファイル\ECS\Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Systems\Update\Core\GameOverUIDelaySystem.h">
+      <Filter>Source\ヘッダー ファイル\ECS\Systems\Update\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

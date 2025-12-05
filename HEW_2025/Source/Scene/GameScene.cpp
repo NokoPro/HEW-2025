@@ -54,6 +54,7 @@
 #include "ECS/Systems/Update/Anim/PlayerLocomotionStateSystem.h"
 #include "ECS/Systems/Update/Anim/PlayerPresentationSystem.h"
 #include "ECS/Systems/Update/Core/CountdownUISystem.h"
+#include "ECS/Systems/Update/Core/GameOverUIDelaySystem.h"
 
 // 背景ワープ
 #include "ECS/Systems/Update/Game/BackGroundScrollSystem.h"
@@ -194,6 +195,7 @@ void GameScene::Initialize()
     m_sys.AddUpdate<TimerSystem>();
 	m_sys.AddUpdate<CountdownUISystem>();
     m_sys.AddUpdate<AudioPlaySystem>();
+    m_sys.AddUpdate<GameOverUIDelaySystem>();
 
     RankingManager::Get().Load("Assets/Save/ranking.json");
 
@@ -241,23 +243,23 @@ void GameScene::Initialize()
     // 左右の壁
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 0.0f, 30.0f, 0.0f };
-        sp.scale = { 2.0f, 50.0f, 4.0f };
+        sp.position = { 0.0f, 100.0f, 0.0f };
+        sp.scale = { 2.0f, 200.0f, 4.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 70.0f, 30.0f, 0.0f };
-        sp.scale = { 2.0f, 50.0f, 4.0f };
+        sp.position = { 70.0f, 100.0f, 0.0f };
+        sp.scale = { 2.0f, 200.0f, 4.0f };
         m_prefabs.Spawn("Wall", m_world, sp);
     }
     // 真ん中の壁
-    {
-        PrefabRegistry::SpawnParams sp;
-        sp.position = { 35.0f, 16.0f, 0.0f };
-        sp.scale = { 1.0f, 44.0f, 4.0f };
-        m_prefabs.Spawn("Wall", m_world, sp);
-    }
+    //{
+    //    PrefabRegistry::SpawnParams sp;
+    //    sp.position = { 35.0f, 16.0f, 0.0f };
+    //    sp.scale = { 1.0f, 44.0f, 4.0f };
+    //    m_prefabs.Spawn("Wall", m_world, sp);
+    //}
     {
         PrefabRegistry::SpawnParams sp;
         sp.position = { 35.0f, -5.0f, 0.0f };
@@ -269,7 +271,7 @@ void GameScene::Initialize()
     // --- DeathZone ---
     {
         PrefabRegistry::SpawnParams sp;
-        sp.position = { 35.0f, -30.0f, 0.0f };
+        sp.position = { 35.0f, -30.0f, -40.0f };
         sp.scale = { 60.0f, kDeathZoneHalfHeight, 4.0f };
         sp.rotationDeg = { 0.f,180.f,0.f };
         m_prefabs.Spawn("DeathZone", m_world, sp);
@@ -516,6 +518,8 @@ void GameScene::Update()
     case GamePlayState::GameOver:
         // 敗北演出更新（既存のデスゾーンシステムを活用）
         if (m_deathSystem) m_deathSystem->GameOverUpdate(m_world);
+        // GameOver UI 遅延制御を更新
+        if (auto* sys = m_sys.GetUpdate<GameOverUIDelaySystem>()) sys->Update(m_world, dt);
         break;
     }
 
