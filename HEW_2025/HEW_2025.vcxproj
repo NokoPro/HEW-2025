@@ -256,6 +256,7 @@
     <ClCompile Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\CountdownUISystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\Update\Core\GameStateSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Effect\EffectSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="PrefabWarningFrame.h" />
     <ClInclude Include="Source\ECS\Components\Core\ActiveCameraTag.h" />
     <ClInclude Include="Source\ECS\Components\Core\Camera3DComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Core\GameStateComponent.h" />
     <ClInclude Include="Source\ECS\Components\Core\PlayerStateComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\ECS\Components\Effect\EffectSlotsComponent.h" />
@@ -379,6 +381,7 @@
     <ClInclude Include="Source\ECS\Systems\Update\Audio\AudioPlaySystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\CountdownUISystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Core\FollowCameraSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\Update\Core\GameStateSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Effect\EffectSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\BackGroundScrollSystem.h" />
     <ClInclude Include="Source\ECS\Systems\Update\Game\DeathZoneSystem.h" />

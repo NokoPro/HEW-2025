@@ -13,6 +13,10 @@
 #include "ECS/Tag/Tag.h"
 #include "System/StageLoader.h"
 
+// 追加: シーン状態管理
+#include "ECS/Components/Core/GameStateComponent.h"
+#include "ECS/Systems/Update/Core/GameStateSystem.h"
+
 // コンポーネント群
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Render/ModelComponent.h"
@@ -134,6 +138,10 @@ void GameScene::Initialize()
     // -------------------------------------------------------
     // 2. System登録
     // -------------------------------------------------------
+    // 追加: シーン状態システム
+    auto& gameStateSys = m_sys.AddUpdate<GameStateSystem>();
+    gameStateSys.Initialize(m_world);
+
     m_sys.AddUpdate<MovingPlatformSystem>();
     m_sys.AddUpdate<PlayerInputSystem>();
     m_sys.AddUpdate<PlayerUISystem>();
@@ -393,35 +401,40 @@ void GameScene::Initialize()
 void GameScene::Update()
 {
     const float dt = 1.0f / 60.0f;
-    // 1. タイムアタック計測更新
-    auto state = TimeAttackManager::Get().GetState();
+
+    // シーン状態の更新
+    auto* gs = m_sys.GetUpdate<GameStateSystem>();
+    if (gs) gs->Update(m_world, dt);
+
+    // タイムアタック計測更新とBGM制御（既存）
+    auto taState = TimeAttackManager::Get().GetState();
     TimeAttackManager::Get().Update();
 
-    // ステート遷移を検出
-    if (m_prevState != state) 
+    if (m_prevState != taState) 
     {
-        if (state == TimeAttackManager::State::Running) 
+        if (taState == TimeAttackManager::State::Running) 
         {
-            // ゲーム開始で再生
             AudioManager::PlayBGM("bgm_main", true);
         }
         else 
         {
-            // 終了・待機・カウントダウンに遷移したら停止
             AudioManager::StopBGM();
         }
-        m_prevState = state;
+        m_prevState = taState;
     }
 
-    // 2. システム更新の選別
-    // カウントダウン中 (State::Countdown) または 待機中 (Ready) は
-    // ゲームプレイに関わるシステムを止める
-    if (state == TimeAttackManager::State::Running)
+    // 状態取得
+    GamePlayState playState = gs ? gs->GetState(m_world) : GamePlayState::Countdown;
+
+    // 状態に応じた更新分岐
+    switch (playState)
     {
+    case GamePlayState::Running:
+        // 通常プレイ更新
         m_sys.Tick(m_world, dt);
-    }
-    else if(state == TimeAttackManager::State::Countdown)
-    {
+        break;
+
+    case GamePlayState::Countdown:
         // アニメーション、カメラ、タイマー、オーディオのみ更新
         if (auto* sys = m_sys.GetUpdate<FollowCameraSystem>())      sys->Update(m_world, dt);
         if (auto* sys = m_sys.GetUpdate<ModelAnimationSystem>())    sys->Update(m_world, dt);
@@ -430,30 +443,54 @@ void GameScene::Update()
 		if (auto* sys = m_sys.GetUpdate<Collision2DSystem>())      sys->Update(m_world, dt);
 		if (auto* sys = m_sys.GetUpdate<PhysicsStepSystem>())        sys->Update(m_world, dt);
 		if (auto* sys = m_sys.GetUpdate<CountdownUISystem>())    sys->Update(m_world, dt);
-
-        // ステート系も回さないとアイドル状態が反映されない可能性があるなら追加
         if (auto* sys = m_sys.GetUpdate<ModelAnimationStateSystem>()) sys->Update(m_world, dt);
+        break;
+
+    case GamePlayState::PostGoal:
+        // 演出系のみ更新
+        if (auto* sys = m_sys.GetUpdate<FollowCameraSystem>())       sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<Collision2DSystem>())      sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<PhysicsStepSystem>())        sys->Update(m_world, dt);
+		if (auto* sys = m_sys.GetUpdate<PlayerLocomotionStateSystem>()) sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<ModelAnimationSystem>())     sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<ModelAnimationStateSystem>())sys->Update(m_world, dt);
+		if (auto* sys = m_sys.GetUpdate<PlayerPresentationSystem>()) sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<EffectSystem>())             sys->Update(m_world, dt);
+        if (auto* sys = m_sys.GetUpdate<AudioPlaySystem>())          sys->Update(m_world, dt);
+        break;
+
+    case GamePlayState::GameOver:
+        // 敗北演出更新（既存のデスゾーンシステムを活用）
+        if (m_deathSystem) m_deathSystem->GameOverUpdate(m_world);
+        break;
     }
 
-    // シーン遷移ロジック
-	if (m_deathSystem && m_deathSystem->IsDead())
-	{
-        m_deathSystem->GameOverUpdate(m_world);
-        
-		return;
-	}
-	
-    if (m_goalSystem && m_goalSystem->IsCleared())
+    // ランニング時のみゴール／死亡のトリガー監視
+    if (playState == GamePlayState::Running)
     {
-        // ゴール検出後:
-        RankingManager::Get().Submit(TimeAttackManager::Get().GetElapsed());
-        // 任意の保存先
-        RankingManager::Get().Save("Assets/Save/ranking.json");
+        if (m_deathSystem && m_deathSystem->IsDead())
+        {
+            if (gs) gs->OnDeath(m_world);
+            return;
+        }
+        if (m_goalSystem && m_goalSystem->IsCleared())
+        {
+            // 記録保存
+            RankingManager::Get().Submit(TimeAttackManager::Get().GetElapsed());
+            RankingManager::Get().Save("Assets/Save/ranking.json");
 
-        AudioManager::StopBGM();
+            // ポストゴール開始
+            if (gs) gs->OnGoal(m_world);
+            return;
+        }
+    }
+
+    // ポストゴールの猶予が終わったらリザルトへ遷移
+    if (playState == GamePlayState::PostGoal && gs && gs->IsPostGoalFinished(m_world))
+    {
         ChangeScene<ResultScene>();
-		return;
-	}
+        return;
+    }
 
     EffectRuntime::Update(dt);
 }
