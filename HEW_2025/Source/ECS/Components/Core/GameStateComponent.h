@@ -50,5 +50,5 @@ struct GameStateComponent
     float goalReachedTimeSec{ 0.0f };
 
     /** ゲームオーバー時の演出猶予時間（秒）。テクスチャ差し替えやアニメ再生に利用 */
-    float postDeathDelaySec{ 1.5f };
+    float postDeathDelaySec{ 2.5f };
 };
