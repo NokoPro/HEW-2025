@@ -93,12 +93,17 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
 
     // --- Rボタンジャンプ（相手に1回だけ） ---
     if (intent2 && !intent2->forceJumpConsumed) {
-        if (IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+        const bool trigPad = IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER);
+#ifdef _DEBUG
+        const bool trigKey = IsKeyTrigger('E');   // デバッグ: キーでも代用（1P側）
+#else
+        const bool trigKey = false;
+#endif
+        if (trigPad || trigKey) {
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
-            pic1->isJumpRequested = true;
+            if (pic1) pic1->isJumpRequested = true;
 
-            
             if (effect2)
             {
                 if (slots2 && slots2->onJump)
@@ -112,10 +117,16 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         }
     }
     if (intent1 && !intent1->forceJumpConsumed) {
-        if (IsPadTrigger(1, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+        const bool trigPad = IsPadTrigger(1, XINPUT_GAMEPAD_RIGHT_SHOULDER);
+#ifdef _DEBUG
+        const bool trigKey = IsKeyTrigger('P');   // デバッグ: キーでも代用（2P側）
+#else
+        const bool trigKey = false;
+#endif
+        if (trigPad || trigKey) {
             intent1->forceJumpRequested = true;
             intent1->forceJumpConsumed = true;
-			pic2->isJumpRequested = true;
+            if (pic2) pic2->isJumpRequested = true;
             if (effect1)
             {
                 if (slots1 && slots1->onJump)
@@ -132,21 +143,31 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     // --- Lボタンブリンク（相手に1回だけ、今向いている方向に高速移動） ---
     constexpr float BLINK_SPEED = 15.0f; // ブリンク速度（調整可）
     if (intent2) {
-        if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
+        const bool trigPad = IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER);
+#ifdef _DEBUG
+        const bool trigKey = IsKeyTrigger('Q');   // デバッグ: キーでも代用（1P側）
+#else
+        const bool trigKey = false;
+#endif
+        if (trigPad || trigKey)
         {
             intent2->blinkRequested = true;
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
-            // 入力時点ではエフェクトを再生しない。ワンショットフラグのみ設定
-            pic1->isBlinkRequested = true;
+            if (pic1) pic1->isBlinkRequested = true;
         }
     }
     if (intent1) 
     {
-        if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
+        const bool trigPad = IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER);
+#ifdef _DEBUG
+        const bool trigKey = IsKeyTrigger('O');   // デバッグ: キーでも代用（2P側）
+#else
+        const bool trigKey = false;
+#endif
+        if (trigPad || trigKey) {
             intent1->blinkRequested = true;
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
-            // 入力時点ではエフェクトを再生しない。ワンショットフラグのみ設定
-            pic2->isBlinkRequested = true;
+            if (pic2) pic2->isBlinkRequested = true;
         }
     }
 
