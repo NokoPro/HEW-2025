@@ -76,13 +76,36 @@ void Shader::WriteBuffer(UINT slot, void* pData)
 }
 void Shader::SetTexture(UINT slot, Texture* tex)
 {
-	if (!tex || slot >= m_pTextures.size()) { return; }
-	ID3D11ShaderResourceView* pTex = tex->GetResource();
+	// スロット範囲チェックのみ（nullは許容してアンバインド可能にする）
+	if (slot >= m_pTextures.size()) { return; }
+
+	ID3D11ShaderResourceView* pTex = nullptr;
+	if (tex)
+	{
+		pTex = tex->GetResource();
+		// SRV 取得に失敗している場合は何もしない（クラッシュ防止）
+		if (!pTex)
+		{
+			m_pTextures[slot] = nullptr;
+			switch (m_kind)
+			{
+			case Vertex: GetContext()->VSSetShaderResources(slot, 1, &m_pTextures[slot]); break;
+			case Pixel:  GetContext()->PSSetShaderResources(slot, 1, &m_pTextures[slot]); break;
+			}
+			return;
+		}
+	}
+
+	// キャッシュ更新（null の場合はアンバインド扱い）
 	m_pTextures[slot] = pTex;
 	switch (m_kind)
 	{
-	case Vertex:	GetContext()->VSSetShaderResources(slot, 1, &pTex); break;
-	case Pixel:		GetContext()->PSSetShaderResources(slot, 1, &pTex); break;
+	case Vertex:
+		GetContext()->VSSetShaderResources(slot, 1, &m_pTextures[slot]);
+		break;
+	case Pixel:
+		GetContext()->PSSetShaderResources(slot, 1, &m_pTextures[slot]);
+		break;
 	}
 }
 

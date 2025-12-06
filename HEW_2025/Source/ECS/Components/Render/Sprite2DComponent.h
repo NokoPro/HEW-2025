@@ -8,6 +8,7 @@
  *********************************************************************/
 #pragma once
 #include <string>
+#include <DirectXMath.h>
 
  /**
   * @brief スプライトを描画するための情報
@@ -17,7 +18,7 @@
   */
 struct Sprite2DComponent
 {
-    std::string alias;           ///< 使用するテクスチャID
+    std::string alias = "";           ///< 使用するテクスチャID
     float width = 64.0f;         ///< 表示幅（ピクセルベース想定）
     float height = 64.0f;        ///< 表示高さ
     float originX = 0.5f;        ///< 原点X(0～1) 0.5なら中央
@@ -39,6 +40,13 @@ struct Sprite2DComponent
      * @details true のときのみ描画処理とテクスチャ取得を行います。
      */
     bool visible = true;
+
+	DirectX::XMFLOAT2 uvOffset = { 0.0f, 0.0f }; ///< UVオフセット
+	DirectX::XMFLOAT2 uvSize = { 1.0f, 1.0f };   ///< UVサイズ
+
+    // --- ★ 新規追加フィールド ★ ---
+    DirectX::XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; ///< R, G, B, A (テクスチャに掛け合わせる色)
+    // ---------------------------------
 };
 
 

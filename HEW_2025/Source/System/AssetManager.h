@@ -1,170 +1,164 @@
 /*****************************************************************//**
  * @file   AssetManager.h
- * @brief  名前（エイリアス）でモデル・テクスチャを取得するキャッシュ付きローダ
+ * @brief  モデル・テクスチャ・オーディオ等のアセット取得窓口
  *
- * - AssetCatalog に登録されたエイリアス名を実パスに解決してロードします。
- * - ロードされた実体は shared_ptr で保持し、以後はキャッシュから取り出します。
- * - モデルは台帳にあった scale / flip をロード時に適用します。
- * - スレッドセーフにするため、モデル用・テクスチャ用で別々のmutexを持ちます。
+ * - AssetCatalog（CSV 台帳）からパス・スケール等を引く
+ * - 3D モデルとテクスチャは shared_ptr をキャッシュ
+ * - Audio / Effect は「パス情報を持つだけの軽量構造体」として返す
+ * - スレッドセーフのため、キャッシュには mutex を使用
  *
- * @author 浅野勇生
- * @date   2025/11/8
+ * @author  浅野勇生
+ * @date    2025/11/24
  *********************************************************************/
 #pragma once
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <mutex>
 
- /**
-  * @brief 前方宣言（実体はプロジェクト側にある）
-  */
 class Model;
 class Texture;
+struct AssetDesc;
 
 /**
- * @brief アセットを安全に受け取るための薄いハンドル
- * @tparam T モデルやテクスチャの型
+ * @brief アセット用ハンドル
  *
- * shared_ptr を中に持っているだけなので、コピーしてもコストは小さいです。
+ * - shared_ptr を包む軽量ラッパ
+ * - `if (handle) { ... }` で有効チェック可能
+ * - `handle->メンバ` で直接アクセス
  */
 template <class T>
-struct AssetHandle
+class AssetHandle
 {
-    std::shared_ptr<T> ptr;     ///< 実体（shared_ptrで共有）
-
-    /**
-     * @brief 生ポインタ取得
-     */
-    T* get() const
+public:
+    AssetHandle() = default;
+    explicit AssetHandle(std::shared_ptr<T> ptr)
+        : m_ptr(std::move(ptr))
     {
-        return ptr.get();
     }
 
-    /**
-     * @brief 参照を取得（存在している前提で使うとき用）
-     */
-    T& ref() const
-    {
-        return *ptr;
-    }
-
-    /**
-     * @brief -> で中身にアクセスできるようにする
-     */
     T* operator->() const
     {
-        return ptr.get();
+        return m_ptr.get();
     }
 
-    /**
-     * @brief if (handle) の形で存在チェックできるようにする
-     */
+    T& operator*() const
+    {
+        return *m_ptr;
+    }
+
+    // 低レベルコード用: get()/ref() など
+    T* get() const
+    {
+        return m_ptr.get();
+    }
+    T& ref() const
+    {
+        return *m_ptr;
+    }
+
     explicit operator bool() const
     {
-        return static_cast<bool>(ptr);
+        return static_cast<bool>(m_ptr);
     }
+
+    std::shared_ptr<T> Get() const
+    {
+        return m_ptr;
+    }
+
+private:
+    std::shared_ptr<T> m_ptr{};
 };
 
 /**
- * @brief 名前（エイリアス or パス）からアセットを取得する静的マネージャ
- * @details
- * - GetModel("player") のように呼ぶだけで、初回はロード・2回目以降はキャッシュから返します。
- * - 内部キャッシュは path で引くので、エイリアスは一度実パスに解決してから使います。
- * - Init()/Shutdown() はアプリの開始・終了で呼んでください。
+ * @brief オーディオクリップ型
+ *
+ * 実ファイルパスと、CSV 由来のメタ情報を持つ。
+ * AudioManagerSystem では path から実際の WAV を読む想定。
  */
+struct AudioClip
+{
+    std::string              path;
+    std::string              group;
+    std::vector<std::string> tags;
+    std::string              param1; ///< 例: デフォルト音量など
+    std::string              param2; ///< 例: デフォルトピッチなど
+};
+
+/**
+ * @brief エフェクト参照（Effekseer など）
+ */
+struct EffectRef
+{
+    std::string              path;
+    std::string              group;
+    std::vector<std::string> tags;
+    std::string              param1; ///< 例: ループ/1shot 等
+    std::string              param2; ///< 例: spawn 間隔など
+};
+
 class AssetManager
 {
 public:
-    /**
-     * @brief 起動時に一度だけ呼ぶ初期化処理
-     */
-    static void Init();
-
-    /**
-     * @brief 終了時に呼ぶ破棄処理（キャッシュをクリア）
-     */
-    static void Shutdown();
-
-    /**
-     * @brief モデルを取得する
-     * @param aliasOrPath 台帳に登録されている名前、または直接のファイルパス
-     * @return 読み込み済みモデルへのハンドル（失敗時は空）
-     */
-    static AssetHandle<Model> GetModel(const std::string& aliasOrPath);
-
-    /**
-     * @brief テクスチャを取得する
-     * @param aliasOrPath 台帳に登録されている名前、または直接のファイルパス
-     * @return 読み込み済みテクスチャへのハンドル（失敗時は空）
-     */
-    static AssetHandle<Texture> GetTexture(const std::string& aliasOrPath);
-
-    /**
-     * @brief 開発中のホットリロード用に1フレームごとに呼ぶ想定のダミー
-     * @param dt 経過時間（現状未使用）
-     */
-    static void UpdateHotReload(float dt);
-
-private:
-    /**
-     * @brief モデルキャッシュ（path → weak_ptr<Model>）
-     *
-     * weak_ptr にしているのは、誰も使っていないアセットは自然に消えるようにするためです。
-     */
-    static std::unordered_map<std::string, std::weak_ptr<Model>> s_modelCache;
-
-    /**
-     * @brief テクスチャキャッシュ（path → weak_ptr<Texture>）
-     */
-    static std::unordered_map<std::string, std::weak_ptr<Texture>> s_texCache;
-
-    /**
-     * @brief モデルキャッシュ用の排他オブジェクト
-     */
-    static std::mutex s_mtxModel;
-
-    /**
-     * @brief テクスチャキャッシュ用の排他オブジェクト
-     */
-    static std::mutex s_mtxTex;
-
-    /**
-     * @brief 実パスからモデルを読み込む内部関数
-     * @param path ファイルパス
-     * @param scale モデル全体に掛けるスケール
-     * @param flip 反転フラグ（Model::Flip にキャストして使う）
-     */
-    static std::shared_ptr<Model> LoadModelByPath(const std::string& path, float scale, int flip);
-
-    /**
-     * @brief 実パスからテクスチャを読み込む内部関数
-     * @param path ファイルパス
-     */
-    static std::shared_ptr<Texture> LoadTextureByPath(const std::string& path);
-
-    /**
-     * @brief モデル用のエイリアス解決結果
-     */
+    /// モデル解決結果
     struct Resolved
     {
-        std::string path;  ///< 実際にロードするパス
-        float       scale = 1.0f; ///< 台帳に書かれていたスケール
-        int         flip = 0;    ///< 台帳に書かれていた反転フラグ
+        std::string path;   ///< 実パス
+        float       scale;  ///< スケール
+        int         flip;   ///< Model::Flip にキャストして使う
     };
 
-    /**
-     * @brief モデルのエイリアスを実パスに変換する
-     * @param aliasOrPath エイリアス名またはそのままパス
-     * @return 解決結果（登録されていない場合は入力文字列をそのままpathに入れる）
-     */
+public:
+    static void Init();
+    static void Shutdown();
+
+    /// ホットリロード用（現在はダミー）
+    static void UpdateHotReload(float dt);
+
+    /// モデル用: エイリアス or パス -> 実パス + scale + flip の解決
     static Resolved ResolveModel(const std::string& aliasOrPath);
 
-    /**
-     * @brief テクスチャのエイリアスを実パスに変換する
-     * @param aliasOrPath エイリアス名またはそのままパス
-     * @return 実パス
-     */
+    /// テクスチャ用: エイリアス or パス -> 実パス
     static std::string ResolveTexturePath(const std::string& aliasOrPath);
+
+    /// オーディオ用: エイリアス or パス -> 実パス（type=="audio" のみ）
+    static std::string ResolveAudioPath(const std::string& aliasOrPath);
+
+    /// エフェクト用: エイリアス or パス -> 実パス（type=="effect" のみ）
+    static std::string ResolveEffectPath(const std::string& aliasOrPath);
+
+    /// アニメーション用: エイリアス or パス -> 実パス（type=="animation" のみ）
+    static std::string ResolveAnimationPath(const std::string& aliasOrPath);
+
+    /// 共有モデル取得（キャッシュ経由・同一パスは同じインスタンスを返す）
+    static AssetHandle<Model> GetModel(const std::string& aliasOrPath);
+
+    /// 非共有モデル取得（毎回新規に読み込み、独立インスタンスを返す）
+    /// - アニメーション状態をエンティティごとに独立させたい場合に使用
+    static AssetHandle<Model> CreateModelInstance(const std::string& aliasOrPath);
+
+    /// テクスチャ取得（キャッシュ）
+    static AssetHandle<Texture> GetTexture(const std::string& aliasOrPath);
+
+    /// オーディオ取得（擬似的にメモリ内に生成・キャッシュ）
+    static AssetHandle<AudioClip> GetAudio(const std::string& aliasOrPath);
+
+    /// エフェクト取得（擬似的にメモリ内に生成）
+    static AssetHandle<EffectRef> GetEffect(const std::string& aliasOrPath);
+
+private:
+    static std::shared_ptr<Model>   LoadModelByPath(const std::string& path, float scale, int flip);
+    static std::shared_ptr<Texture> LoadTextureByPath(const std::string& path);
+
+private:
+    static std::unordered_map<std::string, std::weak_ptr<Model>>   s_modelCache;
+    static std::unordered_map<std::string, std::weak_ptr<Texture>> s_texCache;
+    static std::unordered_map<std::string, std::shared_ptr<AudioClip>> s_audioCache;
+    static std::mutex                                               s_mtxModel;
+    static std::mutex                                               s_mtxTex;
+    static std::mutex                                               s_mtxAudio;
+
 };

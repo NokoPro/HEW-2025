@@ -1,6 +1,9 @@
 /*********************************************************************/
 /* @file   Collision2DSystem.h
- * @brief  当たり判定の2Dシステム定義
+ * @brief  当たり判定結果(重なり)のみを記録する2DコリジョンSystem
+ * 
+ * 位置/速度の修正は PhysicsStepSystem 側が担当し、ここでは
+ * "当たったこと" と "トリガーかどうか" だけをイベントバッファへ積む。
  * 
  * @author 浅野勇生
  * @date   2025/11/13
@@ -12,37 +15,23 @@
 #include "ECS/Components/Physics/Collider2DComponent.h"
 #include "ECS/Components/Physics/CollisionEvents.h"
 #include "ECS/Components/Physics/CollisionHelpers.h"
-#include "ECS/Components/Physics/Rigidbody2DComponent.h"
 
 /**
- * @brief AABB2D同士の衝突を検出して、
- *        ・トリガーならイベントだけ
- *        ・それ以外ならめり込みを解消する
- *        System
- *
- * サイドビュー前提なので Y を先に解消します。
+ * @brief AABB2D の重なり検出のみを行い、イベントを記録する System
+ *        (解決/押し戻し/速度補正は行わない)
  */
 class Collision2DSystem : public IUpdateSystem
 {
 public:
     Collision2DSystem(CollisionEventBuffer* buf)
-        : m_buf(buf), m_eventBuffer(buf)
+        : m_eventBuffer(buf)
     {
     }
 
     void Update(World& world, float dt) override;
-
-    // m_eventBufferへのgetter（外部アクセス用）
     CollisionEventBuffer* GetEventBuffer() const { return m_eventBuffer; }
 
 private:
-	// 衝突イベントバッファ（外部からセットされる想定）
+    // 衝突イベントバッファ (Enter/Stay などの区別は後段で差分処理する想定)
     CollisionEventBuffer* m_eventBuffer = nullptr;
-
-	//  internal用バッファ（ResolveAabbPair内でイベント追加に使う）
-    CollisionEventBuffer* m_buf = nullptr;
-
-    // AABB同士のめり込みを直す
-    void ResolveAabbPair(TransformComponent& tA, Collider2DComponent& cA, Rigidbody2DComponent* rbA,
-        TransformComponent& tB, Collider2DComponent& cB, Rigidbody2DComponent* rbB);
 };

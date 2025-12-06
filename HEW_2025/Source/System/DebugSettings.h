@@ -7,6 +7,8 @@
  *********************************************************************/
 #pragma once
 
+#include <string>
+
 /**
  * @brief デバッグ用のランタイム設定を一元管理するシングルトン
  * @details
@@ -36,6 +38,23 @@ struct DebugSettings
 
     /** @brief 当たり判定の可視化を表示する（F2と連動） */
     bool showCollision = true;
+
+    /** @brief FPS表示ON/OFF */
+    bool fpsEnabled = true;
+    /** @brief 最新のFPS値 */
+    float fpsValue = 0.0f;
+
+    // --- Game Timer ---
+    bool  gameTimerRunning = false;   // 計測中か
+    bool  gameCleared      = false;   // クリア済みか
+    bool  gameDead         = false;   // 死亡(ゲームオーバー)か
+    float gameElapsedSeconds = 0.0f;  // 経過秒
+
+    // --- Death override selection ---
+    // Render時にどのプレイヤーのテクスチャを上書きするかの指定
+    int   deathOverridePlayerId = 0;               // 対象EntityId（0で未指定）
+    std::string deathOverrideTextureAlias;         // 使うテクスチャのエイリアス
+    bool  deathOverrideEnabled = false;            // 上書きを有効にするか
 
     /**
      * @brief シングルトン取得

@@ -19,7 +19,9 @@
 
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "ECS/Components/Input/MovementIntentComponent.h"
-#include "ECS/Components/Physics/TransformComponent.h"
+#include "ECS/Components/Effect/EffectComponent.h"
+#include "ECS/Components/Effect/EffectSlotsComponent.h"
+#include "ECS/Components/Physics/Rigidbody2DComponent.h"
 
 class PlayerInputSystem final : public IUpdateSystem
 {
@@ -28,6 +30,6 @@ public:
 
 private:
     // ƒvƒŒƒCƒ„[”Ô†‚²‚Æ‚Ì“ü—Íæ“¾‚ğŠÖ”‚É•ª‚¯‚Ä‚¨‚­‚Æ“Ç‚İ‚â‚·‚¢
-    void ReadPlayer0(MovementIntentComponent& outIntent);
-    void ReadPlayer1(MovementIntentComponent& outIntent);
+    void ReadPlayer0(MovementIntentComponent& outIntent, Rigidbody2DComponent& rig);
+    void ReadPlayer1(MovementIntentComponent& outIntent, Rigidbody2DComponent& rig);
 };

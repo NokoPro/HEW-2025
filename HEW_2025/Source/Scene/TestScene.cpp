@@ -30,6 +30,7 @@
 #include "ECS/Systems/Render/SpriteRenderSystem.h"
 #include "ECS/Systems/Render/FollowerSystem.h"
 #include "ECS/Systems/Render/PlayerUISystem.h"
+#include "ECS/Systems/Render/TimerSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -48,6 +49,9 @@
 #include "ECS/Prefabs/PrefabFollower.h"
 #include "ECS/Prefabs/PrefabFollowerJump.h"
 #include "ECS/Prefabs/PrefabFollowerBlink.h"
+#include "ECS/Prefabs/PrefabTimer.h"
+
+
 
 #include <cstdio>
 #include <DirectXMath.h>
@@ -239,15 +243,12 @@ TestScene::TestScene()
     RegisterGoalPrefab(m_prefabs);              // ゴールプレハブ登録
     RegisterDeathZonePrefab(m_prefabs);         // Deathゾーンプレハブ登録
 	RegisterMovingPlatformPrefab(m_prefabs);    // 可動床プレハブ登録
-    RegisterPlayerPrefab(m_prefabs);
-    RegisterFloorPrefab(m_prefabs);
-    RegisterWallPrefab(m_prefabs);
-    RegisterStaticBlockPrefab(m_prefabs);
-    RegisterGoalPrefab(m_prefabs); // ゴールプレハブ登録
-    RegisterDeathZonePrefab(m_prefabs); // Deathゾーンプレハブ登録
-    RegisterFollowerPrefab(m_prefabs); // 旧汎用フォロワープレハブ(後方互換)
     RegisterFollowerJumpPrefab(m_prefabs);  // 新: ジャンプUI専用フォロワー
     RegisterFollowerBlinkPrefab(m_prefabs); // 新: ブリンクUI専用フォロワー
+	RegisterTimerPrefab(m_prefabs);            // タイマープレハブ登録
+
+    //ランキングコンストラクタ
+
 
     //
     // 1. アセット取得
@@ -276,6 +277,9 @@ TestScene::TestScene()
     m_sys.AddUpdate<PlayerInputSystem>();
     m_sys.AddUpdate<PlayerUISystem>();
 
+	// タイマーシステム追加
+	m_sys.AddUpdate<TimerSystem>();
+
     // 2-2 Intent → Rigidbody（加速・ジャンプ・重力）
     m_sys.AddUpdate<MovementApplySystem>();
     // 2-2.5 Rigidbody の速度を位置に反映する物理ステップ（重力で変化した速度を位置へ適用）
@@ -298,7 +302,6 @@ TestScene::TestScene()
 
     //追加
     m_sys.AddUpdate<AudioPlaySystem>();
-
     
     // 2-5 描画
     m_drawModel = &m_sys.AddRender<ModelRenderSystem>();
@@ -408,6 +411,16 @@ TestScene::TestScene()
         }
     } // <-- 2P ブロック閉じ
 
+	// タイマーUI生成
+    {
+		PrefabRegistry::SpawnParams sp;
+		sp.position = { 1.0f, 1.0f, 0.0f };
+		sp.scale = { 1.0f, 1.0f, 1.0f };
+		sp.rotationDeg = { 0.0f, 0.0f, 0.0f }; // 回転なし
+
+		m_prefabs.Spawn("Timer", m_world, sp);
+    }
+
     // Deathゾーン生成（画面下部に設置）
     {
         PrefabRegistry::SpawnParams sp;
@@ -455,7 +468,7 @@ TestScene::TestScene()
         // 基本パラメータ
         cam.aspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
         cam.nearZ = 0.1f;
-        cam.farZ = 10.0f;
+        cam.farZ = 1000.0f;
         cam.fovY = 20.0f;
 
         // サイドビュー用の固定値

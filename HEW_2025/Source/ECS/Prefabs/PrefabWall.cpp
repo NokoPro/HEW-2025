@@ -29,14 +29,15 @@ void RegisterWallPrefab(PrefabRegistry& registry)
 
 			/// Transform（scale はそのまま使えるようにしておく）
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
+            tr.rotationDeg = { 0.0f, 180.0f, 0.0f };
 
 			/// 見た目
             auto& mr = w.Add<ModelRendererComponent>(e);
             const char* mdlName =
-                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
+                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_column";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
-
+            //mr.overrideTexture = AssetManager::GetTexture("tex_block");
             // レイヤー
             mr.layer = 20;
 

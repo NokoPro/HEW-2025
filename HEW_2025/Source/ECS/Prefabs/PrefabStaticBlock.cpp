@@ -27,6 +27,9 @@ void RegisterStaticBlockPrefab(PrefabRegistry& registry)
 
 			/// Transform（scale はそのまま使えるようにしておく）
             auto& tr = w.Add<TransformComponent>(e, sp.position, sp.rotationDeg, sp.scale);
+			tr.rotationDeg = { 0.0f, 180.0f, 0.0f }; // 回転は無し固定
+            tr.scale = { 1.f,1.f,1.f };
+			tr.position.z = 0.0f; // Z位置は0固定
 
 			/// 見た目
             auto& mr = w.Add<ModelRendererComponent>(e);
@@ -34,12 +37,14 @@ void RegisterStaticBlockPrefab(PrefabRegistry& registry)
                 (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
+			mr.layer = 10;
             if (mr.model)
             {
-                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+                mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_ANIME));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
-
+			mr.overrideTexture = AssetManager::GetTexture("tex_block");
+            
 			/// 当たり：静的な床
             auto& col = w.Add<Collider2DComponent>(e);
             col.shape = ColliderShapeType::AABB2D;

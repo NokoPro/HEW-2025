@@ -1,13 +1,13 @@
 /*****************************************************************//**
  * @file   AssetCatalog.cpp
- * @brief  AssetCatalog の実装
+ * @brief  AssetCatalog 実装
  *
- * CSVから読み込んだ1行をトリムして分解し、AssetDescにして登録します。
- * 文字列キーはすべて小文字化してから格納するので、大文字小文字の違いに
- * 左右されずにアクセスできます。
+ * Data.csv を読み込み、エイリアスごとの AssetDesc を構築する。
  *
- * @author 浅野勇生
- * @date   2025/11/8
+ * 旧 6 列形式と、新 11 列形式のどちらも読み込めるようにしてある。
+ *
+ * @author  浅野勇生
+ * @date    2025/11/24
  *********************************************************************/
 #include "AssetCatalog.h"
 
@@ -20,35 +20,15 @@
 std::unordered_map<std::string, AssetDesc> AssetCatalog::s_aliasToDesc;
 std::mutex                                 AssetCatalog::s_mtx;
 
-/**
- * @brief 文字列の前後の空白を取り除く
- */
+// 文字列トリム（前後の空白を削除）
 static std::string Trim(std::string s)
 {
-    auto is_space =
-        [](unsigned char c) -> bool
-        {
-            return std::isspace(c) != 0;
-        };
-
-    // 先頭側の空白除去
-    while (!s.empty() && is_space(static_cast<unsigned char>(s.front())))
-    {
-        s.erase(s.begin());
-    }
-
-    // 末尾側の空白除去
-    while (!s.empty() && is_space(static_cast<unsigned char>(s.back())))
-    {
-        s.pop_back();
-    }
-
+    auto isSpace = [](unsigned char c) { return std::isspace(c) != 0; };
+    s.erase(std::remove_if(s.begin(), s.end(), isSpace), s.end());
     return s;
 }
 
-/**
- * @brief 文字列をすべて小文字に変換する
- */
+// 小文字化
 static std::string ToLower(std::string s)
 {
     std::transform(
@@ -72,10 +52,14 @@ void AssetCatalog::Register(const AssetDesc& desc)
 {
     std::lock_guard<std::mutex> lock(s_mtx);
 
-    // このアセットが持っているすべての別名で登録する
+    // 各エイリアスで同じ AssetDesc を共有登録
     for (auto alias : desc.aliases)
     {
-        alias = ToLower(alias);     // 大文字・小文字を統一
+        alias = ToLower(alias);
+        if (alias.empty())
+        {
+            continue;
+        }
         s_aliasToDesc[alias] = desc;
     }
 }
@@ -85,7 +69,7 @@ const AssetDesc* AssetCatalog::Find(const std::string& alias)
     std::lock_guard<std::mutex> lock(s_mtx);
 
     const std::string key = ToLower(alias);
-    auto it = s_aliasToDesc.find(key);
+    auto              it = s_aliasToDesc.find(key);
     if (it == s_aliasToDesc.end())
     {
         return nullptr;
@@ -101,54 +85,71 @@ bool AssetCatalog::LoadCsv(const std::string& csvPath)
         return false;
     }
 
+    Clear();
+
     std::string line;
 
-    // 1行ずつ読んで登録していく
+    // 1 行ずつ読み込み
     while (std::getline(ifs, line))
     {
         if (line.empty())
         {
             continue;
         }
-
-        std::stringstream ss(line);
-
-        // CSVの列（6列）を保持する一時変数
-        std::string type;
-        std::string path;
-        std::string aliasStr;
-        std::string scaleStr;
-        std::string flipStr;
-        std::string prewarmStr;
-
-        // カンマ区切りで取り出す
-        std::getline(ss, type, ',');
-        std::getline(ss, path, ',');
-        std::getline(ss, aliasStr, ',');
-        std::getline(ss, scaleStr, ',');
-        std::getline(ss, flipStr, ',');
-        std::getline(ss, prewarmStr, ',');
-
-        // 前後の空白を削る
-        type = Trim(type);
-        path = Trim(path);
-        aliasStr = Trim(aliasStr);
-        scaleStr = Trim(scaleStr);
-        flipStr = Trim(flipStr);
-        prewarmStr = Trim(prewarmStr);
-
-        // 1行ぶんの記述を組み立てる
-        AssetDesc d;
-        d.type = type;
-        d.path = path;
-
-        // aliases は '|' 区切りで複数並べられる
+        // コメント行をスキップ
+        if (line[0] == '#' ||
+            (line.size() >= 2 && line[0] == '/' && line[1] == '/'))
         {
-            std::stringstream as(aliasStr);
-            std::string a;
+            continue;
+        }
+
+        std::stringstream        ss(line);
+        std::vector<std::string> cols;
+        std::string              col;
+
+        while (std::getline(ss, col, ','))
+        {
+            cols.push_back(Trim(col));
+        }
+
+        // type / path は必須
+        if (cols.size() < 2)
+        {
+            continue;
+        }
+
+        auto getCol = [&](size_t idx) -> std::string
+            {
+                if (idx < cols.size())
+                {
+                    return cols[idx];
+                }
+                return {};
+            };
+
+        AssetDesc d;
+
+        d.type = getCol(0);
+        d.path = getCol(1);
+
+        std::string aliasesStr = getCol(2);
+        std::string scaleStr = getCol(3);
+        std::string flipStr = getCol(4);
+        std::string preloadStr = getCol(5);
+        std::string groupStr = getCol(6);
+        std::string tagsStr = getCol(7);
+        d.param1 = getCol(8);
+        d.param2 = getCol(9);
+        d.notes = getCol(10);
+
+        // aliases 分解
+        if (!aliasesStr.empty())
+        {
+            std::stringstream as(aliasesStr);
+            std::string       a;
             while (std::getline(as, a, '|'))
             {
-                a = Trim(a);
+                a = Trim(ToLower(a));
                 if (!a.empty())
                 {
                     d.aliases.push_back(a);
@@ -156,22 +157,44 @@ bool AssetCatalog::LoadCsv(const std::string& csvPath)
             }
         }
 
-        // スケールが書かれていれば上書き
+        // scale
         if (!scaleStr.empty())
         {
             d.scale = std::stof(scaleStr);
         }
 
-        // flip が書かれていれば上書き
+        // flip
         if (!flipStr.empty())
         {
             d.flip = std::stoi(flipStr);
         }
 
-        // prewarmStr はこの実装では使っていないが、CSVの列合わせのために読んでおく
-        // 将来ここで「起動時に読み込んでおく」処理をしてもよい
+        // preload / prewarm
+        if (!preloadStr.empty())
+        {
+            // "0" 以外は true と扱う（旧 prewarm も 0/1 想定）
+            d.preload = (preloadStr != "0");
+        }
 
-        // 出来上がったものを登録
+        // group
+        d.group = groupStr;
+
+        // tags 分解
+        if (!tagsStr.empty())
+        {
+            std::stringstream ts(tagsStr);
+            std::string       t;
+            while (std::getline(ts, t, '|'))
+            {
+                t = Trim(ToLower(t));
+                if (!t.empty())
+                {
+                    d.tags.push_back(t);
+                }
+            }
+        }
+
+        // 実際の登録
         Register(d);
     }
 

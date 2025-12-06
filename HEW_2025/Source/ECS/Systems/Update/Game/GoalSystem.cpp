@@ -10,7 +10,14 @@
 #include "ECS/Components/Physics/PhysicsLayers.h"
 #include "ECS/Components/Physics/Collider2DComponent.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
+#include "System/DebugSettings.h"
+#include "System/TimeAttackManager.h"
 #include <Windows.h>
+
+ //シーンの遷移
+#include "Scene/SceneAPI.h"
+#include "Scene/ResultScene.h"
+
 
 void GoalSystem::Update(World& world, float dt)
 {
@@ -52,6 +59,9 @@ void GoalSystem::Update(World& world, float dt)
     if (touched[0] && touched[1])
     {
         m_goalCleared = true;
+        DebugSettings::Get().gameCleared = true;
+        DebugSettings::Get().gameTimerRunning = false; // 停止
+        TimeAttackManager::Get().NotifyClear();
         MessageBoxA(nullptr, "ステージクリア！", "Clear", MB_OK | MB_ICONINFORMATION);
     }
 }

@@ -32,18 +32,20 @@ void RegisterFloorPrefab(PrefabRegistry& registry)
             // 見た目
             auto& mr = w.Add<ModelRendererComponent>(e);
             const char* mdlName =
-                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_ground";
+                (!sp.modelAlias.empty()) ? sp.modelAlias.c_str() : "mdl_floor";
             mr.model = AssetManager::GetModel(mdlName);
             mr.visible = true;
 
             // レイヤー
-            //mr.layer = -10;
+            mr.layer = 18;
 
             if (mr.model)
             {
                 mr.model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
                 mr.model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             }
+
+			mr.localScale = { 2.0f, 2.0f, 1.0f };
 
             // 当たり：静的な床
             auto& col = w.Add<Collider2DComponent>(e);

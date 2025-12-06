@@ -1,6 +1,6 @@
 /*****************************************************************//**
  * @file   Game.cpp
- * @brief  SceneManagerを使ったゲーム全体の入口
+ * @brief  SceneManagerを使ったゲーム全体の制御
  *
  * @author 浅野勇生
  * @date   2025/11/11
@@ -8,16 +8,33 @@
 #include "Game.h"
 #include "Scene/SceneManager.h"
 #include "Scene/TestScene.h"
+#include "Scene/TestStageScene.h"
+#include "System/DebugSettings.h"
+#include "System/TimeAttackManager.h"
+#include "System/EffectRuntime.h"
+
+//タイトルシーン
+#include "Scene/TitleScene.h"
+#include "Scene/StageSelectScene.h"
 
 namespace
 {
-    SceneManager g_SceneManager;
+    SceneManager g_SceneManager; // ゲーム全体で 1 つ
+}
+
+// 他所からアクセスするためのアクセサ関数 (SceneAPI.h が利用)
+SceneManager& GetSceneManager()
+{
+    return g_SceneManager;
 }
 
 bool Game_Init(HWND /*hWnd*/, unsigned int /*width*/, unsigned int /*height*/)
 {
-    // 最初にテストシーンを起動
-    g_SceneManager.Change<TestScene>();
+    // 最初にテストステージへ遷移
+    g_SceneManager.Change<TitleScene>();
+    // レコード読み込み (タイムアタック用)
+    TimeAttackManager::Get().LoadRecord("time_record.dat");
+
     return true;
 }
 
@@ -33,5 +50,7 @@ void Game_Draw()
 
 void Game_Uninit()
 {
-    // SceneManagerが勝手に片付ける想定ならここは空でOK
+    TimeAttackManager::Get().SaveRecord("time_record.dat");
+
+    // SceneManagerは終了時に自動的に破棄されるため追加処理不要
 }

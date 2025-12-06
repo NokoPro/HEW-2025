@@ -1,5 +1,5 @@
 /*
-* @brief 
+* @brief
 * @ 合成アニメーションとは
 */
 #ifndef __MODEL_H__
@@ -7,8 +7,8 @@
 
 #include <DirectXMath.h>
 #include <vector>
-#include "DirectX/Shader.h"
-#include "DirectX/MeshBuffer.h"
+#include "System/DirectX/Shader.h"
+#include "System/DirectX/MeshBuffer.h"
 #include <functional>
 
 class Model
@@ -36,8 +36,8 @@ private:
 
 public:
 	// 型定義
-	using NodeIndex	= int;	// ボーン(階層)番号
-	using AnimeNo	= int;	// アニメーション番号
+	using NodeIndex = int;	// ボーン(階層)番号
+	using AnimeNo = int;	// アニメーション番号
 
 	// 定数定義
 	static const NodeIndex	INDEX_NONE = -1;		// 該当ノードなし
@@ -46,10 +46,10 @@ public:
 
 private:
 	// 内部型定義
-	using Children	= std::vector<NodeIndex>;	// ノード階層情報
+	using Children = std::vector<NodeIndex>;	// ノード階層情報
 
 	// 内部定数定義
-	static const UINT		MAX_BONE			=	200;	// １メッシュの最大ボーン数(ここを変更する場合.hlsl側の定義も変更する
+	static const UINT		MAX_BONE = 200;	// １メッシュの最大ボーン数(ここを変更する場合.hlsl側の定義も変更する
 
 	// アニメーションの変換情報
 	struct Transform
@@ -58,9 +58,9 @@ private:
 		DirectX::XMFLOAT4	quaternion;
 		DirectX::XMFLOAT3	scale;
 	};
-	using Key			= std::pair<float, Transform>;
-	using Timeline		= std::map<float, Transform>;
-	using Transforms	= std::vector<Transform>;
+	using Key = std::pair<float, Transform>;
+	using Timeline = std::map<float, Transform>;
+	using Transforms = std::vector<Transform>;
 
 	// アニメーションとボーンの関連付け情報
 	struct Channel
@@ -80,7 +80,7 @@ private:
 	};
 	using Nodes = std::vector<Node>;
 
-	
+
 public:
 	// 頂点情報
 	struct Vertex
@@ -92,8 +92,8 @@ public:
 		float				weight[4];
 		unsigned int		index[4];
 	};
-	using Vertices	= std::vector<Vertex>;
-	using Indices	= std::vector<unsigned long>;
+	using Vertices = std::vector<Vertex>;
+	using Indices = std::vector<unsigned long>;
 
 	// 頂点の骨変形情報
 	struct Bone
@@ -110,7 +110,7 @@ public:
 		Indices			indices;
 		unsigned int	materialID;
 		Bones			bones;
-		MeshBuffer*		pMesh;
+		MeshBuffer* pMesh;
 	};
 	using Meshes = std::vector<Mesh>;
 
@@ -120,6 +120,8 @@ public:
 		DirectX::XMFLOAT4	diffuse;	// 拡散光(メインカラー
 		DirectX::XMFLOAT4	ambient;	// 環境光(陰の部分のカラー
 		DirectX::XMFLOAT4	specular;	// 鏡面反射光(強く光る部分のカラー
+
+		// モデルがNew,Deleteを責任持つテクスチャ
 		Texture* pTexture;	// テクスチャ
 	};
 	using Materials = std::vector<Material>;
@@ -142,7 +144,8 @@ public:
 	void SetVertexShader(VertexShader* vs);
 	void SetPixelShader(PixelShader* ps);
 	bool Load(const char* file, float scale = 1.0f, Flip flip = Flip::None);
-	void Draw(int meshNo = -1);
+	void Draw(int meshNo, Texture* overrideTex);
+	inline void Draw(int meshNo = -1) { Draw(meshNo, nullptr); }
 
 	//--- 各種情報取得
 	const Mesh* GetMesh(unsigned int index);
@@ -168,6 +171,8 @@ public:
 	void SetParametricBlend(float blendRate);
 	// アニメーションの現在再生時間を変更
 	void SetAnimationTime(AnimeNo no, float time);
+	// アニメーション停止
+	void StopAnimation();
 
 	// 再生フラグ
 	bool IsPlay(AnimeNo no);
@@ -198,11 +203,11 @@ private:
 	void LerpTransform(Transform* pOut, const Transform& a, const Transform& b, float rate);
 
 private:
-	static VertexShader*	m_pDefVS;		// デフォルト頂点シェーダー
-	static PixelShader*		m_pDefPS;		// デフォルトピクセルシェーダー
+	static VertexShader* m_pDefVS;		// デフォルト頂点シェーダー
+	static PixelShader* m_pDefPS;		// デフォルトピクセルシェーダー
 	static unsigned int		m_shaderRef;	// シェーダー参照数
 #ifdef _DEBUG
-	static std::string m_errorStr;	
+	static std::string m_errorStr;
 #endif
 
 private:
@@ -213,9 +218,9 @@ private:
 	Materials		m_materials;	// マテリアル配列
 	Nodes			m_nodes;		// 階層情報
 	Animations		m_animes;		// アニメ配列
-	VertexShader*	m_pVS;			// 設定中の頂点シェーダ
-	PixelShader*	m_pPS;			// 設定中のピクセルシェーダ
-	
+	VertexShader* m_pVS;			// 設定中の頂点シェーダ
+	PixelShader* m_pPS;			// 設定中のピクセルシェーダ
+
 	AnimeNo			m_playNo;			// 現在再生中のアニメ番号
 	AnimeNo			m_blendNo;			// ブレンド再生を行うアニメ番号
 	AnimeNo			m_parametric[2];	// 合成再生を行うアニメ番号

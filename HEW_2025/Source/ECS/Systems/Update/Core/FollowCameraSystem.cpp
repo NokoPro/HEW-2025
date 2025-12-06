@@ -1,16 +1,15 @@
 /*****************************************************************//**
  * @file   FollowCameraSystem.cpp
- * @brief  縦スクロール（SideScroll）：強制スクロール優先 → 上位プレイヤー追従
+ * @brief  縦スクロール（SideScroll）：強制スクロール＋上下25%デッドゾーン追従
  * @details
- *  - 強制スクロールの発火条件は「Deathゾーンの上端が画面下端から25%ラインに達したら」。
- *  - 発火中は下限拘束（Death上端が25%を超えない）を守りつつ、上にいるプレイヤーがいればそちらへも追従。
- *  - 非発火中は、上昇も下降も“常に”最上位プレイヤーに追従。
- *  - 追従はデッドゾーン＋指数スムージングでガタつきを抑制。
- *
- * @author 浅野勇生
- * @date   2025/11/13
+ *  - 強制スクロール発火: Deathゾーン上端が画面下端から25%ライン到達。
+ *  - 発火中: 下限拘束＋自動上昇。プレイヤーが上部25%ラインに入ったらさらに追従（上方向のみ）。
+ *  - 非発火中: 画面中央50%領域ではカメラ固定。プレイヤーが下部25%へ入ったら下方向追従開始、
+ *              上部25%へ入ったら上方向追従開始。
+ *  - 追従時の基準: プレイヤー位置を対応する境界ライン(25%)に合わせる。
+ *    上方向: camCenterY = playerY - H*0.25 / 下方向: camCenterY = playerY + H*0.25
+ *  - スムージング: デッドゾーン外差分のみ指数補間。
  *********************************************************************/
-
 #include "FollowCameraSystem.h"
 #include "ECS/World.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
@@ -19,201 +18,147 @@
 #include "ECS/Components/Input/PlayerInputComponent.h"
 #include "System/Geometory.h"
 #include "ECS/Tag/Tag.h"
-
 #include <DirectXMath.h>
-#include <algorithm>  
-#include <cmath>      
-#include <cfloat>     
-
-using namespace DirectX;
-using std::min;
-using std::max;
+#include <algorithm>
+#include <cmath>
+#include <cfloat>
+using namespace DirectX; using std::min; using std::max;
 
 void FollowCameraSystem::Update(World& world, float dt)
 {
-    // ============================
-    // 1) Deathゾーンの「上端Y」を収集
-    //    top = 中心Y + 半高さ
-    // ============================
+    // Deathゾーン上端
     float deathTopY = -FLT_MAX;
-    world.View<TagDeathZone, TransformComponent>(
-        [&](EntityId, const TagDeathZone&, const TransformComponent& t)
-        {
-            const float topY = t.position.y + t.scale.y;
-            if (topY > deathTopY)
-            {
-                deathTopY = topY;
-            }
-        }
-    );
+    world.View<TagDeathZone, TransformComponent>([&](EntityId, const TagDeathZone&, const TransformComponent& t) {
+        const float topY = t.position.y + t.scale.y; if (topY > deathTopY) deathTopY = topY; });
 
-    // ============================
-    // 2) アクティブなカメラを処理
-    // ============================
+    // カメラ処理
     world.View<ActiveCameraTag, Camera3DComponent, TransformComponent>(
-        [&](EntityId /*camEnt*/,
-            ActiveCameraTag& /*tag*/,
-            Camera3DComponent& rig,
-            TransformComponent& camTr)
+        [&](EntityId, ActiveCameraTag&, Camera3DComponent& rig, TransformComponent& camTr)
         {
-            // ---- 最上位（最もYが高い）プレイヤーを収集 ----
-            XMFLOAT3 highestTargetPos = { 0.0f, -FLT_MAX, 0.0f };
-            bool anyTargetFound = false;
-
+            // 最上位プレイヤー取得 (表示用pivotは lookAtOffset 加算、判定はオフセット除外)
+            XMFLOAT3 highestTargetPos{ 0.f,-FLT_MAX,0.f }; float highestBodyY = -FLT_MAX; bool anyTarget = false;
             world.View<PlayerInputComponent, TransformComponent>(
-                [&](EntityId /*e*/, const PlayerInputComponent& /*pic*/, TransformComponent& t)
-                {
-                    const float ty = t.position.y + rig.lookAtOffset.y;
-                    if (!anyTargetFound || ty > highestTargetPos.y)
-                    {
+                [&](EntityId, const PlayerInputComponent&, TransformComponent& t) {
+                    const float bodyY = t.position.y; // オフセット無しの“本体”Y
+                    const float pivotY = bodyY + rig.lookAtOffset.y; // 視点用
+                    if (!anyTarget || pivotY > highestTargetPos.y) {
                         highestTargetPos.x = t.position.x + rig.lookAtOffset.x;
-                        highestTargetPos.y = ty;
+                        highestTargetPos.y = pivotY;
                         highestTargetPos.z = t.position.z + rig.lookAtOffset.z;
-                        anyTargetFound = true;
+                        highestBodyY = bodyY;
+                        anyTarget = true;
                     }
-                }
-            );
-            
-            // ---- 基準pivot（ターゲットがいればそれ） ----
-            XMFLOAT3 pivot = camTr.position;
-            if (anyTargetFound)
-            {
-                pivot = highestTargetPos;
-            }
-
-            // ---- 現在カメラ位置 ----
+                });
+            XMFLOAT3 pivot = anyTarget ? highestTargetPos : camTr.position;
             XMFLOAT3 camPos = camTr.position;
 
             switch (rig.mode)
             {
             case Camera3DComponent::Mode::Orbit:
             {
-                // 既存のオービット挙動
-				const float yawRad = XMConvertToRadians(rig.orbitYawDeg);     /// 方位角
-				const float pitchRad = XMConvertToRadians(rig.orbitPitchDeg); /// 仰俯角
-				const float cosP = cosf(pitchRad);                            /// 仰俯角のcos/sin
-				const float sinP = sinf(pitchRad);                            /// 仰俯角のcos/sin
-				const float cosY = cosf(yawRad);                              /// 方位角のcos/sin
-				const float sinY = sinf(yawRad);                              /// 方位角のcos/sin
-
-				/// カメラ位置計算（球面座標→直交座標変換）
+                const float yawRad = XMConvertToRadians(rig.orbitYawDeg);
+                const float pitchRad = XMConvertToRadians(rig.orbitPitchDeg);
+                const float cosP = cosf(pitchRad); const float sinP = sinf(pitchRad);
+                const float cosY = cosf(yawRad);   const float sinY = sinf(yawRad);
                 camPos.x = pivot.x + rig.orbitDistance * cosP * cosY;
                 camPos.y = pivot.y + rig.orbitDistance * sinP;
                 camPos.z = pivot.z + rig.orbitDistance * cosP * sinY;
-                camTr.position = camPos;
-                break;
+                camTr.position = camPos; break;
             }
-
             case Camera3DComponent::Mode::SideScroll:
             {
-                // ---- 画面幾何（正射影） ----
                 const float H = rig.orthoHeight;
-                const float camCenterY = camPos.y;
-                const float camBottomY = camCenterY - H * 0.5f;
-
-                // 画面下端から25%のライン（ここにDeath“上端”が触れたら強制スクロール発火）
-                const float triggerY = camBottomY + H * 0.25f;
-                const bool  autoRequired = (deathTopY >= triggerY);
-
-                // 強制スクロール時に死守すべき下限：
-                //   (camBottomY + 0.25H >= deathTopY) ⇔ camPos.y >= deathTopY + 0.25H
+                const float camBottomY = camPos.y - H * 0.5f;
+                const float camTopY = camPos.y + H * 0.5f;
+                const float bottom25LineY = camBottomY + H * 0.25f;
+                const bool autoRequired = (deathTopY >= bottom25LineY);
                 const float minCamYByDeath = deathTopY + H * 0.25f;
 
-                // プレイヤー追従（“いちばん上のプレイヤー”）
-                const bool  hasPlayer = anyTargetFound;
-				const float followY = hasPlayer ? highestTargetPos.y : camPos.y;    /// プレイヤー追従目標Y
+                // 25%境界 (判定は本体Yで行う)
+                const float bottomThreshold = camBottomY + H * 0.25f; // 下部境界
+                const float topThreshold = camTopY - H * 0.25f; // 上部境界
 
-                // 目標Yの決定
                 float targetY = camPos.y;
-                if (autoRequired)
+                if (anyTarget)
                 {
-                    // 優先度1：強制スクロール（絶対・下限拘束＋上昇速度）
-                    const float steppedUp = camPos.y + rig.scrollSpeed * dt;
-                    const float desiredAuto = max(steppedUp, minCamYByDeath);
+                    const bool inTopZone = highestBodyY > topThreshold;    // 本体が上部25%侵入
+                    const bool inBottomZone = highestBodyY < bottomThreshold; // 本体が下部25%侵入
 
-                    // 上にプレイヤーがいれば、下限を守りつつそちらへも追従
-                    targetY = hasPlayer ? max(desiredAuto, followY) : desiredAuto;
-                }
-                else
-                {
-                    // 優先度2/3：非発火中は“常に”最上位プレイヤーに追従（上昇・下降とも）
-                    targetY = followY;
+                    // 上方向: プレイヤー本体が topThreshold を超えたら camCenter = bodyY - H*0.25
+                    const float desiredUpCenter = highestBodyY - H * 0.25f;
+                    // 下方向: プレイヤー本体が bottomThreshold を下回ったら camCenter = bodyY + H*0.25
+                    const float desiredDownCenter = highestBodyY + H * 0.25f;
+
+                    if (autoRequired)
+                    {
+                        const float steppedUp = camPos.y + rig.scrollSpeed * dt;
+                        const float desiredAuto = max(steppedUp, minCamYByDeath);
+                        targetY = desiredAuto;
+                        if (inTopZone)
+                        {
+                            targetY = max(targetY, desiredUpCenter);
+                        }
+                    }
+                    else
+                    {
+                        if (inTopZone)
+                        {
+                            targetY = desiredUpCenter;
+                        }
+                        else if (inBottomZone)
+                        {
+                            targetY = desiredDownCenter;
+                        }
+                        // 中央帯は固定
+                    }
                 }
 
-                // 任意のベース下限を割らない（使っている場合）
-                if (targetY < rig.baseScrollY)
-                {
-                    targetY = rig.baseScrollY;
-                }
+                // 最低Y制限
+                if (targetY < rig.baseScrollY) targetY = rig.baseScrollY;
 
-                // デッドゾーン → 指数スムージング（ガタつき抑制）
+                // スムージング（必要差分のみ）
                 const float diff = targetY - camPos.y;
                 if (std::fabs(diff) > rig.followDeadzoneY)
                 {
-                    const float t = (rig.followSmoothTimeY <= 1e-5f)
-                        ? 1.0f
-                        : (1.0f - std::exp(-(1.0f / rig.followSmoothTimeY) * dt));
+                    const float t = (rig.followSmoothTimeY <= 1e-5f) ? 1.f : (1.f - std::exp(-(1.f / rig.followSmoothTimeY) * dt));
                     camPos.y += diff * t;
                 }
 
-                /// X/Zはサイドビュー固定。Zはなめらかに復帰（depthLerpSpeed=0なら即時）
+                // X/Z 固定処理
                 camPos.x = rig.sideFixedX;
-                if (rig.depthLerpSpeed <= 0.0f)
-                {
-                    camPos.z = rig.sideFixedZ;
+                if (rig.depthLerpSpeed <= 0.f) camPos.z = rig.sideFixedZ; else {
+                    const float dz = rig.sideFixedZ - camPos.z; camPos.z += dz * min(1.f, rig.depthLerpSpeed * dt);
                 }
-                else
-                {
-                    const float dz = rig.sideFixedZ - camPos.z;
-                    const float tz = min(1.0f, rig.depthLerpSpeed * dt);
-                    camPos.z += dz * tz;
-                }
-
                 camTr.position = camPos;
-
-                // 注視点はX方向にオフセット、YはカメラY、Zは前方固定ぶんを足す
-                pivot.x = camPos.x + rig.sideLookAtX;
-                pivot.y = camPos.y;
-                pivot.z = camPos.z + 10.0f;
+                pivot.x = camPos.x + rig.sideLookAtX; pivot.y = camPos.y; pivot.z = camPos.z + 10.f;
                 break;
             }
-
-            default:
+            case Camera3DComponent::Mode::Fixed:
+            {
+                // 固定モード：移動計算は行わない（TransformComponentの位置をそのまま使う）
+                // 向きは単純にZ+方向（奥）を向くように設定
+                pivot = camPos;
+                pivot.z += 1.0f;
                 break;
             }
+            default: break;
+            }
 
-            // ============================
-            // 3) ビュー / プロジェクション更新（転置して保持）
-            // ============================
+            // ビュー / プロジェクション
             XMVECTOR eye = XMLoadFloat3(&camTr.position);
             XMVECTOR at = XMLoadFloat3(&pivot);
-            XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
+            XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
             XMMATRIX V = XMMatrixLookAtLH(eye, at, up);
-            XMMATRIX P;
 
-			/// モード別プロジェクション行列
-            if (rig.mode == Camera3DComponent::Mode::SideScroll)
-            {
-				/// 正射影（サイドビュー用）
-                const float orthoHeight = rig.orthoHeight;
-                const float orthoWidth = orthoHeight * rig.aspect;
-                P = XMMatrixOrthographicLH(orthoWidth, orthoHeight, rig.nearZ, rig.farZ);
-            }
-            else
-            {
-				/// 通常の透視投影
-                P = XMMatrixPerspectiveFovLH(
-                    XMConvertToRadians(rig.fovY),
-                    rig.aspect, rig.nearZ, rig.farZ);
-            }
+            // SideScroll または Fixed の場合は並行投影 (Orthographic)
+            bool isOrtho = (rig.mode == Camera3DComponent::Mode::SideScroll || rig.mode == Camera3DComponent::Mode::Fixed);
 
-			/// 転置して保存
-            XMStoreFloat4x4(&m_viewT, XMMatrixTranspose(V));
-            XMStoreFloat4x4(&m_projT, XMMatrixTranspose(P));
+            XMMATRIX P = isOrtho
+                ? XMMatrixOrthographicLH(rig.orthoHeight * rig.aspect, rig.orthoHeight, rig.nearZ, rig.farZ)
+                : XMMatrixPerspectiveFovLH(XMConvertToRadians(rig.fovY), rig.aspect, rig.nearZ, rig.farZ);
 
-			/// Geometory 側にも設定
-            Geometory::SetView(m_viewT);
-            Geometory::SetProjection(m_projT);
+            DirectX::XMStoreFloat4x4(&m_viewT, XMMatrixTranspose(V));
+            DirectX::XMStoreFloat4x4(&m_projT, XMMatrixTranspose(P));
+            Geometory::SetView(m_viewT); Geometory::SetProjection(m_projT);
         });
 }

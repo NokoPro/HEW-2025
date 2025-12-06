@@ -16,6 +16,8 @@
 #include <DirectXMath.h>
 #include <vector>
 #include "System/Model.h"
+#include "System/DirectX/Texture.h" 
+#include "System/AssetManager.h"
 
 
  /**
@@ -69,6 +71,7 @@ private:
         // 描画用データ
         DirectX::XMFLOAT4X4 world; // ワールド行列(Transpose済み)
         Model* model;              // モデルハンドル
+        AssetHandle<Texture> overrideTexture; // keep shared_ptr alive for the frame
     };
 
     // 描画リスト(毎フレーム使いまわす)

@@ -26,6 +26,13 @@ public:
 	// 文字列からシェーダをコンパイル
 	HRESULT Compile(const char* pCode);
 
+	void ClearTextures()
+	{
+		for (auto& tex : m_pTextures)
+		{
+			tex = nullptr;
+		}
+	}
 
 	// 定数の書き込み
 	void WriteBuffer(UINT slot, void* pData);

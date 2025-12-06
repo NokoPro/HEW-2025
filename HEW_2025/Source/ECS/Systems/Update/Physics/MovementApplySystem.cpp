@@ -8,113 +8,132 @@
 #include "MovementApplySystem.h"
 #include <algorithm>  // std::clamp
 #include "System/DebugSettings.h"
+#include "ECS/Components/Effect/EffectComponent.h"
+#include "ECS/Components/Effect/EffectSlotsComponent.h"
+#include "ECS/Components/Core/PlayerStateComponent.h"
+
+// CSV値との同期
+void MovementApplySystem::SyncConfig()
+{
+    const auto& cfg = GlobalGameplayConfig::Instance().Get();
+    m_groundAccel    = cfg.Get("groundAccel",    m_groundAccel);
+    m_airAccel       = cfg.Get("airAccel",       m_airAccel);
+    m_maxSpeedX      = cfg.Get("maxSpeedX",      m_maxSpeedX);
+    m_jumpSpeed      = cfg.Get("jumpSpeed",      m_jumpSpeed);
+    m_blinkUpImpulse = cfg.Get("blinkUpImpulse", m_blinkUpImpulse);
+}
 
 void MovementApplySystem::Update(World& world, float dt)
 {
+    // 毎フレーム外部設定を反映 (必要なら頻度調整可能)
+    SyncConfig();
+
     // Intent + Rigidbody を持ってるやつだけ対象
-    world.View<MovementIntentComponent, Rigidbody2DComponent>(
-        [&](EntityId e,
-            MovementIntentComponent& intent,
-            Rigidbody2DComponent& rb)
+    world.View<MovementIntentComponent,
+           Rigidbody2DComponent,
+           PlayerStateComponent>(
+    [&](EntityId e,
+        MovementIntentComponent& intent,
+        Rigidbody2DComponent& rb,
+        PlayerStateComponent& state)
         {
-            // 1. いまこのキャラが地面にいるかどうかで横移動の効き方を変える
-            //    rb.onGround は前のフレームの衝突でセットされる想定
+            // 相手コマンド実行フラグは 1 フレーム限定なので毎フレームリセット
+            state.m_remoteCommandJumpThisFrame = false;
+            state.m_remoteCommandBlinkThisFrame = false;
+
             const bool onGround = rb.onGround;
 
-            // 2. このエンティティのコライダーがあれば摩擦を読む（なければ1.0扱い）
             float friction = 1.0f;
             if (auto* col = world.TryGet<Collider2DComponent>(e))
             {
                 friction = col->material.friction;
-                // 0～1の間に収めておく
                 friction = std::clamp(friction, 0.0f, 1.0f);
             }
 
-            // 3. 入力からターゲット速度を作る
-            //    moveX が -1～1なので、これに最大速度を掛けるだけ
             const float targetVelX = intent.moveX * m_maxSpeedX * DebugSettings::Get().playerSpeed;
-
-            // 実際に使う加速の強さ（地上・空中で変える）
             const float accel = onGround ? m_groundAccel : m_airAccel;
-
-            // 現在速度をターゲットに寄せていく
-            // 加速方向だけ決めて足す
             float vx = rb.velocity.x;
-
-            // ターゲットより左なら右に加速、右なら左に加速
             const float toTarget = targetVelX - vx;
-            // どれくらい動かすか（加速量）
             float add = accel * dt;
-
-            // 氷っぽくしたいなら摩擦で弱める
             add *= friction;
 
-            // 目標への差分が加速量より小さいなら一気に目標へ
             if (std::abs(toTarget) <= add)
             {
                 vx = targetVelX;
             }
             else
             {
-                // まだ届かないので、符号だけ合わせて一歩近づける
                 vx += (toTarget > 0.0f) ? add : -add;
             }
 
-
-            // --- 着地したらブリンク・ジャンプ消費状態をリセット ---
             if (rb.onGround)
             {
                 intent.forceJumpConsumed = false;
                 intent.blinkConsumed = false;
-                intent.isBlinking = false; // ブリンク終了
+                intent.isBlinking = false;
             }
 
-            // --- 強制ジャンプ ---
             if (intent.forceJumpRequested)
             {
                 rb.velocity.y = m_jumpSpeed;
                 intent.forceJumpRequested = false;
-                intent.forceJumpConsumed = true; // ★ジャンプ消費済みにする
+                intent.forceJumpConsumed = true;
+
+				// 強制ジャンプが実行されたフレームとしてフラグを立てる
+                state.m_remoteCommandJumpThisFrame = true;
             }
-            // --- 通常ジャンプ ---
             else if (intent.jump && (onGround || DebugSettings::Get().infiniteJump))
             {
                 rb.velocity.y = m_jumpSpeed;
                 rb.onGround = false;
             }
-            else
-            {
-                if (rb.useGravity)
-                {
-                    rb.velocity.y += m_gravity * dt;
-                }
-            }
 
-            // 5. 今フレームぶんためてた外力を加える
-            //    風や移動床がここに力を積んでおけば勝手に反映される
             vx += rb.accumulatedForce.x * dt;
             rb.velocity.y += rb.accumulatedForce.y * dt;
-
-            // 使い終わったのでクリア
             rb.accumulatedForce = { 0.0f, 0.0f };
-
-            // 6. 計算した横速度を戻す
             rb.velocity.x = vx;
 
-            // --- ブリンク処理（空中限定＆未消費のみ） ---
             if (intent.blinkRequested)
             {
-                if (!rb.onGround && !intent.blinkConsumed)
+                if (!intent.blinkConsumed)
                 {
                     rb.velocity.x = intent.blinkSpeed;
-                    intent.isBlinking = true;    // ブリンク開始
-                    intent.blinkConsumed = true; // 今回分を消費
+                    if (rb.velocity.y < m_blinkUpImpulse)
+                    {
+                        rb.velocity.y = m_blinkUpImpulse;
+                    }
+                    intent.isBlinking = true;
+                    intent.blinkConsumed = true;
+
+					// 強制ブリンクが実行されたフレームとしてフラグを立てる
+                    state.m_remoteCommandBlinkThisFrame = true;
+
+                    // ここでブリンクを実行したタイミングでエフェクト再生を指示
+                    if (auto* efc = world.TryGet<EffectComponent>(e))
+                    {
+                        if (auto* slots = world.TryGet<EffectSlotsComponent>(e))
+                        {
+                            if (slots->onBlink)
+                            {
+                                efc->effect = slots->onBlink;
+                                // スロットの既定パラメータを反映
+                                efc->offset      = slots->onBlinkParams.offset;
+                                efc->rotationDeg = slots->onBlinkParams.rotationDeg;
+                                efc->scale       = slots->onBlinkParams.scale;
+                            }
+                        }
+                        // 向きに合わせてミラー（右:+1, 左:-1）。ここではキャラクターの facing を利用
+                        efc->rotationDeg.y = (intent.facing >= 0) ? 180.0f : -180.0f;
+                        efc->offset.x = (intent.facing >= 0) ? std::fabs(efc->offset.x) : -std::fabs(efc->offset.x);
+                        efc->scale.x  = (intent.facing >= 0) ? std::fabs(efc->scale.x)  : -std::fabs(efc->scale.x);
+
+                        efc->loop = false;
+                        efc->playRequested = true;
+                    }
                 }
-                // リクエストは毎フレームで必ずクリア（条件未満なら不発）
                 intent.blinkRequested = false;
                 intent.blinkSpeed = 0.0f;
             }
-
         }
     );
 }

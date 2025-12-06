@@ -38,7 +38,7 @@ void RegisterDeathZonePrefab(PrefabRegistry& registry)
         std::string modelName = sp.modelAlias.empty() ? "mdl_deathzone" : sp.modelAlias;
         auto model = AssetManager::GetModel(modelName.c_str());
 
-
+  
 
         if (model) {
             // シェーダ設定（必要に応じて変更）
@@ -46,7 +46,7 @@ void RegisterDeathZonePrefab(PrefabRegistry& registry)
             model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
             auto& mr = world.Add<ModelRendererComponent>(e, model);
 			mr.localScale = { 1.f, 0.5f, 1.f };
-            mr.layer = 10;
+            mr.layer = 39;
         }
 
 		// DeathZoneタグ付与

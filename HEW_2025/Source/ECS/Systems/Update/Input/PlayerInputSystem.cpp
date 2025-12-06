@@ -8,6 +8,8 @@
 #include "PlayerInputSystem.h"
 #include "System/Input.h"   // ←あなたの環境の入力ヘッダ名に合わせてください
 #include <cmath> // 追加: 補間用
+#include "ECS/Systems/Update/Audio/AudioManagerSystem.h"
+
 
 // --- 追加: 角度補間関数 ---
 namespace 
@@ -29,59 +31,84 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
 	PlayerInputComponent* pic1 = nullptr;
 	PlayerInputComponent* pic2 = nullptr;
 
-    world.View<PlayerInputComponent, MovementIntentComponent>(
-        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent) {
+    EffectComponent* effect1 = nullptr;
+    EffectComponent* effect2 = nullptr;
+    EffectSlotsComponent* slots1 = nullptr;
+    EffectSlotsComponent* slots2 = nullptr;
+
+    world.View<PlayerInputComponent, MovementIntentComponent,EffectComponent,EffectSlotsComponent>(
+        [&](EntityId, PlayerInputComponent& pic, MovementIntentComponent& intent,EffectComponent& ef, EffectSlotsComponent& slots) {
             if (pic.playerIndex == 0) 
             {
                 intent1 = &intent;
 				pic1 = &pic;
+				effect1 = &ef;
+                slots1 = &slots;
 			}
             if (pic.playerIndex == 1)
             {
                 intent2 = &intent;
 				pic2 = &pic;
+				effect2 = &ef;
+                slots2 = &slots;
             }
         }
     );
 
     // 入力初期化・入力反映
-    world.View<PlayerInputComponent, MovementIntentComponent,TransformComponent>(
+    // 入力初期化・入力反映
+    world.View<PlayerInputComponent, MovementIntentComponent, Rigidbody2DComponent>(
         [&](EntityId,
             PlayerInputComponent& pic,
             MovementIntentComponent& intent,
-            TransformComponent& tr)
+            Rigidbody2DComponent& rig)
         {
+            // Intent 初期化
             intent.moveX = 0.0f;
             intent.jump = false;
             intent.dash = false;
-			pic.isJumpRequested = false;
-            pic.isBlinkRequested = false;
+            pic.isJumpRequested = false;
+            // ブリンク系は MovementApplySystem 側でフラグを見て処理するのでここでは消さない
 
-            // 向きはmoveX入力で更新
+            // 実入力を MovementIntent に反映
             switch (pic.playerIndex)
             {
-            case 0: ReadPlayer0(intent); break;
-            case 1: ReadPlayer1(intent); break;
+            case 0: ReadPlayer0(intent, rig); break;
+            case 1: ReadPlayer1(intent, rig); break;
             default: break;
             }
-            // moveXが0でなければ向きを更新
-            if (intent.moveX > 0.01f) 
-                intent.facing = 1;
-            else if (intent.moveX < -0.01f) intent.facing = -1;
 
-            // --- 回転 ---
-            float targetY = (intent.facing == 1) ? 120.0f : -120.0f;
-            float lerpSpeed = 0.2f; // 0.0～1.0: 値を大きくすると速く回転
-            tr.rotationDeg.y = LerpAngle(tr.rotationDeg.y, targetY, lerpSpeed);
+            // moveX が 0 でなければ向きを更新（Facing は StateSystem が使う）
+            if (intent.moveX > 0.01f)
+            {
+                intent.facing = 1;
+            }
+            else if (intent.moveX < -0.01f)
+            {
+                intent.facing = -1;
+            }
         }
     );
+
 
     // --- Rボタンジャンプ（相手に1回だけ） ---
     if (intent2 && !intent2->forceJumpConsumed) {
         if (IsPadTrigger(0, XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
             intent2->forceJumpRequested = true;
             intent2->forceJumpConsumed = true;
-			pic1->isJumpRequested = true;
+            pic1->isJumpRequested = true;
+
+            
+            if (effect2)
+            {
+                if (slots2 && slots2->onJump)
+                {
+                    AudioManager::PlaySE("se_jump_p1", 0.1f);
+                    effect2->effect = slots2->onJump;
+                }
+                effect2->loop = false;
+                effect2->playRequested = true;
+            }
         }
     }
     if (intent1 && !intent1->forceJumpConsumed) {
@@ -89,6 +116,16 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
             intent1->forceJumpRequested = true;
             intent1->forceJumpConsumed = true;
 			pic2->isJumpRequested = true;
+            if (effect1)
+            {
+                if (slots1 && slots1->onJump)
+                {
+                    AudioManager::PlaySE("se_jump_p1", 0.1f);
+                    effect1->effect = slots1->onJump;
+                }
+                effect1->loop = false;
+                effect1->playRequested = true;
+            }
         }
     }
 
@@ -98,8 +135,8 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
         if (IsPadTrigger(0, XINPUT_GAMEPAD_LEFT_SHOULDER)) 
         {
             intent2->blinkRequested = true;
-            // ?P???????????????Aconsume??"); MovementApplySystem???s
             intent2->blinkSpeed = intent2->facing * BLINK_SPEED;
+            // 入力時点ではエフェクトを再生しない。ワンショットフラグのみ設定
             pic1->isBlinkRequested = true;
         }
     }
@@ -107,11 +144,13 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
     {
         if (IsPadTrigger(1, XINPUT_GAMEPAD_LEFT_SHOULDER)) {
             intent1->blinkRequested = true;
-            // consume??u?????N?????????????????? MovementApplySystem ?側
             intent1->blinkSpeed = intent1->facing * BLINK_SPEED;
+            // 入力時点ではエフェクトを再生しない。ワンショットフラグのみ設定
             pic2->isBlinkRequested = true;
         }
     }
+
+    // 以降のエフェクト再生は MovementApplySystem でブリンクが実行されたタイミングで行う
 }
 
 
@@ -120,7 +159,7 @@ void PlayerInputSystem::Update(World& world, float /*dt*/)
  * キーボード: A/D + Space
  * Pad #0     : D-Pad左右 or 左スティックX + Aボタン
  */
-void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent)
+void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent, Rigidbody2DComponent& rig)
 {
     // --- キーボード ---
     const bool keyLeft = IsKeyPress('A');
@@ -151,6 +190,10 @@ void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent)
     // ジャンプ：Space or Pad A
     if (keyJump || padJump)
     {
+        if (rig.onGround == true)
+        {
+            AudioManager::PlaySE("se_jump_p1", 0.1f);
+        }
         outIntent.jump = true;
     }
 }
@@ -160,7 +203,7 @@ void PlayerInputSystem::ReadPlayer0(MovementIntentComponent& outIntent)
  * キーボード: ←/→ + ↑
  * Pad #1     : D-Pad左右 or 左スティックX + Aボタン
  */
-void PlayerInputSystem::ReadPlayer1(MovementIntentComponent& outIntent)
+void PlayerInputSystem::ReadPlayer1(MovementIntentComponent& outIntent, Rigidbody2DComponent& rig)
 {
     // --- キーボード ---
     const bool keyLeft = IsKeyPress(VK_LEFT);
@@ -189,6 +232,11 @@ void PlayerInputSystem::ReadPlayer1(MovementIntentComponent& outIntent)
 
     if (keyJump || padJump)
     {
+        if (rig.onGround == true)
+        {
+            AudioManager::PlaySE("se_jump_p1", 0.1f);
+        }
+
         outIntent.jump = true;
     }
 }

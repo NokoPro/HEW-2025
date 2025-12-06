@@ -1,98 +1,115 @@
+/**********************************************************************************************
+ * @file      AudioManagerSystem.cpp
+ * @brief     オーディオを管理するシステム
+ *
+ * @author    浅野勇生
+ * @date      2025/11/24
+ *
+ * =============================================================================================
+ *  Progress Log  - 進捗ログ
+ * ---------------------------------------------------------------------------------------------
+ *  [ @date 2025/11/24 ]
+ * 
+ *    - [◎] 〇〇を実装
+ *    - [] △△のバグ調査中
+ *
+ **********************************************************************************************/
 #include "AudioManagerSystem.h"
+#include "System/AssetManager.h"
+
 #include <iostream>
 #include <windows.h>
 #include <mmreg.h>
 #include <mmsystem.h>
 #include <vector>
-#include <thread>   
-#include <chrono>   
+#include <thread>
 
 #pragma comment(lib, "winmm.lib")
 
-void Msg(const std::string& s)
-{
-    MessageBoxA(nullptr, s.c_str(), "DEBUG", MB_OK);
-}
-
-//＝＝＝＝＝static＝＝＝＝＝
 IXAudio2* AudioManager::xAudio = nullptr;
 IXAudio2MasteringVoice* AudioManager::masterVoice = nullptr;
 IXAudio2SourceVoice* AudioManager::bgmVoice = nullptr;
 
-std::map<std::string, AudioManager::SoundData> AudioManager::sounds ;
-std::map<std::string, AudioManager::SEVoice> AudioManager::seVoices ;
-//＝＝＝＝＝＝＝＝＝＝＝＝＝
-
-
+std::map<std::string, AudioManager::SoundData> AudioManager::sounds;
+std::map<std::string, std::vector<AudioManager::SEVoice>> AudioManager::seVoices;
+std::mutex                                                AudioManager::seMutex;
 bool AudioManager::Initialize()
 {
-
     HRESULT hr = XAudio2Create(&xAudio, 0, XAUDIO2_DEFAULT_PROCESSOR);
-    if (FAILED(hr))
-    {
-        std::cerr << "XAudio2 初期化失敗\n";
-        return false;
-    }
+    if (FAILED(hr)) { std::cerr << "XAudio2 init failed\n"; return false; }
     hr = xAudio->CreateMasteringVoice(&masterVoice);
-    if (FAILED(hr))
-    {
-        std::cerr << "MasteringVoice 作成失敗\n";
-        return false;
-    }
-
+    if (FAILED(hr)) { std::cerr << "MasteringVoice failed\n"; return false; }
     return true;
 }
 
+void AudioManager::Shutdown()
+{
+    if (bgmVoice) { bgmVoice->DestroyVoice(); bgmVoice = nullptr; }
+
+    {
+        std::lock_guard<std::mutex> lock(seMutex);
+        for (auto& kv : seVoices)
+        {
+            for (auto& state : kv.second)
+            {
+                if (state.voice)
+                {
+                    state.voice->DestroyVoice();
+                    state.voice = nullptr;
+                }
+            }
+        }
+        seVoices.clear();
+    }
+
+    for (auto& kv : sounds)
+    {
+        delete[] kv.second.audioData;
+        kv.second.audioData = nullptr;
+    }
+    sounds.clear();
+
+    if (masterVoice) masterVoice->DestroyVoice();
+    if (xAudio) xAudio->Release();
+}
+
+//-----------------------------------------
+// WAV load (direct path, with cache check)
+//-----------------------------------------
 bool AudioManager::LoadAudio(const std::string& name, const std::wstring filepath)
 {
-    HMMIO hmmio = mmioOpenW(const_cast<LPWSTR>(filepath.c_str()), nullptr, MMIO_READ | MMIO_ALLOCBUF);
-    if (!hmmio) {
-        std::wcerr << L"[ERROR] WAV ファイル開けない: " << filepath << std::endl;
-        return false;
-    }
-    MMCKINFO ck{};
-    ck.fccType = mmioFOURCC('W', 'A', 'V', 'E');
+    // ==== キャッシュ済みならスキップ ====
+    if (sounds.find(name) != sounds.end())
+        return true;
+
+    HMMIO hmmio = mmioOpenW(const_cast<LPWSTR>(filepath.c_str()), nullptr,
+        MMIO_READ | MMIO_ALLOCBUF);
+    if (!hmmio) { std::wcerr << L"[ERROR] open WAV: " << filepath << std::endl; return false; }
+
+    MMCKINFO ck{}; ck.fccType = mmioFOURCC('W', 'A', 'V', 'E');
     if (mmioDescend(hmmio, &ck, nullptr, MMIO_FINDRIFF) != MMSYSERR_NOERROR)
     {
-        std::wcerr << L"[ERROR] RIFF チャンク見つからない：" << filepath << std::endl;
-        mmioClose(hmmio, 0);
-        return false;
-    }
-    MMCKINFO fmtck{};
-    fmtck.ckid = mmioFOURCC('f', 'm', 't', 'c');
-    if (mmioDescend(hmmio, &fmtck, &ck, 0) != MMSYSERR_NOERROR) {
-        std::wcerr << L"[ERROR] fmt チャンクが見つからない：" << filepath << std::endl;
-        return false;
+        mmioClose(hmmio, 0); return false;
     }
 
-
-
+    MMCKINFO fmtck{}; fmtck.ckid = mmioFOURCC('f', 'm', 't', ' ');
+    if (mmioDescend(hmmio, &fmtck, &ck, MMIO_FINDCHUNK) != MMSYSERR_NOERROR)
+    {
+        mmioClose(hmmio, 0); return false;
+    }
 
     WAVEFORMATEX wfx{};
-    if (mmioRead(hmmio, reinterpret_cast<HPSTR>(&wfx), sizeof(WAVEFORMATEX)) != sizeof(WAVEFORMATEX)) {
-        std::wcerr << L"[ERROR] WAVEFORMATEX 読み込み失敗\n";
-        mmioClose(hmmio, 0);
-        return false;
-    }
-
-    
-
+    mmioRead(hmmio, reinterpret_cast<HPSTR>(&wfx), sizeof(WAVEFORMATEX));
     mmioAscend(hmmio, &fmtck, 0);
 
-    MMCKINFO datack{};
-    datack.ckid = mmioFOURCC('d', 'a', 't', 'a');
-    if (mmioDescend(hmmio, &datack, &ck, MMIO_FINDCHUNK) != MMSYSERR_NOERROR) {
-        std::wcerr << L"[ERROR] data チャンク見つからない\n";
-        mmioClose(hmmio, 0);
-        return false;
-    }
-    std::vector<BYTE> buffer(datack.cksize);
-    if (mmioRead(hmmio, reinterpret_cast<HPSTR>(buffer.data()), datack.cksize) != datack.cksize) {
-        std::wcerr << L"[ERROR] WAV データ読み込み失敗\n";
-        mmioClose(hmmio, 0);
-        return false;
+    MMCKINFO datack{}; datack.ckid = mmioFOURCC('d', 'a', 't', 'a');
+    if (mmioDescend(hmmio, &datack, &ck, MMIO_FINDCHUNK) != MMSYSERR_NOERROR)
+    {
+        mmioClose(hmmio, 0); return false;
     }
 
+    std::vector<BYTE> buffer(datack.cksize);
+    mmioRead(hmmio, reinterpret_cast<HPSTR>(buffer.data()), datack.cksize);
     mmioClose(hmmio, 0);
 
     SoundData data;
@@ -100,34 +117,50 @@ bool AudioManager::LoadAudio(const std::string& name, const std::wstring filepat
     data.audioData = new BYTE[buffer.size()];
     memcpy(data.audioData, buffer.data(), buffer.size());
 
-    data.buffer.AudioBytes = buffer.size();
+    data.buffer.AudioBytes = (UINT32)buffer.size();
     data.buffer.pAudioData = data.audioData;
     data.buffer.Flags = XAUDIO2_END_OF_STREAM;
     data.buffer.LoopCount = 0;
 
     sounds[name] = data;
-
     return true;
 }
 
+//-----------------------------------------
+// Load by alias (CSV → path → WAV load)
+//-----------------------------------------
+bool AudioManager::LoadAudioAlias(const std::string& alias)
+{
+    // ---- すでにキャッシュ済みなら OK ----
+    if (sounds.find(alias) != sounds.end())
+        return true;
+
+    auto clipHandle = AssetManager::GetAudio(alias);
+    if (!clipHandle) return false;
+
+    const std::string& path = clipHandle->path;
+    if (path.empty()) return false;
+
+    std::wstring wpath(path.begin(), path.end());
+    return LoadAudio(alias, wpath);
+}
+
+//-----------------------------------------
+// Play BGM
+//-----------------------------------------
 void AudioManager::PlayBGM(const std::string& name, bool loop)
 {
-    if (bgmVoice)
-    {
-        bgmVoice->DestroyVoice();
-        bgmVoice = nullptr;
-    }
+    if (bgmVoice) { bgmVoice->DestroyVoice(); bgmVoice = nullptr; }
 
     auto it = sounds.find(name);
     if (it == sounds.end()) return;
-    auto& data = it->second;
-    data.buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
+    auto& d = it->second;
 
-    if (FAILED(xAudio->CreateSourceVoice(&bgmVoice, &data.wfx))) return;
-    if (FAILED(bgmVoice->SubmitSourceBuffer(&data.buffer))) return;
+    d.buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
 
+    if (FAILED(xAudio->CreateSourceVoice(&bgmVoice, &d.wfx))) return;
+    bgmVoice->SubmitSourceBuffer(&d.buffer);
     bgmVoice->Start(0);
-
 }
 
 void AudioManager::StopBGM()
@@ -140,38 +173,58 @@ void AudioManager::SetBGMVolume(float vol)
     if (bgmVoice) bgmVoice->SetVolume(vol);
 }
 
+//-----------------------------------------
+// Play SE
+//-----------------------------------------
 void AudioManager::PlaySE(const std::string& name, float volume)
 {
     auto it = sounds.find(name);
     if (it == sounds.end()) return;
 
-    auto& seState = seVoices[name];
-    if (seState.playing)return;
-
     auto& data = it->second;
 
-    IXAudio2SourceVoice* seVoice = nullptr;
-    if (FAILED(xAudio->CreateSourceVoice(&seVoice, &data.wfx))) return;
+    IXAudio2SourceVoice* voice = nullptr;
+    if (FAILED(xAudio->CreateSourceVoice(&voice, &data.wfx))) return;
 
-    seVoice->SetVolume(volume);
-    seVoice->SubmitSourceBuffer(&data.buffer);
-    seVoice->Start(0);
+    voice->SetVolume(volume);
+    voice->SubmitSourceBuffer(&data.buffer);
+    voice->Start(0);
 
-    seState.voice = seVoice;
-    seState.playing = true;
+    // seVoices に登録
+    {
+        std::lock_guard<std::mutex> lock(seMutex);
+        auto& vec = seVoices[name];
+        SEVoice inst{};
+        inst.voice = voice;
+        vec.push_back(inst);
+    }
 
-    std::thread([&seState]()
+    // 再生完了を待って片付けるスレッド
+    std::thread([name, voice]() {
+        XAUDIO2_VOICE_STATE s{};
+        do {
+            voice->GetState(&s);
+            Sleep(1);
+        } while (s.BuffersQueued > 0);
+
+        voice->DestroyVoice();
+
+        // seVoices からこの voice を削除
+        std::lock_guard<std::mutex> lock(seMutex);
+        auto it = seVoices.find(name);
+        if (it != seVoices.end())
         {
-            XAUDIO2_VOICE_STATE state{};
-            do {
-                seState.voice->GetState(&state);
-                Sleep(1);
-            
-            } while (state.BuffersQueued > 0);
+            auto& vec = it->second;
+            vec.erase(
+                std::remove_if(vec.begin(), vec.end(),
+                    [voice](const SEVoice& v) { return v.voice == voice; }),
+                vec.end()
+            );
 
-            seState.voice->DestroyVoice();
-            seState.voice = nullptr;
-            seState.playing = false;
-
-        }).detach();
+            if (vec.empty())
+            {
+                seVoices.erase(it);
+            }
+        }
+    }).detach();
 }
