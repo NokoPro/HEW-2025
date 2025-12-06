@@ -18,12 +18,24 @@
 #pragma once
 
 #include "Scene/Scene.h"
+#include "ECS/World.h"
+#include "ECS/Systems/SystemRegistry.h"
+
+// カメラ
+#include "ECS/Systems/Update/Core/FollowCameraSystem.h"
+
+// プレファブ
+#include "ECS/Prefabs/PrefabRegistry.h"
 
 //シーンの遷移
 #include "Scene/SceneAPI.h"
 
-//key入力
+// システム
+
 #include"System/Input.h"
+
+class SpriteRenderSystem;
+class FollowCameraSystem;
 
 class TitleScene : public Scene
 {
@@ -35,4 +47,17 @@ public:
     void Draw();
 
 private:
+    /**
+     * @brief 初期化処理（コンストラクタから呼ばれる）
+     */
+    void Initialize();
+
+    SpriteRenderSystem* m_drawSprite = nullptr;
+    FollowCameraSystem* m_followCamera = nullptr;
+
+    World          m_world;
+    SystemRegistry m_sys;
+    PrefabRegistry m_prefabs;
+
+	EntityId m_uiTitleEntity = kInvalidEntity;
 };

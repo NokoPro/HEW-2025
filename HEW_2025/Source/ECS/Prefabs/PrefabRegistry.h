@@ -46,6 +46,22 @@ public:
         int               padIndex = -1;                  ///< どのプレイヤー入力に紐づけるか（-1なら未指定）
 
         std::string       modelAlias;                     ///< 使いたいモデルを直接指定する場合
+        
+        // 可任意: アニメーションのエイリアスを個別に上書き（空ならデフォルトを使用）
+        std::string       animIdleAlias;                  ///< 例: "anim_player1_idle"
+        std::string       animRunAlias;                   ///< 例: "anim_player1_run"
+        std::string       animRunLeftAlias;               ///< 左移動用
+        std::string       animRunRightAlias;              ///< 右移動用
+        std::string       animJumpAlias;                  ///< 例: "anim_player1_jump"
+        std::string       animFallAlias;                  ///< 例: "anim_player1_fall"
+        std::string       animWalkAlias;                  ///< 例: "anim_player1_walk"
+        std::string       animLandAlias;                  ///< 例: "anim_player1_land"
+        std::string       animGameOverAlias;              ///< 例: "anim_player1_land"
+
+		float spriteWidth = 0.f;                          ///< スプライト幅（UI用などで指定したい場合）
+		float spriteHeight = 0.f;                         ///< スプライト高さ（UI用などで指定したい場合）
+
+		int layer = 0;                               ///< 描画レイヤ指定（必要なら）
     };
 
     /**

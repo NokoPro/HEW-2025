@@ -10,6 +10,7 @@
 #include "System/DebugSettings.h"
 #include "ECS/Components/Effect/EffectComponent.h"
 #include "ECS/Components/Effect/EffectSlotsComponent.h"
+#include "ECS/Components/Core/PlayerStateComponent.h"
 
 // CSV値との同期
 void MovementApplySystem::SyncConfig()
@@ -28,11 +29,18 @@ void MovementApplySystem::Update(World& world, float dt)
     SyncConfig();
 
     // Intent + Rigidbody を持ってるやつだけ対象
-    world.View<MovementIntentComponent, Rigidbody2DComponent>(
-        [&](EntityId e,
-            MovementIntentComponent& intent,
-            Rigidbody2DComponent& rb)
+    world.View<MovementIntentComponent,
+           Rigidbody2DComponent,
+           PlayerStateComponent>(
+    [&](EntityId e,
+        MovementIntentComponent& intent,
+        Rigidbody2DComponent& rb,
+        PlayerStateComponent& state)
         {
+            // 相手コマンド実行フラグは 1 フレーム限定なので毎フレームリセット
+            state.m_remoteCommandJumpThisFrame = false;
+            state.m_remoteCommandBlinkThisFrame = false;
+
             const bool onGround = rb.onGround;
 
             float friction = 1.0f;
@@ -70,6 +78,9 @@ void MovementApplySystem::Update(World& world, float dt)
                 rb.velocity.y = m_jumpSpeed;
                 intent.forceJumpRequested = false;
                 intent.forceJumpConsumed = true;
+
+				// 強制ジャンプが実行されたフレームとしてフラグを立てる
+                state.m_remoteCommandJumpThisFrame = true;
             }
             else if (intent.jump && (onGround || DebugSettings::Get().infiniteJump))
             {
@@ -93,6 +104,9 @@ void MovementApplySystem::Update(World& world, float dt)
                     }
                     intent.isBlinking = true;
                     intent.blinkConsumed = true;
+
+					// 強制ブリンクが実行されたフレームとしてフラグを立てる
+                    state.m_remoteCommandBlinkThisFrame = true;
 
                     // ここでブリンクを実行したタイミングでエフェクト再生を指示
                     if (auto* efc = world.TryGet<EffectComponent>(e))

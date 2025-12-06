@@ -19,7 +19,8 @@
 struct ModelRendererComponent
 {
     AssetHandle<Model> model;  ///< 描画するモデル
-    AssetHandle<Texture> overrideTexture;   ///< モデルに持たせるテクスチャ
+    AssetHandle<Texture> baseTexture;      // 1P/2Pの色違い用
+    AssetHandle<Texture> overrideTexture;  // 表情用（なければ baseTexture or モデルデフォルト）
     bool visible = true;
 
     DirectX::XMFLOAT3 localOffset{ 0.f,0.f,0.f };
@@ -78,11 +79,16 @@ enum class ModelAnimState
 {
     None = 0,
     Idle,
+    Walk,
     Run,
+    RunLeft,
+    RunRight,
     Jump,
     Fall,
     Land,
-    Attack,
+    Blink,
+    Goal,
+	Death,
 
     Count,  // 配列サイズ用
 };
@@ -105,5 +111,9 @@ struct ModelAnimationStateComponent
 inline void RequestModelAnimation(ModelAnimationStateComponent& state,
     ModelAnimState next)
 {
-    state.requested = next;
+    // 無駄な書き換えを減らしてデバッグしやすくする
+    if (state.requested != next)
+    {
+        state.requested = next;
+    }
 }

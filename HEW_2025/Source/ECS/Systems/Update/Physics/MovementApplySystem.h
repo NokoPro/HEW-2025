@@ -37,8 +37,8 @@ private:
     float m_groundAccel     = 40.0f;
     float m_airAccel        = 10.0f;
     float m_maxSpeedX       = 6.0f;
-    float m_jumpSpeed       = 15.5f;
-    float m_blinkUpImpulse  = 2.5f;
+    float m_jumpSpeed       = 20.5f;
+    float m_blinkUpImpulse  = 7.5f;
 
     // 毎フレーム最初に最新CSV値を反映（ホットリロード想定）
     void SyncConfig();

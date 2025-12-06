@@ -10,6 +10,8 @@
 #include "EffectRuntime.h"
 #include "System/DirectX/DirectX.h"
 
+#include <unordered_map>
+
  // Effekseer
 #include <Effekseer.h>
 #include <EffekseerRendererDX11.h>
@@ -38,11 +40,15 @@ namespace
     bool g_initialized = false;
     bool g_coordinateLHSet = false;
 
+    std::unordered_map<std::string, ::Effekseer::EffectRef> g_effectCache;
+
     // ローカル変換ヘルパー
     ::Effekseer::Vector3D ToEffekseerVector(const XMFLOAT3& v)
     {
         return ::Effekseer::Vector3D(v.x, v.y, v.z);
     }
+
+
 
     // 超シンプルな ASCII → UTF-16 変換（日本語パスを使わない前提）
     std::u16string ToUtf16Ascii(const char* src)
@@ -85,6 +91,37 @@ namespace
             dst.Values[r][3] = rowMajor.m[r][3];
         }
     }
+
+    ::Effekseer::EffectRef LoadEffectCached(const char* pathUtf8)
+    {
+        if (!g_manager.Get() || pathUtf8 == nullptr || *pathUtf8 == '\0')
+        {
+            return ::Effekseer::EffectRef();
+        }
+
+        // ASCII 前提なのでそのままキーにしてOK
+        std::string key(pathUtf8);
+
+        // すでにキャッシュ済みならそれを返す
+        auto it = g_effectCache.find(key);
+        if (it != g_effectCache.end())
+        {
+            return it->second;
+        }
+
+        // 初回ロード
+        const std::u16string path16 = ToUtf16Ascii(pathUtf8);
+        ::Effekseer::EffectRef effect = ::Effekseer::Effect::Create(g_manager, path16.c_str());
+        if (!effect.Get())
+        {
+            return ::Effekseer::EffectRef();
+        }
+
+        g_effectCache.emplace(key, effect);
+        return effect;
+    }
+
+
 } // namespace
 
 //-------------------------------------------------------------------------
@@ -156,6 +193,8 @@ bool EffectRuntime::Initialize()
 
 void EffectRuntime::Shutdown()
 {
+    g_effectCache.clear();
+
     g_manager.Reset();
     g_renderer.Reset();
     g_graphicsDevice.Reset();
@@ -199,23 +238,23 @@ void EffectRuntime::Render()
 }
 
 
-EffectRuntime::Handle EffectRuntime::Play(const char* pathUtf8, const XMFLOAT3& worldPos, bool loop)
+EffectRuntime::Handle EffectRuntime::Play(const char* pathUtf8,
+    const XMFLOAT3& worldPos, bool loop)
 {
     if (!g_manager.Get() || pathUtf8 == nullptr || *pathUtf8 == '\0')
     {
         return -1;
     }
 
-    // 6.8. エフェクト読み込み
-    const std::u16string path16 = ToUtf16Ascii(pathUtf8);
-    ::Effekseer::EffectRef effect = ::Effekseer::Effect::Create(g_manager, path16.c_str());
+    // キャッシュ経由で取得
+    ::Effekseer::EffectRef effect = LoadEffectCached(pathUtf8);
     if (!effect.Get())
     {
         return -1;
     }
 
-    // 8.1. 再生
-    ::Effekseer::Handle h = g_manager->Play(effect,
+    ::Effekseer::Handle h = g_manager->Play(
+        effect,
         worldPos.x,
         worldPos.y,
         worldPos.z);
@@ -224,13 +263,11 @@ EffectRuntime::Handle EffectRuntime::Play(const char* pathUtf8, const XMFLOAT3& 
         return -1;
     }
 
-    // ループ制御は基本的にエフェクト側の設定で行う。
-    // ECS 側では「loop=true の場合は IsFinished を見て自動 Destroy しない」
-    // という使い方だけに留めている。
-    (void)loop;
+    (void)loop; // ループは今はフラグ用途のみなのでそのまま
 
     return static_cast<Handle>(h);
 }
+
 
 void EffectRuntime::SetCamera(const DirectX::XMFLOAT4X4& viewT,
     const DirectX::XMFLOAT4X4& projT)
@@ -281,6 +318,16 @@ void EffectRuntime::SetScale(Handle handle, const XMFLOAT3& scale)
     g_manager->SetScale(static_cast<::Effekseer::Handle>(handle), scale.x, scale.y, scale.z);
 }
 
+bool EffectRuntime::Preload(const char* pathUtf8)
+{
+    if (!g_initialized || pathUtf8 == nullptr || *pathUtf8 == '\0')
+    {
+        return false;
+    }
+
+    auto ef = LoadEffectCached(pathUtf8);
+    return ef.Get() != nullptr;
+}
 void EffectRuntime::Stop(Handle handle)
 {
     if (!g_manager.Get() || handle < 0)
@@ -303,4 +350,45 @@ bool EffectRuntime::IsFinished(Handle handle)
     // 8.x. Exists を使って終了チェック
     const bool exists = g_manager->Exists(static_cast<::Effekseer::Handle>(handle));
     return !exists;
+}
+
+// 位置・回転・スケールを一括で Effekseer インスタンスへ適用
+void EffectRuntime::SetTransform(Handle handle, const XMFLOAT3& position, const XMFLOAT3& rotationDeg, const XMFLOAT3& scale)
+{
+    if (!g_manager.Get() || handle < 0)
+    {
+        return;
+    }
+
+    // Effekseer は Matrix43（行列）で一括設定するのが確実
+    const float rx = XMConvertToRadians(rotationDeg.x);
+    const float ry = XMConvertToRadians(rotationDeg.y);
+    const float rz = XMConvertToRadians(rotationDeg.z);
+
+    // 回転行列を作成（Z*Y*X の順でも可。ここでは標準的な RollPitchYaw に対応）
+    DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(rx, ry, rz);
+    // スケール・回転を合成（行列の上位3x3が基底ベクトル）
+    DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+    DirectX::XMMATRIX SR = S * R;
+
+    // Effekseer::Matrix43 へ変換（行優先。各行の[0..2]に基底、[3]に平行移動）
+    ::Effekseer::Matrix43 efkM;
+    DirectX::XMFLOAT4X4 m44;
+    DirectX::XMStoreFloat4x4(&m44, SR);
+    efkM.Value[0][0] = m44.m[0][0];
+    efkM.Value[0][1] = m44.m[0][1];
+    efkM.Value[0][2] = m44.m[0][2];
+    efkM.Value[0][3] = position.x;
+
+    efkM.Value[1][0] = m44.m[1][0];
+    efkM.Value[1][1] = m44.m[1][1];
+    efkM.Value[1][2] = m44.m[1][2];
+    efkM.Value[1][3] = position.y;
+
+    efkM.Value[2][0] = m44.m[2][0];
+    efkM.Value[2][1] = m44.m[2][1];
+    efkM.Value[2][2] = m44.m[2][2];
+    efkM.Value[2][3] = position.z;
+
+    g_manager->SetMatrix(static_cast<::Effekseer::Handle>(handle), efkM);
 }

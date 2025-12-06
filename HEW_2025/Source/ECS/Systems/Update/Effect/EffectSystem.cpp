@@ -112,8 +112,9 @@ void EffectSystem::Update(World& world, float dt)
                         efc.nativeHandle = handle;
                         efc.playing = true;
                         efc.lastPath = ref.path;
-
-                        // 位置・回転・スケールを反映
+                        // 位置・回転・スケールを一括反映
+                        EffectRuntime::SetTransform(efc.nativeHandle, worldPos, efc.rotationDeg, efc.scale);
+                        // フォールバック（見えない場合に備えて個別設定も併用）
                         EffectRuntime::SetLocation(efc.nativeHandle, worldPos);
                         EffectRuntime::SetRotationDeg(efc.nativeHandle, efc.rotationDeg);
                         EffectRuntime::SetScale(efc.nativeHandle, efc.scale);
@@ -125,6 +126,8 @@ void EffectSystem::Update(World& world, float dt)
             if (efc.playing && efc.nativeHandle >= 0)
             {
                 const XMFLOAT3 worldPos = ComputeEffectWorldPos(tr, efc);
+                EffectRuntime::SetTransform(efc.nativeHandle, worldPos, efc.rotationDeg, efc.scale);
+                // フォールバック（見えない場合に備えて個別設定も併用）
                 EffectRuntime::SetLocation(efc.nativeHandle, worldPos);
                 EffectRuntime::SetRotationDeg(efc.nativeHandle, efc.rotationDeg);
                 EffectRuntime::SetScale(efc.nativeHandle, efc.scale);

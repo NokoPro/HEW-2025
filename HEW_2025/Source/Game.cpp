@@ -15,6 +15,7 @@
 
 //タイトルシーン
 #include "Scene/TitleScene.h"
+#include "Scene/StageSelectScene.h"
 
 namespace
 {

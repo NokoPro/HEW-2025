@@ -23,56 +23,56 @@
 
 void AudioPlaySystem::Update(World& world, float dt)
 {
-    static bool started = false;
+    //static bool started = false;
 
-    if (!started)
-    {
-        AudioManager::Initialize();
+    //if (!started)
+    //{
+    //    AudioManager::Initialize();
 
-        // ===== CSV alias ‚¾‚¯‚ðŽg‚¤ =====
-        AudioManager::LoadAudioAlias("bgm_main");
-        AudioManager::PlayBGM("bgm_main", true);
-        AudioManager::SetBGMVolume(0.1f);
+    //    // ===== CSV alias ‚¾‚¯‚ðŽg‚¤ =====
+    //    AudioManager::LoadAudioAlias("bgm_main");
+    //    AudioManager::PlayBGM("bgm_main", true);
+    //    AudioManager::SetBGMVolume(0.1f);
 
-        // SE
-        AudioManager::LoadAudioAlias("se_jump_p1");
-        AudioManager::LoadAudioAlias("se_jump_p2");
+    //    // SE
+    //    AudioManager::LoadAudioAlias("se_jump_p1");
+    //    AudioManager::LoadAudioAlias("se_jump_p2");
 
-        started = true;
-    }
+    //    started = true;
+    //}
 
-    bool onGround1 = false;
-    bool onGround2 = false;
+    //bool onGround1 = false;
+    //bool onGround2 = false;
 
-    MovementIntentComponent* intent1 = nullptr;
-    MovementIntentComponent* intent2 = nullptr;
+    //MovementIntentComponent* intent1 = nullptr;
+    //MovementIntentComponent* intent2 = nullptr;
 
-    world.View<PlayerInputComponent, MovementIntentComponent, Rigidbody2DComponent>(
-        [&](EntityId, const PlayerInputComponent& pic, MovementIntentComponent& intent, Rigidbody2DComponent& rb)
-        {
-            if (pic.playerIndex == 0) {
-                intent1 = &intent;
-                onGround1 = rb.onGround;
-            }
-            else if (pic.playerIndex == 1) {
-                intent2 = &intent;
-                onGround2 = rb.onGround;
-            }
-        }
-    );
+    //world.View<PlayerInputComponent, MovementIntentComponent, Rigidbody2DComponent>(
+    //    [&](EntityId, const PlayerInputComponent& pic, MovementIntentComponent& intent, Rigidbody2DComponent& rb)
+    //    {
+    //        if (pic.playerIndex == 0) {
+    //            intent1 = &intent;
+    //            onGround1 = rb.onGround;
+    //        }
+    //        else if (pic.playerIndex == 1) {
+    //            intent2 = &intent;
+    //            onGround2 = rb.onGround;
+    //        }
+    //    }
+    //);
 
-    if (onGround1) onSE1 = true;
-    if (onGround2) onSE2 = true;
+    //if (onGround1) onSE1 = true;
+    //if (onGround2) onSE2 = true;
 
-    if (onSE1 && intent1 && intent1->jump)
-    {
-        onSE1 = false;
-        AudioManager::PlaySE("se_jump_p1", 0.1f);
-    }
+    //if (onSE1 && intent1 && intent1->jump)
+    //{
+    //    onSE1 = false;
+    //    AudioManager::PlaySE("se_jump_p1", 0.1f);
+    //}
 
-    if (onSE2 && intent2 && intent2->jump)
-    {
-        onSE2 = false;
-        AudioManager::PlaySE("se_jump_p2", 0.1f);
-    }
+    //if (onSE2 && intent2 && intent2->jump)
+    //{
+    //    onSE2 = false;
+    //    AudioManager::PlaySE("se_jump_p2", 0.1f);
+    //}
 }

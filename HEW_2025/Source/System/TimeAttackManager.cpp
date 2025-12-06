@@ -106,7 +106,7 @@ void TimeAttackManager::NotifyClear()
         //追加ランキング登録
         auto& rank = RankingManager::Get();
 
-        int pos = rank.AddRecord(m_elapsed);
+        /*int pos = rank.AddRecord(m_elapsed);
         if (pos != -1)
         {
             char msg[128];
@@ -114,7 +114,13 @@ void TimeAttackManager::NotifyClear()
             MessageBoxA(NULL, msg, "Ranking", MB_OK | MB_ICONINFORMATION);
 
         }
-        RankingManager::Get().Save("Assets/Ranking.csv");
+        else
+        {
+            char msg[128];
+            sprintf_s(msg, "ランク外！\n記録：%.3f秒",  m_elapsed);
+            MessageBoxA(NULL, msg, "Ranking", MB_OK | MB_ICONINFORMATION);
+        }*/
+ 
         RankingManager::Get().ShowRankingMessege();
     }
 }

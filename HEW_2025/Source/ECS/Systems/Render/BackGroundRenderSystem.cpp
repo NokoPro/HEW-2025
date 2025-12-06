@@ -45,7 +45,6 @@ void BackGroundRenderSystem::Render(const World& world)
 			spriteData.zDepth = tr.position.z;
 			spriteData.hTex = hTex;
 			spriteData.size = XMFLOAT2(sp.width, sp.height);
-
 			// オフセット計算(Render時に行わないでここで計算)
 			spriteData.offset.x = tr.position.x + (0.5f - sp.originX) * sp.width;
 			spriteData.offset.y = tr.position.y + (0.5f - sp.originY) * sp.height;
@@ -53,7 +52,7 @@ void BackGroundRenderSystem::Render(const World& world)
 			// ワールド行列(Zレベルだけ反映。XYはオフセットで表現)
 			XMMATRIX W = XMMatrixTranslation(0.0f, 0.0f, tr.position.z);
 			XMStoreFloat4x4(&spriteData.world, XMMatrixTranspose(W));
-
+	
 			// リストに追加
 			m_spriteList.push_back(spriteData);
 		}
@@ -83,6 +82,7 @@ void BackGroundRenderSystem::Render(const World& world)
 		Sprite::SetUVPos({0,0});
 		Sprite::SetUVScale({ 1,1 });
 		Sprite::SetTexture(s.hTex);
+		Sprite::SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		Sprite::Draw();
 	}
 }

@@ -26,7 +26,6 @@
  * @author 土本蒼翔
  * @author 堤翔
  *********************************************************************/
-
 #include "Main.h"
 
 #include <memory>
@@ -45,10 +44,26 @@
 #include "System/ImGuiLayer.h"
 #include "System/DebugSettings.h"
 #include "System/DirectX/DirectX.h"
+#include "ECS/Systems/Update/Audio/AudioManagerSystem.h"
+
 
  // 追加：ゲーム本体
 #include "Game.h"
 #include "System/EffectRuntime.h"
+
+static void PreloadEffectsFromCatalog()
+{
+    AssetCatalog::ForEach(
+        [](const AssetDesc& desc)
+        {
+            // type=="effect" かつ preload=true のものだけ対象
+            if (desc.type == "effect" && desc.preload)
+            {
+                // Data.csv の path はすでに実パスなのでそのまま渡す
+                EffectRuntime::Preload(desc.path.c_str());
+            }
+        });
+}
 
 /**
  * @brief ウィンドウプロシージャの宣言。
@@ -141,6 +156,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 
 	EffectRuntime::Initialize();
 
+    PreloadEffectsFromCatalog();
+
     // ゲーム(ECS)側の初期化
     Game_Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -184,6 +201,15 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
             TranslateMessage(&msg);
             DispatchMessage(&msg);
             continue;
+        }
+
+        // ウィンドウ破棄や終了要求がキューに入っている場合はフレーム処理を行わず終了する
+        {
+            MSG pending;
+            if (PeekMessage(&pending, nullptr, WM_QUIT, WM_QUIT, PM_NOREMOVE))
+            {
+                break;
+            }
         }
 
         // 現在カウンタ値の取得
@@ -356,6 +382,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
     AssetCatalog::LoadCsv("Assets/Data.csv");
     AssetManager::Init();
 
+	AudioManager::Initialize();
+
     return S_OK;
 }
 
@@ -367,6 +395,8 @@ void Uninit()
     Sprite::Uninit();
     Geometory::Uninit();
     ShaderList::Uninit();
+
+	AudioManager::Shutdown();
 
     UninitInput();
     EffectRuntime::Shutdown();

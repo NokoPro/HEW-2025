@@ -14,12 +14,16 @@
 #include "ECS/Components/Render/ModelComponent.h"
 #include "ECS/Components/Core/Camera3DComponent.h"
 #include "ECS/Components/Core/ActiveCameraTag.h"
+#include "ECS/Components/Core/PlayerStateComponent.h"
+#include "ECS/Components/Input/PlayerInputComponent.h"
+#include "ECS/Components/Render/DeathTextureOverrideComponent.h"
 
 #include "System/CameraMath.h"
 #include "System/AssetManager.h"
 #include "System/Model.h"
 #include "System/Geometory.h"
 #include "System/DirectX/ShaderList.h"
+#include "System/DebugSettings.h"
 
 #include <algorithm>
 
@@ -58,16 +62,17 @@ void ModelRenderSystem::Render(const World& world)
     // =====================
     // 2. モデル収集 (カリング適用)
     // =====================
+    const bool skipCulling = DebugSettings::Get().gameDead; // 演出中はカリング無効
     world.View<TransformComponent, ModelRendererComponent>(
-        [&](EntityId /*e*/, const TransformComponent& tr, const ModelRendererComponent& mr)
+        [&](EntityId e, const TransformComponent& tr, const ModelRendererComponent& mr)
         {
             if (!mr.visible || !mr.model)
             {
                 return;
             }
 
-            // サイドスクロールカメラがある場合のみカリング
-            if (hasSideCam)
+            // サイドスクロールカメラがある場合のみカリング（ゲームオーバー演出中はスキップ）
+            if (hasSideCam && !skipCulling)
             {
                 // Transform scale は半径(半幅/半高)として扱われている前提
                 const float minX = tr.position.x - tr.scale.x;
@@ -82,7 +87,7 @@ void ModelRenderSystem::Render(const World& world)
                 }
             }
 
-            // ---------- ローカル行列 ----------
+            // ---------- ローカル変換 ----------
             const XMMATRIX LS = XMMatrixScaling(mr.localScale.x, mr.localScale.y, mr.localScale.z);
             const XMMATRIX LRx = XMMatrixRotationX(XMConvertToRadians(mr.localRotationDeg.x));
             const XMMATRIX LRy = XMMatrixRotationY(XMConvertToRadians(mr.localRotationDeg.y));
@@ -90,7 +95,7 @@ void ModelRenderSystem::Render(const World& world)
             const XMMATRIX LT = XMMatrixTranslation(mr.localOffset.x, mr.localOffset.y, mr.localOffset.z);
             const XMMATRIX L = LS * LRx * LRy * LRz * LT;
 
-            // ---------- エンティティ行列 ----------
+            // ---------- エンティティ変換 ----------
             const XMMATRIX S = XMMatrixScaling(tr.scale.x, tr.scale.y, tr.scale.z);
             const XMMATRIX Rx = XMMatrixRotationX(XMConvertToRadians(tr.rotationDeg.x));
             const XMMATRIX Ry = XMMatrixRotationY(XMConvertToRadians(tr.rotationDeg.y));
@@ -98,16 +103,28 @@ void ModelRenderSystem::Render(const World& world)
             const XMMATRIX T = XMMatrixTranslation(tr.position.x, tr.position.y, tr.position.z);
             const XMMATRIX Wentity = S * Rx * Ry * Rz * T;
 
-            // ---------- 最終ワールド行列 ----------
+            // ---------- 最終ワールド変換 ----------
             const XMMATRIX W = L * Wentity;
             XMFLOAT4X4 worldT;
             XMStoreFloat4x4(&worldT, XMMatrixTranspose(W));
 
-            // ---------- オーバーライドテクスチャ ----------
-            Texture* overrideTexPtr = nullptr;
-            if (mr.overrideTexture)
+            AssetHandle<Texture> texHandle;
+
+            // まず DeathTextureOverrideComponent が有効ならそれを優先
+            if (world.Has<DeathTextureOverrideComponent>(e))
             {
-                overrideTexPtr = mr.overrideTexture.get();
+                const auto& dto = world.Get<DeathTextureOverrideComponent>(e);
+                if (dto.enabled && dto.texture)
+                {
+                    texHandle = dto.texture;
+                }
+            }
+
+            // それ以外は ModelRendererComponent の設定を使用
+            if (!texHandle)
+            {
+                if (mr.overrideTexture)      texHandle = mr.overrideTexture;
+                else if (mr.baseTexture)     texHandle = mr.baseTexture;
             }
 
             // ---------- リストへの追加 ----------
@@ -115,7 +132,7 @@ void ModelRenderSystem::Render(const World& world)
                 mr.layer,
                 worldT,
                 mr.model.get(),
-                overrideTexPtr
+                texHandle
                 });
         });
 
@@ -141,12 +158,14 @@ void ModelRenderSystem::Render(const World& world)
         wvp[0] = s.world;
         ShaderList::SetWVP(wvp);
 
-        // オーバーライドテクスチャ付きで描画
-        s.model->Draw(-1, s.overrideTexture);
 
-#ifdef _DEBUG
-        s.model->DrawBone();
-#endif
+        // オーバーライドテクスチャ付きで描画
+        Texture* texPtr = s.overrideTexture ? s.overrideTexture.get() : nullptr;
+        s.model->Draw(-1, texPtr);
+
+//#ifdef _DEBUG
+//        s.model->DrawBone();
+//#endif
     }
 
     SetDepthTest(false);

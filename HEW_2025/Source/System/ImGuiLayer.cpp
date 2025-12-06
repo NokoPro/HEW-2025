@@ -19,6 +19,7 @@
 #include "Game.h" // GetSceneManager() éŒ¾Žæ“¾
 #include "Scene/SceneManager.h"
 #include "Scene/TestStageScene.h"
+#include "Scene/GameScene.h" // ’Ç‰Á: GameScene Œ^‚ÌŽQÆ
 #include "ECS/World.h"
 #include "ECS/Components/Physics/TransformComponent.h"
 #include "ECS/Components/Input/PlayerInputComponent.h"
@@ -87,6 +88,7 @@ namespace ImGuiLayer
     // --- Entity î•ñ•\Ž¦ƒwƒ‹ƒp ---
     static void DrawPlayerList(TestStageScene* scene)
     {
+#if defined(IMGUI_ENABLED) && defined(IMGUI_HAS_CORE) && defined(IMGUI_HAS_WIN32) && defined(IMGUI_HAS_DX11)
         if (!scene) { ImGui::TextDisabled("Scene not available"); return; }
         World& w = scene->GetWorld();
 
@@ -178,6 +180,7 @@ namespace ImGuiLayer
         {
             ImGui::TextDisabled("No player entities");
         }
+#endif
     }
 
     void BeginFrame()
@@ -258,12 +261,24 @@ namespace ImGuiLayer
             if (ImGui::Button("Cheat: Force Clear"))
             {
                 ds.gameDead = false; ds.gameCleared = true; ds.gameTimerRunning = false;
+                auto& sm = GetSceneManager();
+                if (auto* gs = dynamic_cast<GameScene*>(sm.Current()))
+                {
+                    gs->ForceClearCheat();
+                }
+                auto& ta = TimeAttackManager::Get();
                 if (ta.GetState() == TimeAttackManager::State::Countdown) { ta.StartRun(); }
                 ta.NotifyClear();
             }
             if (ImGui::Button("Cheat: Force Game Over"))
             {
                 ds.gameCleared = false; ds.gameDead = true; ds.gameTimerRunning = false;
+                auto& sm = GetSceneManager();
+                if (auto* gs = dynamic_cast<GameScene*>(sm.Current()))
+                {
+                    gs->ForceGameOverCheat();
+                }
+                auto& ta = TimeAttackManager::Get();
                 if (ta.GetState() == TimeAttackManager::State::Countdown) { ta.NotifyDeath(); }
                 else if (ta.GetState() == TimeAttackManager::State::Running) { ta.NotifyDeath(); }
             }

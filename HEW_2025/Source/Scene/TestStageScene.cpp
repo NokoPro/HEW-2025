@@ -2,7 +2,7 @@
  * @file      TestStageScene.cpp
  * @brief     ステージ読み込み＆生成を実装したテスト用シーン
  *
- * @author    浅野勇生
+ * @author    浅野勇生a
  * @date      2025/11/22
  *
  * =============================================================================================
@@ -30,6 +30,9 @@
 #include "ECS/Components/Render/FollowerComponent.h"
 #include "ECS/Components/Render/BackGroundComponent.h"
 
+//背景スクロール(ワープ)
+#include "ECS/Components/Game/BackGroundScrollComponent.h"
+
 /// ECS システム群
 #include "ECS/Systems/Update/Physics/PhysicsStepSystem.h"
 #include "ECS/Systems/Update/Game/GoalSystem.h"
@@ -43,6 +46,9 @@
 #include "ECS/Systems/Render/BackGroundRenderSystem.h"
 #include "ECS/Systems/Update/Anim/ModelAnimationSystem.h"
 #include "ECS/Systems/Update/Effect/EffectSystem.h"
+
+// 背景スクロール(ワープ)
+#include "ECS/Systems/Update/Game/BackGroundScrollSystem.h"
 
 /// 入力・物理関連コンポーネント
 #include "System/CameraHelper.h"
@@ -72,7 +78,6 @@
 #include <DirectXMath.h>
 #include <Windows.h> // For MessageBox
 #include "ECS/Systems/Update/Anim/ModelAnimationStateSystem.h"
-#include "ECS/Systems/Update/Anim/PlayerLocomotionAnimSystem.h"
 
 //シーン遷移
 #include "SceneAPI.h"
@@ -134,9 +139,6 @@ TestStageScene::TestStageScene()
     // 2-3.3 Deathゾーン判定システム追加
     m_deathSystem = &m_sys.AddUpdate<DeathZoneSystem>(colSys); // Deathゾーンシステム追加
 
-    // 3. Rigidbody の状態からアニメステート決定（Idle / Run / Jump / Fall）
-    m_sys.AddUpdate<PlayerLocomotionAnimSystem>();
-
     // 4. ステート → クリップ情報 (AnimeNo / Loop / Speed)
     m_sys.AddUpdate<ModelAnimationStateSystem>();
 
@@ -152,6 +154,9 @@ TestStageScene::TestStageScene()
 
     // 2-4 カメラ（最終位置を見たいので最後）
     m_followCamera = &m_sys.AddUpdate<FollowCameraSystem>();
+
+    // 背景スクロールシステム(ワープ)
+    m_sys.AddUpdate<BackGroundScrollSystem>();
 
     // タイマーシステム追加
     m_sys.AddUpdate<TimerSystem>();
